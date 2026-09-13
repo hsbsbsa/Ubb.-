@@ -17,7 +17,7 @@ output) · **C** cheap/classification · **E** embeddings.
 | `concept_comparator` | Pairwise comparison of concepts | R | — | pack.compare | comparison-verdict | 2k | both orders |
 | `concept_merger` | Merge selected fields | M | planner_compact | pack.concept | concept | 3k | on request |
 | `character_designer` | Cast identities/arcs/secrets | R | planner_compact | pack.bible | bible.characters | 6k | |
-| `speech_profile_designer` | Per-character speech levels, address terms, tics | P | writer_full (rules only, no exemplars) | pack.bible | speech-profile[] | 4k | validated vs overlay conventions |
+| `speech_profile_designer` | Per-character speech levels, address terms, tics | P | editor_full | pack.bible | speech-profile[] | 4k | validated vs overlay conventions |
 | `world_builder` / `power_system_designer` / `faction_designer` / `location_designer` | Bible sections | R | planner_compact | pack.bible | bible.* | 4–6k | numbers-as-facts |
 | `glossary_compiler` | Fixed Korean spellings, aliases, allowances | M | summarizer_min | pack.bible | glossary | 3k | mostly deterministic |
 | `style_binder` | Propose profile overrides from tone/preferences | M | — (produces profile) | pack.bible | style-profile.overrides | 1k | |

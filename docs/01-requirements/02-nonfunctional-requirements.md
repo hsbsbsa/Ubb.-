@@ -39,7 +39,7 @@
 | NFR-D.1 | Hard limits at project/chapter/workflow are enforced pre-call; a call that would exceed remaining budget is not made. |
 | NFR-D.2 | Cost estimates before batch runs within ±30% of actual for Standard tier after calibration on ≥ 20 chapters. |
 | NFR-D.3 | Context deduplication and provider prompt caching reduce repeated T0/T1 token spend; style blocks and bible excerpts are cache-stable prefixes. |
-| NFR-D.4 | Reference targets (Standard tier, 5,500-char chapter): ≤ 14 LLM calls typical, ≤ 22 with one revision round; see `docs/06-system/05-cost-and-observability-plan.md` for the model. |
+| NFR-D.4 | Reference targets for a 5,500-char chapter: Economy ≈ 11–13 LLM calls; Standard ≈ 18–23 including one revision round and two-extractor commit; Premium ≈ 35–45 with N=2 candidates. See `docs/05-generation/01-generation-pipeline.md` §4.1 and `docs/06-system/05-cost-and-observability-plan.md` §3. |
 
 ## NFR-E Security & privacy
 

@@ -112,7 +112,13 @@ Failures raise before the call; the job retries assembly once with the degradati
 | `pack.style_judge` | style_judge, voice_judge | judge block, chapter text, lint report, speech digests (voice) | voice exemplars (voice judge) | — | 14k |
 | `pack.extractor` | extractor_a/b | chapter text, glossary/entity registry, contract hypotheses (labelled), pre-pass annotations | — | — | 18k |
 | `pack.adjudicator` | extraction_adjudicator | conflicting items, spans ± context | — | — | 6k |
-| `pack.summarizer` | summarizer_l1/l2/l3 | summarizer_min block, text or child summaries, glossary | — | — | 12k |
+| `pack.summarizer` | summarizer_l1/l2/l3/l4 | summarizer_min block, text or child summaries, glossary | — | — | 12k |
+| `pack.requirements` | requirement_interpreter | intake form + free text (user role, injection-screened) | — | — | 6k |
+| `pack.concept` | concept_generator/merger | spec (all), planner block, angle seed | — | — | 8k |
+| `pack.compare` | concept_comparator, chapter_comparator | both candidates (+ scorecards for chapters), contract or spec | — | — | 20k |
+| `pack.bible` | bible specialists, bible_consistency_checker | spec, concept, planner block, previously produced bible sections | — | — | 14k |
+| `pack.repetition` | repetition_judge | current L1 (pre-pass) or arc plan; last 10 L1s; current/prior arc L2s | — | — | 8k |
+| `pack.promise` | promise_checker | contract setups/payoffs; promise ledger slice; extraction pre-pass | — | — | 6k |
 
 ## 4. The previous chapter (special treatment)
 

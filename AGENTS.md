@@ -30,6 +30,6 @@ changing anything.
 
 - pnpm workspace monorepo, TypeScript strict, Node 22 LTS.
 - `apps/web` (Next.js), `apps/api` (Fastify), `apps/worker` (Temporal workers), `packages/*` (domain,
-  db, gateway, prompts, style, korean, context, canon, eval, workflows).
+  db, gateway, prompts, style, korean, context, canon, eval, workflows), `services/nlp-sidecar` (Python).
 - Postgres 16 + pgvector is the single system of record. Temporal orchestrates; Postgres holds truth.
 - All IDs are UUIDv7; all timestamps UTC; all text UTF-8 NFC-normalized at the boundary.
