@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/concept.schema.json",
+  "title": "Concept Candidate",
+  "description": "One story concept candidate produced by concept_generator (FR-2.1). Candidates are compared pairwise; the selected/merged concept seeds the Story Bible and Series Blueprint.",
+  "type": "object",
+  "required": ["id", "project_id", "spec_version", "angle", "logline_ko", "story_promise_ko", "reader_fantasy_ko", "main_conflict_ko", "chapter_one_hook_ko", "ending_direction_ko", "differentiators_ko", "genre_fit_notes_ko", "risk_notes_ko", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "spec_version": { "type": "integer", "minimum": 1 },
+    "angle": { "type": "string", "description": "Diversity seed used for generation, e.g. 사이다 중심 / 감정선 중심 / 미스터리 중심" },
+    "logline_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
+    "story_promise_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
+    "reader_fantasy_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
+    "main_conflict_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
+    "protagonist_sketch_ko": { "type": "string" },
+    "chapter_one_hook_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
+    "ending_direction_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
+    "progression_curve_ko": { "type": "string", "description": "How power/status rises across the series, with rough milestones" },
+    "differentiators_ko": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "genre_fit_notes_ko": { "type": "array", "items": { "type": "string" } },
+    "risk_notes_ko": { "type": "array", "items": { "type": "string" } },
+    "requirement_coverage": {
+      "type": "array",
+      "description": "How each hard requirement is honored by this concept",
+      "items": {
+        "type": "object",
+        "required": ["requirement_id", "how_ko"],
+        "additionalProperties": false,
+        "properties": {
+          "requirement_id": { "type": "string" },
+          "how_ko": { "type": "string" }
+        }
+      }
+    },
+    "status": { "type": "string", "enum": ["candidate", "selected", "merged_into", "rejected"] },
+    "merged_into_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "generator_call_id": { "$ref": "common.schema.json#/$defs/uuid" }
+  }
+}

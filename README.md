@@ -55,7 +55,8 @@ docs/
   08-delivery/                 roadmap, backlog, risks, open questions, handoff guide, plan audit
   adr/                         architecture decision records
 schemas/                       JSON Schema (2020-12) for the core machine-readable objects
-examples/                      example instances of the schemas, including the fixture story bible
+examples/                      example instances of the schemas (fixture story data, style profiles)
+tools/                         planning-package validation script (schemas + examples)
 ```
 
 ## Naming

@@ -9,6 +9,7 @@ cross-references use relative names (`common.schema.json#/$defs/...`). Validate 
 | `common.schema.json` | shared defs: uuid, storyClock, realityFrame, evidenceRef, knowerRef, stance, speechLevel, versionRef | glossary |
 | `story-intake.schema.json` | user intake form | FR-1.1 |
 | `story-spec.schema.json` | normalized requirements (hard/soft/assumption) | FR-1.2–1.5 |
+| `concept.schema.json` | concept candidate | FR-2.1 |
 | `style-profile.schema.json` | base / overlay / project style profile | 02-korean-style/02 |
 | `speech-profile.schema.json` | per-character speech baseline | FR-2.6 |
 | `entity.schema.json` | bible entity identity + descriptive version | 04-memory-canon/02 §1.2 |

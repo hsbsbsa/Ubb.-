@@ -128,7 +128,7 @@ and the test that proves it.
 | Found | Resolution |
 | --- | --- |
 | Pipeline §4.1 evaluator row contained an inline design deliberation | Rewritten as a plain list of the seven evaluator calls (`05-generation/01`) |
-| Traceability matrix referenced schemas `evidence-span` and `story-clock` as separate files; they are `$defs` in `common.schema.json` | Matrix updated to `common (evidenceRef, storyClock)`; `concept` schema listed but not shipped → marked "(Phase 2)" |
+| Traceability matrix referenced schemas `evidence-span` and `story-clock` as separate files; they are `$defs` in `common.schema.json` | Matrix updated to `common (evidenceRef, storyClock)`; missing `concept` schema added to `schemas/` |
 | Fixture ch.9 delta evidence offsets did not satisfy `end − start = len(quote)` | Fixed; validator now enforces the invariant on examples |
 | `fact.schema.json` `if/then` on `source` applied to payloads lacking `source` | Conditionals now require the discriminator to be present |
 | Scope doc says candidate comparison for chapters is Premium-only in MVP, while FR-4.5 says "M/P0 (config)" | Consistent reading: the *mechanism* ships in MVP (configurable), the *default-on* policy for Standard arrives in Beta; FR-4.5 wording clarified |

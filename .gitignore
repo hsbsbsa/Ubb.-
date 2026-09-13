@@ -17,3 +17,6 @@ coverage/
 .env.*
 !.env.example
 *.log
+
+# Python tooling cache
+__pycache__/

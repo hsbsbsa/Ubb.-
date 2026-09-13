@@ -67,4 +67,5 @@ For the engineering agent (or team) that will build Yeonjae Studio from this pla
 ## 6. How to verify you are done with a phase
 
 Run the fixture assertions listed in the roadmap's exit criteria; produce a short report in
-`docs/08-delivery/reports/phase-<n>.md` with test results, costs, and any ADRs added.
+`docs/08-delivery/reports/` (one file per phase, e.g. `phase-0.md`) with test results, costs, and any ADRs
+added. Keep `python tools/validate-planning-package.py` green whenever schemas or examples change.

@@ -6,7 +6,7 @@ Keep this file updated in the same change as any requirement/design change (AGEN
 | Requirement(s) | Design | Schemas | ADRs | Backlog | Tests (strategy §) |
 | --- | --- | --- | --- | --- | --- |
 | FR-1.1–1.7 intake & spec | UW-1; `05-generation/01` §2.1; `03-prompt-architecture` §7 | `story-intake`, `story-spec` | 0019 | B-2-1, B-3-2 | §4 workflow; §10 injection |
-| FR-2.1 concepts | `05-generation/01` §2.2; `02-eval` §5 | `comparison-verdict` (+ `concept` schema, Phase 2) | 0015 | B-2-2, B-3-3 | §5 position bias |
+| FR-2.1 concepts | `05-generation/01` §2.2; `02-eval` §5 | `concept`, `comparison-verdict` | 0015 | B-2-2, B-3-3 | §5 position bias |
 | FR-2.2–2.7 bible, locks, speech profiles | `05-generation/01` §2.3; `02-korean-style/02` §5; `04-memory-canon/02` §1 | `entity`, `speech-profile`, `style-profile` | 0006, 0025 | B-2-3, B-3-4 | §3 bitemporal; §6 speech-level |
 | FR-3.1–3.9 hierarchical planning, promises, contracts | `03-story-planning/01`, `02` | `series-blueprint`, `arc-plan`, `chapter-contract`, `scene-plan`, `promise` | 0012, 0013 | B-2-4, B-3-5 | §4; §5 chapter_planner |
 | FR-4.1–4.9 production pipeline | `05-generation/01` §4–6 | `scene-draft`, `patch`, `job` | 0003, 0014, 0015 | B-2-5, 2-9, 2-10, 2-11, 2-15 | §4; §8 chaos |
