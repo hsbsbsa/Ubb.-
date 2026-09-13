@@ -1,0 +1,19 @@
+# Hoplite sandbox runtime state (never commit)
+.hoplite/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Future implementation artifacts (kept here so the first code commit does not forget them)
+node_modules/
+dist/
+build/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
