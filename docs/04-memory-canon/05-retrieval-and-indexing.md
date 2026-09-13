@@ -43,8 +43,8 @@ generation.
 Provider-independent embedding role (`embedder`). Because dimension and semantics differ across
 providers/models, embeddings are stored **per model** in `embedding_sets { id, project_id, model_id,
 provider, dimension, status: building|active|retired }` with a child table per set
-(`search_document_embeddings_<set>` or a partitioned table keyed by `embedding_set_id` with a `vector`
-column whose dimension is fixed per partition). Exactly one set is `active` per project; retrieval reads
+(`search_document_embeddings` partitioned by `embedding_set_id`, each partition's `vector(n)` typmod matching
+its set's dimension). Exactly one set is `active` per project; retrieval reads
 the active set; a model change creates a new set, runs a re-embed job over accepted content (idempotent,
 resumable, budgeted), then flips `active` atomically. Old sets are retired after a grace period. Retrieval
 tests run against the fixture on every active-set flip.

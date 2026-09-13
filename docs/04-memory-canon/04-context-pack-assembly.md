@@ -136,7 +136,7 @@ edges drive staleness.
 | `pack.continuity_checker` | continuity_checker, contract_compliance_judge | chapter text (paragraph IDs), contract, states/knowledge/relationships/timeline for participants (with evidence quotes), locked facts | retrieved older events/facts by contract entities | — | 20k |
 | `pack.knowledge_leak_checker` | knowledge_leak_checker | chapter text, knowledge table, guards, secrets | — | — | 14k |
 | `pack.prose_judge` | prose_judge | `judge_rubric_prose` block, chapter text, prose lint report | — | — | 12k |
-| `pack.structure_judge` | structure_judge, pacing_hook_judge | `judge_rubric_structure` block, chapter text, structure lint report, contract shape fields | — | — | 12k |
+| `pack.structure_judge` | structure_judge | `judge_rubric_structure` block, chapter text, structure lint report, contract shape fields | — | — | 12k |
 | `pack.genre_judge` | genre_judge | `judge_rubric_genre` block, chapter text, terminology compliance report | — | — | 10k |
 | `pack.voice_judge` | voice_judge | `judge_rubric_prose` (register section), chapter utterances with speaker annotations, register digests, register check report | voice exemplars (≤ 3 per participant) | — | 10k |
 | `pack.repetition` | repetition_judge | current L1 (pre-pass) or arc plan; last 10 L1s; current/prior arc L2s | — | — | 8k |
