@@ -1,41 +1,57 @@
 # Glossary
 
-Terms are used with exactly these meanings across all documents and schemas. Korean equivalents are given
-where the Korean term is the natural one in the domain.
+Terms are used with exactly these meanings across all documents and schemas. Korean appears only as
+**terminology of the narrative tradition** (always glossed) — never as the manuscript language.
+
+## Governing distinction
+
+| Term | Definition |
+| --- | --- |
+| **Output language (locale)** | The language and spelling locale of reader-facing manuscript text. **English** (`en`, locale `en-US` or `en-GB` per project) is the required output language. Represented by the **Output-Language Profile**. |
+| **Narrative tradition** | The body of structural, pacing, gratification and genre conventions the manuscript follows. **Korean serialized webnovel** is the required tradition. Represented by the **Narrative-Tradition Profile**. |
+| **Narrative Identity** | The composed, versioned bundle: Output-Language Profile + Narrative-Tradition Profile + Genre Profile(s) + Setting & Cultural Profile + Naming Profile + Dialogue-Register Policy + Terminology & Romanization Policy + User Prose Preferences. Compiled into a **Narrative Identity Block** for LLM calls. |
+| **Narrative Identity Guard** | Gateway middleware that rejects any style-sensitive call lacking a valid Output-Language Contract **and** a valid Narrative-Tradition Contract, and records the versions used. |
+| **Translation-like English** | English that betrays a source-language template: calqued idioms, dropped articles, Korean word order, transliterated honorifics used as English grammar ("Do-yoon-ssi said"), literal renderings of set phrases. A drift class to detect and repair. |
+| **Western-novel drift** | English that follows traditionally published Western novel pacing: slow scene-setting openings, long descriptive paragraphs, literary interiority, chapter ends without forward pull, epic-fantasy exposition. A drift class to detect and repair. |
 
 ## Product & workflow
 
 | Term | Definition |
 | --- | --- |
 | **Workspace** | Tenant boundary. Owns projects, members, budgets, secrets configuration, audit log. All data is isolated per workspace (RLS). |
-| **Project (작품)** | One novel/series. Owns requirements, story bible, plans, chapters, canon, budgets. |
+| **Project** | One novel/series. Owns requirements, story bible, plans, chapters, canon, budgets, narrative identity binding. |
 | **Requirement** | A user-provided constraint or wish. Classified as **hard** (must hold; violations block acceptance) or **soft** (preference; weighted in evaluation). |
 | **Assumption** | A model- or system-generated decision made to fill a gap in requirements. Stored separately; becomes a requirement only when the user explicitly confirms it. |
 | **Story Spec** | The normalized, versioned set of requirements + confirmed assumptions for a project. |
-| **Story Bible (설정집)** | Approved reference for the series: characters, speech profiles, world rules, power system, factions, locations, glossary, style profile binding. Versioned. |
+| **Active Constraint Set** | The compiled, scope-filtered, deduplicated rendering of the hard requirements and locked facts that apply to a specific chapter; the T0 representation of requirements (ADR-0033). |
+| **Story Bible** | Approved reference for the series: characters, dialogue-register profiles, world rules, power system, factions, locations, naming registry, terminology policy, narrative identity binding. Versioned. |
 | **Series Blueprint** | Top-level plan: story promise, reader fantasy, main conflict, protagonist arc, ending, endgame requirements, season list. |
-| **Season / Arc / Chapter / Scene** | Planning hierarchy. Season (시즌) = major narrative movement; Arc (에피소드/장, major or minor) = conflict unit spanning chapters; Chapter (화/회차) = published and acceptance unit; Scene = draft unit. See `docs/03-story-planning/`. |
-| **Volume (권)** | Export grouping over accepted chapters (default 25), not a planning level; boundaries are placed near major-arc climaxes. |
-| **Chapter Contract** | Structured specification a chapter must satisfy to be accepted (why it exists, must/must-not, participants, knowledge & state deltas, hook, style profile, length, acceptance criteria). |
+| **Season / Arc / Chapter / Scene** | Planning hierarchy. Season = major narrative movement; Arc (major or minor) = conflict unit spanning chapters; Chapter (episode) = published and acceptance unit; Scene = draft unit. See `docs/03-story-planning/`. |
+| **Volume** | Export grouping over accepted chapters (default 25), not a planning level; boundaries are placed near major-arc climaxes. |
+| **Chapter Contract** | Structured specification a chapter must satisfy to be accepted (why it exists, must/must-not, participants, knowledge & state deltas, hook, narrative identity version, length target, acceptance criteria). |
 | **Planning Horizon** | Number of chapters ahead planned in detail (default 6); arcs ahead planned at outline level (default 2); seasons planned at summary level (all). |
-| **Job / Workflow / Activity** | Temporal terms. A *Workflow* is a durable orchestration (e.g., `ChapterProductionWorkflow`); an *Activity* is a retriable unit of work (e.g., one LLM call, one DB commit). A *Job* is the user-visible record of a workflow run. |
+| **Job / Workflow / Activity** | Temporal terms. A *Workflow* is a durable orchestration; an *Activity* is a retriable unit of work; a *Job* is the user-visible record of a workflow run. |
 | **Operating mode** | Assisted / Semi-automatic / Autopilot — governs which gates require a human. |
 | **Gate** | A point where a workflow waits for human approval (or auto-approves per mode + thresholds). |
 
-## Korean style
+## Narrative identity components
 
 | Term | Definition |
 | --- | --- |
-| **Style Profile** | Versioned, structured description of how prose should read for a genre + project (rules, constraints, targets, exemplars, forbidden patterns). Composed from a base profile, genre overlay(s), and project overrides. |
-| **Style Block** | The compiled, token-budgeted textual rendering of a Style Profile that is injected into an LLM call. Deterministic function of (profile version, role, budget). |
-| **Style Guard** | Gateway middleware that rejects any style-sensitive call lacking a valid Style Block reference and records the style version used. |
-| **Korean Lint** | Deterministic checks on Korean text (sentence-ending repetition, pronoun density, translation-ese markers, paragraph length, dialogue ratio, speech-level markers, punctuation). |
-| **Style Judge** | Model-based evaluator that scores Korean webnovel-ness and drift, returns evidence spans and repair suggestions. |
-| **Drift** | Measurable deviation from the Style Profile: *translation drift* (번역투), *Western exposition drift*, *voice drift* (character speech habits), *format drift* (screenplay/webtoon script), *register drift* (speech level/honorific errors). |
-| **Speech level (상대 높임법)** | Korean sentence-final politeness system: 하십시오체, 해요체, 해체(반말), 하게체, 하오체, 해라체. Tracked per character-pair and context. |
-| **Speech Profile** | Per-character description of speech: default speech level by addressee, honorific habits, address terms, verbal tics, sentence-length tendencies, forbidden expressions. |
-| **Address term (호칭)** | How A refers to / calls B (e.g., 형, 선배, 대리님, 각하, 이름+야). Tracked per directed pair with validity periods. |
-| **Exemplar** | A short approved passage used to anchor style. Sources allowed: project's own accepted chapters, user-owned writing, licensed text, studio-authored synthetic exemplars. Never commercial works. |
+| **Output-Language Profile** | Language code, spelling locale, punctuation conventions (quotes, dashes, ellipses), number/measurement style, register defaults for narration, and the **Output-Language Contract** text (compose directly in natural English; no translation-like syntax). |
+| **Narrative-Tradition Profile** | Structural rules of Korean serialized web fiction expressed language-neutrally: hook timing, local payoff, cadence targets (progression, 사이다 beats), exposition control, dialogue-forward scenes, paragraph rhythm for mobile, ending pull, serial devices (status windows, community interludes, hindsight monologue), and the **Narrative-Tradition Contract** text. |
+| **Genre Profile (overlay)** | Conventions of a Korean webnovel genre (hunter/gate, regression, academy, murim, romance fantasy, villainess…): reader fantasy, devices, vocabulary registers (in English, with terminology policy), cadence overrides, taboos, rubric notes. |
+| **Setting & Cultural Profile** | Where and when the story is set and how culture is rendered: modern Seoul / secondary fantasy world / murim-style historical East Asia; social institutions; measurement and currency; cultural references; how much Korean cultural texture is preserved vs localized. |
+| **Naming Profile** | How characters, places and organizations are named and rendered in English: Korean-style names (with romanization system and name order), Western-style names (typical for romance fantasy), invented names; per-entity `display_name` (English manuscript), `native_script_name` (optional, e.g., 강도윤), `romanization`. |
+| **Dialogue-Register Policy** | Abstract canonical description of how A speaks to B (formality, deference, familiarity, intimacy, directness, contraction usage, address terms, titles, public vs private register, relationship-driven changes) and the rules for rendering it in **natural English** — replaces direct Korean speech-level enforcement. |
+| **Terminology & Romanization Policy** | Per-term decision for Korean-origin concepts: `translate` (use an English term), `romanize` (e.g., *sunbae*), `gloss_first_use` (romanize + explain once), `preserve_script` (keep Korean script — rare, e.g., in-world signage), plus the romanization system (Revised Romanization default) and a fixed English spelling registry. |
+| **User Prose Preferences** | Project-level numeric and textual preferences (shorter sentences, less inner monologue, US spelling…) layered last. |
+| **Narrative Identity Block** | The compiled, token-budgeted, deterministic rendering of the Narrative Identity for a role; embedded in every style-sensitive call and hashed. |
+| **English Prose Lint** | Deterministic checks on English text: grammar/fluency signals, repetitive sentence openings, dialogue-tag overuse, adverb-tag rate, paragraph length, sentence-length rhythm, translation-like syntax markers, spelling-locale consistency, unapproved untranslated terminology, format drift. |
+| **Structure Lint** | Deterministic checks of Korean-webnovel form applied to any language: hook position, scene count, local payoff markers, ending type, exposition run length, dialogue ratio band, progression cadence over recent chapters, status-window grammar. |
+| **Prose Judge / Structure Judge / Genre Judge / Voice Judge** | Model-based evaluators for, respectively, English prose quality, Korean-webnovel structural adherence, genre-profile adherence, and character voice consistency — always evaluated as separate dimensions. |
+| **Drift** | Measurable deviation from the Narrative Identity: *translation-like English*, *Western-novel drift*, *literary drift*, *format drift* (screenplay/script/outline), *register drift* (dialogue register vs policy), *voice drift*, *genre drift*, *serial drift* (no hook/payoff/pull). |
+| **Exemplar** | A short approved English passage used to anchor style. Sources allowed: project's own accepted chapters, user-owned writing, licensed text, studio-authored synthetic exemplars. Never commercial works. |
 
 ## Memory & canon
 
@@ -44,56 +60,51 @@ where the Korean term is the natural one in the domain.
 | **Canon** | The set of facts, events, states and knowledge established by **accepted** chapters (plus user-locked bible facts). Versioned. |
 | **Canon Version** | Monotonic integer per project, incremented by exactly one atomic canon commit. Every job records the canon version it read. |
 | **Canon Commit** | Single atomic transaction that applies an approved **Canon Delta** and bumps the canon version. |
-| **Canon Delta** | Proposed set of changes (facts, events, state changes, knowledge changes, relationship changes, promises, payoffs) extracted from an accepted chapter, each with evidence. |
-| **Fact** | A typed assertion about an entity (attribute or relation) with **validity period** (story time) and **assertion period** (system time), evidence, confidence, and source chapter. Bitemporal. |
-| **Evidence Span** | Exact character offsets into an immutable manuscript version, plus the quoted text and a content hash. Every important fact/event/knowledge change links to ≥1. |
+| **Canon Delta** | Proposed set of changes extracted from an accepted chapter, each with evidence. |
+| **Fact** | A typed assertion about an entity with **validity period** (story time) and **assertion period** (system time), evidence, confidence, source chapter, timeline. Bitemporal. |
+| **Evidence Span** | Exact **Unicode code-point** offsets (ADR-0030) into an immutable NFC-normalized manuscript version, plus the quoted text and a content hash. |
 | **Canonical Event** | Something that happened in the story, with story-time position, participants, location, and reality frame. |
-| **Reality Frame** | Classifier of narrative reality: `canonical`, `flashback` (canonical but past), `dream`, `hallucination`, `lie` (asserted by a character, not true), `hypothetical`, `prediction`, `plan`, `prior_loop` (regression prior timeline), `alternate_timeline`, `non_canonical_draft`. Only `canonical` and `flashback` update objective world state. |
-| **Timeline** | A branch of story time. Default `main`; regression/alternate stories add timelines with a divergence point. |
+| **Reality Frame** | `canonical`, `flashback`, `dream`, `hallucination`, `lie`, `hypothetical`, `prediction`, `plan`, `prior_loop`, `alternate_timeline`, `source_story`, `non_canonical_draft`. Only reality-bearing frames update objective state. |
+| **Timeline** | A branch of story time. Default `main`; regression/alternate stories add timelines with a divergence point. **Proposition truth is per timeline** (ADR-0031). |
 | **Story Time** | In-world time, represented as an ordered **story clock** (chapter-relative ordinal + optional in-world date). |
-| **Knowledge Ledger** | Records, per **proposition** and per **knower** (character, narrator, reader), an epistemic stance: `knows`, `suspects`, `believes_false`, `pretends`, `unaware`, `forgot`, with source (how/when learned) and validity. |
-| **Proposition** | A canonical statement that can be known/believed (e.g., "주인공은 회귀자다"). Linked to facts/events. |
-| **Secret** | A proposition with restricted knowers and an owner; violations (a non-knower acting on it) are *knowledge leaks*. |
-| **Promise** | A setup the story owes a payoff for (foreshadowing, mystery, Chekhov's gun, relationship beat). Tracked in the **Promise Ledger** with due window and status. |
-| **Payoff** | Resolution of a promise, with evidence. |
+| **Knowledge Ledger** | Records, per **proposition** and per **knower** (character, narrator, reader), an epistemic stance: `knows`, `suspects`, `believes_false`, `pretends`, `unaware`, `forgot`, `doubts`, with source and validity. |
+| **Proposition** | A canonical statement that can be known/believed; truth value recorded per timeline. |
+| **Secret** | A proposition with restricted knowers and an owner; violations are *knowledge leaks*. |
+| **Promise** | A setup the story owes a payoff for. Tracked in the **Promise Ledger** with due window and status. |
 | **Summary Tier** | Hierarchical summaries: chapter (L1), arc (L2), season (L3), series (L4). Regenerated from accepted text only. |
-| **Context Pack** | The versioned, deterministic bundle of context for one LLM call: tiered, budgeted, with a manifest listing every included item and its canon version. |
-| **Tier** | Protection level within a context pack: T0 mandatory (never trimmed), T1 critical (trim only by compression), T2 relevant (rankable/trimmable), T3 optional. |
-| **Retcon** | A user-authorized change to accepted canon. Produces a new canon version, marks dependent artifacts stale, may trigger manuscript patches. |
-| **Stale** | A job/plan/chapter whose recorded canon version is superseded by a commit that touches something it depends on. |
-| **Dependency Edge** | Recorded link "artifact X used canon item Y at canon version V" enabling impact analysis. |
+| **Context Pack** | The versioned, deterministic bundle of context for one LLM call: tiered, budgeted, with a manifest. |
+| **Tier** | T0 mandatory (never trimmed), T1 critical (compress only), T2 relevant (rankable/trimmable), T3 optional. |
+| **Dependency Edge** | Recorded link "artifact X used canon item Y at canon version V" with a **materiality class**: `material` (fact stated or relied upon in the artifact), `contextual` (retrieved but not evidently used). Only material edges mark dependents stale by default (ADR-0032). |
+| **Retcon** | A user-authorized change to accepted canon. Produces a new canon version, marks materially dependent artifacts stale, may trigger manuscript patches. |
+| **Stale** | A job/plan/chapter whose recorded canon version is superseded by a commit that touches a material dependency. |
 
 ## Generation & quality
 
 | Term | Definition |
 | --- | --- |
-| **Role** | A named LLM function (e.g., `scene_writer`, `continuity_checker`) with its own prompt family, model routing, schema, budget, style sensitivity. |
-| **Prompt Version** | Immutable, content-hashed prompt template + schema + config, registered in the Prompt Registry. Every call records one. |
-| **Candidate** | One of N alternative outputs for the same task (concept, plan, scene, chapter). Lives outside canon; at most one becomes the accepted artifact. |
-| **Scorecard** | Structured evaluation result: rubric scores, issue list (with evidence, severity, confidence, repair suggestion), pass/fail per acceptance criterion. |
-| **Issue** | A single finding: `{kind, severity: blocking|major|minor|note, confidence, claim, chapter_span, conflicting_canon, canon_evidence, repair}`. |
+| **Role** | A named LLM function with its own prompt family, model routing, schema, budget, style sensitivity. |
+| **Prompt Version** | Immutable, content-hashed prompt template + schema + config, registered in the Prompt Registry. |
+| **Candidate** | One of N alternative outputs for the same task. Lives outside canon; at most one becomes the accepted artifact. |
+| **Scorecard** | Structured evaluation result with separate sections for English prose quality, structural adherence, genre adherence, voice, continuity, knowledge, promises, repetition, length. |
+| **Issue** | A single finding: kind, severity, confidence, claim, chapter span, conflicting canon, canon evidence, recommended repair. |
 | **Patch** | A targeted edit (sentence / paragraph / dialogue line / scene) applied to a manuscript version, producing a new version; regression-tested. |
-| **Manuscript Version** | Immutable text snapshot of a chapter (draft, revision, approved). Evidence spans refer to a specific version. |
-| **Acceptance** | The transition of a chapter to `accepted` after gates pass; the only trigger for canon extraction. |
-| **Quality Tier** | Budget/quality preset (Economy / Standard / Premium) controlling candidate counts, judge depth, model routing. |
-| **Hard Limit** | Spend ceiling that halts workflows when reached; cannot be exceeded by any automatic behavior. |
+| **Manuscript Version** | Immutable text snapshot of a chapter (draft, revision, approved, accepted). |
+| **Length Model** | Language-neutral measurement of a text: words (primary author-facing unit for English), Unicode code points, paragraphs, sentences, estimated tokens, estimated reading time. Targets and tolerances are in the author-facing unit (ADR-0034). |
+| **Quality Tier** | Budget/quality preset (Economy / Standard / Premium). |
+| **Hard Limit** | Spend ceiling that halts workflows when reached. |
 
-## Korean webnovel domain (used in style docs)
+## Korean webnovel tradition terminology (used in narrative-tradition and genre profiles; always glossed)
 
-| Term | Meaning |
+| Term | Meaning in profiles |
 | --- | --- |
-| 회차 / 화 | Chapter/episode of a serialized webnovel, typically 5,000–6,000 Korean characters including spaces on major platforms. |
-| 연재 | Serialization. |
-| 사이다 / 고구마 | Reader-slang for cathartic payoff ("cider") vs frustrating suppression ("sweet potato"). Pacing levers. |
-| 먼치킨 | Overpowered protagonist. |
-| 회귀 / 빙의 / 환생 | Regression / possession / reincarnation — the three core "second chance" premises. |
-| 헌터 / 게이트 / 각성자 | Hunter / gate / awakened person — modern-fantasy dungeon-hunter setting vocabulary. |
-| 상태창 | Status window — system-fiction UI text embedded in prose. |
-| 무협 / 무림 | Martial-arts fiction / the martial world. |
-| 로판 | Romance fantasy (로맨스 판타지). |
-| 악녀 | Villainess. |
-| 현판 | Modern fantasy (현대 판타지). |
-| 아카데미 | Academy setting. |
-| 번역투 | Translation-ese: Korean that reads like translated text (pronoun overuse, passive constructions, unnatural word order, calque idioms). |
-| 종결어미 | Sentence-final ending; repetition of the same ending (e.g., ~했다 ×5) is a common quality defect. |
-| 호칭 / 존칭 / 반말 / 존댓말 | Address terms / honorific titles / informal speech / polite speech. |
+| 회차 / 화 (episode) | One serialized installment = one chapter. Platform norms in Korea run roughly 5,000–6,000 Korean characters; in English output the equivalent is a **words** target calibrated per project (ADR-0034), not a converted number. |
+| 연재 (serialization) | Ongoing episodic release; the product's structural premise. |
+| 사이다 / 고구마 ("cider" / "sweet potato") | Cathartic payoff vs frustrating suppression. Pacing levers: cadence targets in the tradition profile. |
+| 먼치킨 (munchkin) | Overpowered protagonist trope. |
+| 회귀 / 빙의 / 환생 (regression / possession / reincarnation) | The three core second-chance premises; each has a genre profile. |
+| 헌터 / 게이트 / 각성자 (hunter / gate / awakened) | Modern-fantasy dungeon-hunter setting vocabulary; English rendering governed by the terminology policy (default: translate — *hunter*, *gate*, *awakened*). |
+| 상태창 (status window) | System-fiction UI text embedded in prose; rendered as English status blocks with fixed grammar. |
+| 무협 / 무림 (murim) | Martial-arts fiction / the martial world; terminology policy typically `romanize` for *murim*, *gwangho*, technique names per project. |
+| 로판 (romance fantasy) · 악녀 (villainess) · 현판 (modern fantasy) · 아카데미 (academy) | Genre profile names. |
+| 번역투 (translation-ese) | Source concept for the *translation-like English* drift class — English that reads as if translated. |
+| 호칭 (address terms) · 존대/반말 (formal/informal speech) | Source concepts for the **Dialogue-Register Policy**: preserved as abstract formality/familiarity/deference data and rendered in natural English (titles, address terms, contractions, directness), never as Korean grammar. |

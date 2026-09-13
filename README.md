@@ -1,14 +1,21 @@
 # Yeonjae Studio (연재 스튜디오) — Planning Package
 
-**Status:** Planning complete, implementation not started.
+**Status:** Planning complete (revised), implementation not started.
 **Purpose of this repository state:** a complete, internally consistent, production-level plan for an AI
-Korean-webnovel production studio, written so that an engineering agent can implement it without
+serialized-fiction production studio, written so that an engineering agent can implement it without
 redesigning the system.
 
+> **Governing principle: English is the manuscript language. Korean webnovel is the narrative tradition.**
+> The studio composes reader-facing prose **directly in natural English** while preserving the narrative
+> DNA of Korean serialized web fiction — episode hooks, local chapter payoff, progression cadence,
+> controlled exposition, dialogue-forward scenes, mobile-readable paragraphs, strong forward pull, and the
+> genre conventions of Korean webnovel categories. It is **not** a translation product and never
+> generates Korean prose as an intermediate step.
+
 Yeonjae Studio turns a short premise plus requirements (genre, characters, tropes, forbidden developments,
-tone, chapter count, target length in Korean characters, mandatory scenes, content restrictions, running
-directions) into a complete serialized Korean webnovel: story specification, story bible, characters,
-world, progression rules, series/season/arc plans, chapter contracts, scene plans, Korean prose, editing,
+tone, chapter count, target words per chapter, mandatory scenes, content restrictions, running
+directions) into a complete serialized novel: story specification, story bible, characters, world,
+progression rules, series/season/arc plans, chapter contracts, scene plans, English prose, editing,
 evaluation, revision, continuity management, canon memory, and manuscript export.
 
 It is designed as a **stateful, resumable, auditable novel-production studio** — many purposeful LLM calls
@@ -16,25 +23,29 @@ orchestrated by durable workflows over a canonical story database — not one gi
 
 The two problems this plan treats as first-class architecture (not as prompt wording):
 
-1. **Korean webnovel style enforcement** — every style-sensitive LLM call is guaranteed to carry a compiled,
-   versioned Korean webnovel style block (genre-aware), with deterministic + model-based drift detection and
-   passage-level repair. See `docs/02-korean-style/`.
+1. **Narrative identity enforcement** — every style-sensitive LLM call carries a compiled, versioned
+   **Narrative Identity Block** made of an *English output-language contract* and a *Korean-webnovel
+   narrative-tradition contract* (plus genre, setting, naming, dialogue-register, terminology and
+   preference profiles). The gateway fails closed without both. English fluency and Korean-webnovel
+   structural adherence are detected and repaired as **separate** quality dimensions.
+   See `docs/02-narrative-identity/`.
 2. **Long-range context and canon memory** — the application, not the model, is the authoritative memory.
    Temporal facts with evidence, per-character knowledge, planned-vs-happened separation, quarantined
-   rejected drafts, atomic canon commits, and deterministic context-pack assembly. See `docs/04-memory-canon/`.
+   rejected drafts, atomic canon commits, and deterministic context-pack assembly.
+   See `docs/04-memory-canon/`.
 
 ## How to read this package
 
 | If you want to… | Start here |
 | --- | --- |
 | Understand the product in 10 minutes | `docs/00-overview/01-executive-product-definition.md` |
-| Know what is in the MVP vs later | `docs/00-overview/03-scope-and-release-tiers.md` |
-| Check requirements | `docs/01-requirements/` |
-| Understand Korean style enforcement | `docs/02-korean-style/01-korean-webnovel-style-architecture.md` |
+| Know what is in the MVP vertical slice vs later | `docs/00-overview/03-scope-and-release-tiers.md` |
+| Check requirements (incl. the governing OUTPUT-EN / STYLE-KWN requirements) | `docs/01-requirements/` |
+| Understand narrative identity enforcement | `docs/02-narrative-identity/01-narrative-identity-architecture.md` |
 | Understand memory, canon, knowledge | `docs/04-memory-canon/01-context-and-memory-architecture.md` |
 | Understand the generation pipeline | `docs/05-generation/01-generation-pipeline.md` |
 | Build the system | `docs/06-system/` + `schemas/` + `docs/08-delivery/05-implementation-handoff-guide.md` |
-| See why decisions were made | `docs/adr/` |
+| See why decisions were made | `docs/adr/` (ADR-0026 is the governing decision) |
 | Verify the plan answers the hard questions | `docs/08-delivery/07-plan-audit.md` |
 | Start implementing | `AGENTS.md`, then `docs/08-delivery/01-implementation-roadmap.md` and `02-backlog.md` |
 
@@ -46,7 +57,8 @@ AGENTS.md                      instructions for engineering agents working in th
 docs/
   00-overview/                 product definition, glossary, scope & tiers
   01-requirements/             functional / nonfunctional requirements, user workflows, traceability
-  02-korean-style/             Korean webnovel style architecture, profiles, genre catalog, drift detection, lint rules
+  02-narrative-identity/       output-language + narrative-tradition architecture, profiles, genre catalog,
+                               English prose & structure lint, drift detection, dialogue register, terminology
   03-story-planning/           hierarchical planning, promise ledger, chapter contracts
   04-memory-canon/             context/memory, canon & temporal state, character knowledge, context packs, retrieval
   05-generation/               generation pipeline, evaluation & revision, prompt architecture, role catalog
@@ -55,16 +67,19 @@ docs/
   08-delivery/                 roadmap, backlog, risks, open questions, handoff guide, plan audit
   adr/                         architecture decision records
 schemas/                       JSON Schema (2020-12) for the core machine-readable objects
-examples/                      example instances of the schemas (fixture story data, style profiles)
-tools/                         planning-package validation script (schemas + examples)
+examples/                      example instances of the schemas (English fixture story data, narrative profiles)
+tools/                         planning-package validation script (schemas, examples, contradiction scan)
 ```
 
-## Naming
+## Naming and language conventions
 
 - **Yeonjae (연재)** = "serialization" — the product is a serialized-fiction production studio.
-- Documents are written in English for the implementing team; Korean is used where the subject *is*
-  Korean (style rules, exemplars, speech levels, fixture prose). Domain terms are defined once in
-  `docs/00-overview/02-glossary.md` and used consistently everywhere else.
+- Documents are written in English. Korean appears only as **terminology** (names of the tradition's craft
+  concepts such as 사이다, 회귀, 상태창, always glossed in English), as **source-culture notes**, or inside
+  the **terminology and naming policies** that decide how such terms are rendered in English manuscripts.
+- Domain terms are defined once in `docs/00-overview/02-glossary.md` and used consistently everywhere else.
+- Language-bearing text fields in schemas are language-neutral (`text`, `summary`, `statement`) with
+  explicit `language` metadata where the language can vary; **manuscript text is English (`en`)**.
 
 ## Non-goals of this repository state
 

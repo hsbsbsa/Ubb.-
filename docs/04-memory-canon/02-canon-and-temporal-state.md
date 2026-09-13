@@ -4,21 +4,24 @@
 
 ### 1.1 Manuscript versions (immutable)
 `manuscript_versions { id, project_id, chapter_id, version_no, kind: draft|revision|candidate|approved|
-accepted|retconned, text (NFC), char_count, content_hash, parent_version_id, created_by_job_id, status }`.
+accepted|retconned, language: 'en', text (NFC), length_json (words, code_points, paragraphs, sentences,
+est_tokens, est_reading_seconds; ADR-0034), content_hash, parent_version_id, created_by_job_id, status }`.
 Text is never edited in place; a patch creates a new version. **Exactly one** version per chapter may be
 `accepted` at a time (partial unique index). Evidence spans reference `(manuscript_version_id, start, end,
-quote, quote_hash)`; on write the DB trigger verifies `substr(text, start, end-start) = quote`.
+quote, quote_hash)` where `start`/`end` are **Unicode code-point offsets** into the NFC text (ADR-0030); on
+write the DB trigger verifies `substring(text from start+1 for end-start) = quote` (PostgreSQL
+`substring` on `text` is code-point based).
 
 ### 1.2 Entities
 `entities { id, project_id, type: character|location|organization|item|ability|term|event_anchor|
-timeline, canonical_name_ko, aliases[], status: active|retired|merged_into, created_from (bible|extraction|
-user) }`. Entity **versions** carry editable descriptive fields; identity is the ID. Merging entities
+timeline, display_name (English manuscript name), native_script_name?, romanization?, short_forms[],
+aliases[], status: active|retired|merged_into, created_from (bible|extraction|user) }`. Entity **versions** carry editable descriptive fields; identity is the ID. Merging entities
 (duplicate detection) rewrites references in a canon commit.
 
 ### 1.3 Facts (bitemporal)
 ```
 facts {
-  id, project_id, timeline_id, entity_id, attribute, value_json, value_text_ko,
+  id, project_id, timeline_id, entity_id, attribute, value_json, value_text (English rendering),
   valid_from  StoryClock, valid_to  StoryClock | null,      -- story time
   asserted_at_version int, retracted_at_version int | null, -- canon version (system time)
   source: bible|extraction|user_correction|retcon, confidence, locked bool,
@@ -29,7 +32,8 @@ facts {
 Attribute families (extensible enum): `identity.*` (name, age, gender, appearance), `status.location`,
 `status.injury`, `status.condition`, `status.alive`, `power.rank`, `power.level`, `power.stat.*`,
 `power.ability.*`, `inventory.item` (value = item entity + qty), `resource.*` (money, mana), `affiliation.*`,
-`role.*`, `world.rule.*`, `relation.*` (mirrored in relationship_states), `speech.*` (speech profile facts).
+`role.*`, `world.rule.*`, `relation.*` (mirrored in relationship_states), `register.*` (dialogue-register facts:
+formality/address terms/titles per pair).
 
 **Validity semantics**: `valid_to = null` = still true; a new fact for the same `(entity, attribute[, key])`
 closes the prior one at `valid_from` of the new (story time) **and** records `superseded_by`. Facts are
@@ -42,7 +46,7 @@ Elapsed-time facts (`world.time.elapsed_since_prev`) are extracted where prose s
 precision is allowed and reported as a continuity risk.
 
 ### 1.5 Events
-`events { id, project_id, timeline_id, story_clock_start, story_clock_end, frame, summary_ko, type,
+`events { id, project_id, timeline_id, story_clock_start, story_clock_end, frame, summary, type,
 location_id, participants[] (entity, role), asserted_at_version, retracted_at_version, evidence_span_ids[],
 source_chapter_id, narrated_in_chapter_ids[] }`.
 
@@ -50,16 +54,16 @@ source_chapter_id, narrated_in_chapter_ids[] }`.
 | Frame | Mutates objective state? | Who may know it | Typical extraction cue |
 | --- | --- | --- | --- |
 | `canonical` | yes | anyone present / informed | ordinary narration |
-| `flashback` | yes (at its own past story time) | as canonical at that time | 회상, 과거 시점 |
-| `dream` | no | dreamer (as dream) | 꿈, 깨어났다 |
-| `hallucination` | no | experiencer | 환각/환청 |
+| `flashback` | yes (at its own past story time) | as canonical at that time | recollection, past-tense framing ("Ten years ago…") |
+| `dream` | no | dreamer (as dream) | dream framing, waking cue |
+| `hallucination` | no | experiencer | hallucination/auditory cues |
 | `lie` | no; creates knowledge stance `believes_false` for deceived hearers if they believe it | speaker knows truth; hearers per outcome | dialogue asserting a non-fact |
-| `hypothetical` | no | thinker | 만약 …라면 |
-| `prediction` | no | thinker | 예측/예감 |
+| `hypothetical` | no | thinker | "if … then", imagined scenes |
+| `prediction` | no | thinker | forecasts, premonitions |
 | `plan` | no | planner | (from plan tables, not extraction) |
-| `prior_loop` | yes on the prior timeline; no on main | regressor only (plus anyone told) | 회귀 전/전생 |
+| `prior_loop` | yes on the prior timeline; no on main | regressor only (plus anyone told) | "last time", "in my first life" |
 | `alternate_timeline` | yes on that timeline | per timeline | branch scenes |
-| `source_story` | as prior_loop for possession/villainess "원작" | possessor | 원작에서는 |
+| `source_story` | as prior_loop for possession/villainess "original story" knowledge | possessor | "in the original story…" |
 | `non_canonical_draft` | never stored in canon | — | quarantine only |
 
 Rule enforced by verifier: **only `canonical`, `flashback`, `prior_loop` (on its timeline), and
@@ -83,8 +87,8 @@ is updated in the same transaction with an optimistic check (`WHERE canon_versio
 
 ## 3. Planned ≠ happened
 
-- Plans live in `plan_*` tables; the assembler renders them under an explicit heading `[예정 — 아직 일어나지
-  않음]` and never in the "현재 상태/지금까지 일어난 일" sections.
+- Plans live in `plan_*` tables; the assembler renders them under an explicit heading `[PLANNED — has not
+  happened yet]` and never in the "current state / what has happened so far" sections.
 - Extraction is forbidden from reading plans (its context has none) — it only sees the accepted text,
   glossary, and entity registry. So it cannot "confirm" a planned event that the text did not realize.
 - After commit, `PlanningHorizonWorkflow` compares the delta against the contract's planned deltas and
@@ -108,10 +112,10 @@ recorded and a retry available; canon is untouched.
 
 ### 5.1 Extraction (two independent passes)
 Inputs: accepted text (with paragraph IDs), glossary + entity registry (IDs, canonical names, aliases),
-chapter contract **planned deltas as hypotheses labelled 계획 — 검증 필요** (allowed here because the extractor
+chapter contract **planned deltas as hypotheses labelled PLANNED — verify** (allowed here because the extractor
 must return `realized/unrealized` per hypothesis with evidence — but the extractor's own output is the
 source of truth, not the plan), knowledge guards, story clock of the chapter, deterministic pre-pass output
-(NER mentions with offsets, 상태창 numbers, utterance speaker/level annotations).
+(registry-name mentions with offsets, status-window numbers, utterance speaker/register annotations).
 
 Output (`canon-delta.schema.json`): candidate items each with `type`, payload, `frame`, `story_clock`,
 `evidence[] {paragraph_id, quote}`, `confidence`. Extractor A and B use different prompts (A: entity-first
@@ -171,15 +175,21 @@ status `accepted`. Any failure → rollback → chapter remains `approved`, job 
 3. Search documents/embeddings are only built from accepted versions and canon items; a nightly job
    asserts no `search_documents` row references a non-accepted version.
 4. Exemplar bank rows require `manuscript_version.kind='accepted'` (FK + check).
-5. Tests: fixture includes a rejected draft containing a distinctive false fact ("주인공의 왼팔이 절단됐다");
+5. Tests: fixture includes a rejected draft containing a distinctive false fact ("Do-yoon's left arm was
+   severed");
    the suite asserts that fact never appears in facts, summaries, packs, or exemplars.
 
 ## 8. Dependencies, staleness, propagation
 
 - `dependency_edges { dependent_kind: chapter|plan|summary|pack, dependent_id, canon_item_kind, canon_item_id,
-  canon_version_read }` written at commit (for chapters) and at plan/pack creation (for plans/packs).
-- On any canon commit, the commit's touched item IDs are joined to `dependency_edges`; dependents with
-  `canon_version_read < new_version` get `stale=true` with `stale_reasons` (item + change kind).
+  canon_version_read, materiality: material|contextual, basis: contract_anchor|t0|t1_state|claim_reference|
+  retrieved_t2 }` written at commit (for chapters) and at plan/pack creation (for plans/packs). **Material**
+  edges come from T0/T1 items, contract anchors, and T2 items the writer's `claims[]`/extractor evidence show
+  were relied upon; everything else retrieved into T2 is **contextual** (ADR-0032).
+- On any canon commit, the commit's touched item IDs are joined to `dependency_edges`; dependents with a
+  **material** edge and `canon_version_read < new_version` get `stale=true` with `stale_reasons` (item +
+  change kind); dependents with only contextual edges get a `review_suggested` mark (not stale). Users can
+  promote a contextual edge to material from the inspector.
 - **Stale job detection**: a running job re-checks before commit that no intervening commit touched its
   dependency set (`SELECT ... FROM canon_commits WHERE version > read_version AND items && deps`); if so,
   it re-validates the contract (cheap) and either continues (no conflict) or restarts from planning.
@@ -192,7 +202,7 @@ status `accepted`. Any failure → rollback → chapter remains `approved`, job 
 ## 9. Retcons, corrections, rollback
 
 - **User correction**: edit canon item → commit `source=user_correction` (closing/replacing the item;
-  evidence optional but a `justification_ko` required) → dependency propagation → optional manuscript patch
+  evidence optional but a `justification` required) → dependency propagation → optional manuscript patch
   task if the text now contradicts canon (detected by running the continuity checker on the source chapter
   span).
 - **Retcon**: new manuscript version of an accepted chapter (patched or rewritten) → `approved` → extraction
@@ -215,4 +225,4 @@ status `accepted`. Any failure → rollback → chapter remains `approved`, job 
 | Predictions/prophecy | frame `prediction` knowledge; promise opened |
 | Regression loop restart | new timeline `prior_loop_n` created from `main` at divergence; `main` reset semantics documented in ADR-0023 (rare; default: one prior loop) |
 | Alternate POV retelling of a known event | event `narrated_in_chapter_ids` appended; new knowledge for the new POV character extracted |
-| Hidden identity | proposition "X는 Y다" with secret knower set; extraction of any `knows` for others requires a channel event |
+| Hidden identity | proposition "X is Y" with secret knower set; extraction of any `knows` for others requires a channel event |

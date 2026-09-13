@@ -4,7 +4,7 @@
 
 | ID | Requirement |
 | --- | --- |
-| NFR-A.1 | Every LLM call persists: workspace, project, job/workflow id & parent, role, model id + provider + config (temperature, max tokens, seed if any), prompt version hash, context-pack id + manifest hash, canon version read, style profile version, input (full, encrypted at rest), output (full), token usage (input/output/cached), cost, latency, attempt number, error/retry history, schema validation result, evaluation results referencing it, acceptance status of the artifact it produced. |
+| NFR-A.1 | Every LLM call persists: workspace, project, job/workflow id & parent, role, model id + provider + config (temperature, max tokens, seed if any), prompt version hash, context-pack id + manifest hash, canon version read, **narrative identity version + block hash (incl. output-language and narrative-tradition profile versions)**, input (full, encrypted at rest), output (full), token usage (input/output/cached), cost, latency, attempt number, error/retry history, schema validation result, output-language check result, evaluation results referencing it, acceptance status of the artifact it produced. |
 | NFR-A.2 | Every canon item (fact/event/knowledge/relationship/promise) persists its source manuscript version + evidence spans and the canon commit that introduced/retracted it. |
 | NFR-A.3 | Every accepted chapter can be reconstructed as a pipeline trace: contract → pack manifests → drafts → scorecards → patches → acceptance → delta → commit. |
 | NFR-A.4 | Audit records are append-only; deletions happen only through retention policies with tombstones. |
@@ -26,9 +26,9 @@
 
 | ID | Requirement |
 | --- | --- |
-| NFR-C.1 | Supports projects with ≥ 3,000 chapters (~18M Korean characters) without degrading context assembly beyond p95 3 s (excluding LLM latency). |
+| NFR-C.1 | Supports projects with ≥ 3,000 chapters (~7.5M words / ~40M code points) without degrading context assembly beyond p95 3 s (excluding LLM latency). |
 | NFR-C.2 | Context pack assembly for a chapter: p95 ≤ 3 s with warm caches; retrieval queries indexed (entity/time B-trees, GIN for lexical, HNSW for vectors). |
-| NFR-C.3 | Chapter production wall time (Standard tier, ~5,500 chars): target ≤ 8 min median, dominated by LLM latency; scene drafting parallelizable where scenes are independent (rare; default sequential). |
+| NFR-C.3 | Chapter production wall time (Standard tier, ~2,500-word chapter): target ≤ 8 min median, dominated by LLM latency; scene drafting parallelizable where scenes are independent (rare; default sequential). |
 | NFR-C.4 | UI reads (inspectors, lists) p95 ≤ 500 ms for projects with 3,000 chapters. |
 | NFR-C.5 | Workspace-level concurrency limit for LLM calls (default 8) with fair scheduling across projects. |
 
@@ -38,8 +38,8 @@
 | --- | --- |
 | NFR-D.1 | Hard limits at project/chapter/workflow are enforced pre-call; a call that would exceed remaining budget is not made. |
 | NFR-D.2 | Cost estimates before batch runs within ±30% of actual for Standard tier after calibration on ≥ 20 chapters. |
-| NFR-D.3 | Context deduplication and provider prompt caching reduce repeated T0/T1 token spend; style blocks and bible excerpts are cache-stable prefixes. |
-| NFR-D.4 | Reference targets for a 5,500-char chapter: Economy ≈ 11–13 LLM calls; Standard ≈ 18–23 including one revision round and two-extractor commit; Premium ≈ 35–45 with N=2 candidates. See `docs/05-generation/01-generation-pipeline.md` §4.1 and `docs/06-system/05-cost-and-observability-plan.md` §3. |
+| NFR-D.3 | Context deduplication and provider prompt caching reduce repeated T0/T1 token spend; the Narrative Identity Block, Active Constraint Set and bible excerpts are cache-stable prefixes. |
+| NFR-D.4 | Reference targets for a ~2,500-word chapter: Economy ≈ 11–13 LLM calls; Standard ≈ 18–23 including one revision round and two-extractor commit; Premium ≈ 35–45 with N=2 candidates. See `docs/05-generation/01-generation-pipeline.md` §4.1 and `docs/06-system/05-cost-and-observability-plan.md` §3. |
 
 ## NFR-E Security & privacy
 
@@ -56,25 +56,25 @@
 
 | ID | Requirement |
 | --- | --- |
-| NFR-F.1 | All text NFC-normalized on ingestion; Korean character count defined as Unicode code points after NFC including spaces, excluding markup (ADR-0024). |
-| NFR-F.2 | Evidence spans validated on write: quoted text must equal `text[start:end]` of the referenced manuscript version. |
+| NFR-F.1 | All text NFC-normalized on ingestion. **Text addressing** uses Unicode code-point indices into the NFC text, identically in TypeScript, Python, PostgreSQL and the browser (ADR-0030). **Length** is measured with the language-neutral length model — words (primary for English), code points, paragraphs, sentences, estimated tokens, reading time (ADR-0034). |
+| NFR-F.2 | Evidence spans validated on write: quoted text must equal the code-point slice `text[start:end]` of the referenced NFC manuscript version (`substring(text from start+1 for end-start)` in PostgreSQL, which is code-point based for UTF-8; `Array.from(text).slice(start,end)` in JS; Python `str` slicing). |
 | NFR-F.3 | Facts/events referencing entities must reference existing entity IDs; alias resolution is explicit and logged. |
 | NFR-F.4 | Schema-validated structured outputs (JSON Schema 2020-12) for every non-prose call. |
-| NFR-F.5 | Migrations forward-only with tested down-paths for the last 3 versions; migration tests run against a fixture DB with a 200-chapter project. |
+| NFR-F.5 | Migrations forward-only with tested down-paths for the last 3 versions; migration tests run against a fixture DB with a 200-chapter project. Embedding columns are versioned per model (`embedding_model_id`, dimension) so a provider/model change is a re-embed job, not a schema break (ADR-0035). |
 
 ## NFR-G Observability
 
 | ID | Requirement |
 | --- | --- |
 | NFR-G.1 | OpenTelemetry traces: workflow → activity → gateway call → provider request; span attributes include role, prompt version, model, canon version, pack id, tokens, cost. |
-| NFR-G.2 | Metrics: calls/min, tokens, cost by role/model/project, retry rates, fallback rates, schema failure rate, judge pass rate, revision rounds per chapter, style drift scores, extraction disagreement rate, stale-job rate, queue depths. |
+| NFR-G.2 | Metrics: calls/min, tokens, cost by role/model/project, retry rates, fallback rates, schema failure rate, output-language check failures, judge pass rate per dimension (prose / structure / genre / voice / continuity), revision rounds per chapter, drift-class rates, extraction disagreement rate, stale-job rate, queue depths. |
 | NFR-G.3 | Dashboards: pipeline health, quality trends per project, cost, provider health. Alerts on error budgets (Beta+). |
 
 ## NFR-H Usability & i18n
 
 | ID | Requirement |
 | --- | --- |
-| NFR-H.1 | UI in Korean and English (Korean-first for text-heavy screens in Beta). All Korean text rendered with mobile-preview mode (narrow column) for chapter review. |
+| NFR-H.1 | UI in English (MVP) with Korean UI localization in Beta. Manuscript review renders in a mobile-preview mode (narrow column, serialized-reading typography). |
 | NFR-H.2 | Every warning displayed with evidence and one-click navigation to the manuscript span and the canon item. |
 | NFR-H.3 | Accessibility: keyboard navigation for review queues; WCAG 2.1 AA for core screens (Production). |
 
@@ -83,5 +83,5 @@
 | ID | Requirement |
 | --- | --- |
 | NFR-I.1 | Schemas in `schemas/` are the contract; generated types; contract tests. |
-| NFR-I.2 | Prompt changes require passing the prompt regression suite; prompt versions are immutable and content-addressed. |
-| NFR-I.3 | Feature flags for evaluator sets, model routing, and gate policies per workspace. |
+| NFR-I.2 | Prompt changes require passing the prompt regression suite (including the five-class narrative-identity contrast set and the output-language check); prompt versions are immutable and content-addressed. |
+| NFR-I.3 | Feature flags for evaluator sets, model routing, and gate policies per workspace. Numeric quality thresholds live in profile configuration with calibration records, never in code (ADR-0029). |

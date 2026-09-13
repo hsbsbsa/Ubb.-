@@ -8,8 +8,9 @@
   Contract** that is the unit of acceptance (ADR-0013).
 - Plans are **canon-aware**: they reference facts/events/promises by ID, are validated against canon after
   every commit, and are marked stale when dependencies change.
-- Plans are Korean-webnovel-shaped: hook/cadence/payoff structure comes from the Style Profile's structure
-  rules (`planner_compact` block) and the genre overlay.
+- Plans are Korean-webnovel-shaped: hook/cadence/payoff structure comes from the Narrative-Tradition
+  Profile's structure rules (`planner_compact` block) and the genre overlays; manuscripts realizing them are
+  English (OUTPUT-EN-001, STYLE-KWN-001).
 - **Planned ≠ happened**: plan objects live in `plan_*` tables and are stored as `frame=plan` when they
   appear in context; they never appear in canonical event tables until an accepted chapter realizes them.
 
@@ -19,7 +20,7 @@
 Series Blueprint (1)
  └─ Season (2–6 for 200–600 ch; 1 for short works)        "major narrative movement"
      └─ Arc: major (8–30 ch) ─ contains minor arcs (2–6 ch)  "conflict unit"
-         └─ Chapter Contract (1 chapter, 4,500–7,000 chars)   "acceptance unit"
+         └─ Chapter Contract (1 chapter, ~1,800–3,500 words)   "acceptance unit"
              └─ Scene Plan (2–4 per chapter)                    "drafting unit"
 Volume = export grouping over chapters (권), not a planning level; default 25 chapters/volume, adjustable.
 ```
@@ -37,7 +38,8 @@ asset curve with milestones bound to chapter ranges; genre cadence), `mysteries[
 proposition ID), reveal window), `foreshadowing_register[]` (planned promises with due windows),
 `red_herrings[]` (false trails with resolution), `themes[]`, `ending` (type from user preference; final
 state assertions), `endgame_requirements[]` (facts/knowledge states that must hold before the ending can be
-written — e.g., "주인공이 흑막의 정체를 알아야 한다", "여주와 남주가 서로의 비밀을 공유한 상태"), `seasons[]`
+written — e.g., "the protagonist must know the mastermind's identity", "the leads have shared their secrets
+with each other"), `seasons[]`
 (summary, objective, entry/exit states, chapter range estimate), `hard_requirement_bindings[]` (which spec
 requirements are satisfied where).
 
@@ -55,8 +57,9 @@ Arc (major/minor): `objective`, `conflict`, `antagonistic_force`, `stakes`, `ent
 type: setup, escalation, reversal, 사이다, revelation, emotional, progression, climax, aftermath; and target
 chapter offset), `promises_opened[]`, `promises_advanced[]`, `promises_paid[]`, `progression_milestones[]`,
 `relationship_milestones[]`, `knowledge_changes_planned[]` (who will learn what, when — as `plan` frame),
-`cadence_check` (deterministic validation vs overlay: 사이다 interval, progression interval, max 고구마
-streak), `risks[]` (continuity risks, e.g., "주인공 왼팔 부상 회복 시점 주의").
+`cadence_check` (deterministic validation vs the tradition/genre profiles: satisfaction-beat interval,
+progression interval, max frustration streak), `risks[]` (continuity risks, e.g., "watch the recovery
+timeline of the protagonist's left-arm injury").
 
 Minor arcs nest inside major arcs and map to 2–6 chapters; chapter contracts are generated from minor-arc
 beats.
@@ -76,13 +79,14 @@ Triggers for re-planning (`PlanningHorizonWorkflow`):
 4. Retcon/correction → dependency edges from canon items to plan items mark stale.
 5. Reader feedback (Beta) → soft re-weighting for the next arc outline generation only.
 
-Stale contracts are not silently regenerated in Assisted mode; the UI shows a diff ("이 계약은 canon v128에서
-변경된 사실 3개에 의존합니다") and offers regenerate/keep.
+Stale contracts are not silently regenerated in Assisted mode; the UI shows a diff ("this contract
+materially depends on 3 facts changed in canon v128") and offers regenerate/keep. Only **material**
+dependency edges trigger staleness; contextual edges produce a "review suggested" hint (ADR-0032).
 
 ## 6. Promise Ledger (schema: `promise.schema.json`)
 
 `Promise { id, type: foreshadowing|mystery|chekhov|relationship_beat|character_goal|world_question|
-running_gag|threat|debt, statement_ko, opened_in (chapter/evidence or plan), due_window {min_chapter,
+running_gag|threat|debt, statement, opened_in (chapter/evidence or plan), due_window {min_chapter,
 max_chapter or arc ref}, importance: core|major|minor, status: planned|open|advanced|paid|abandoned,
 advances[] (chapter refs), payoff (chapter/evidence), related_propositions[], related_entities[] }`
 
@@ -102,19 +106,21 @@ axes before drafting starts —
    can only learn something present in canon or introduced in this chapter's `introduces[]`).
 2. **Plan validity**: realizes ≥ 1 arc beat; respects arc must/must-not; opens/advances/pays promises as
    scheduled; cadence check passes.
-3. **Style validity**: hook type, ending type, local payoff type, dialogue density, scene count within the
-   profile's structure rules.
+3. **Narrative validity**: hook type, ending type, local payoff type, dialogue density, scene count and
+   length target (words) within the Narrative-Tradition Profile's structure rules.
 
 A contract failing validation is fixed by the planner role (one repair call) or escalated.
 
 ## 8. Scene Plan (embedded in contract; schema `scene-plan.schema.json`)
 
 Per scene: `objective`, `pov`, `participants`, `location`, `story_time`, `beats[]` (each beat: type,
-description_ko, emotional target, information revealed (proposition refs), tags 사이다/감정/정보/유머),
-`entry_state`/`exit_state` deltas, `dialogue_density_target`, `length_target_chars`, `opening_beat_type`,
+description, emotional target, information revealed (proposition refs), tags
+satisfaction/emotion/information/humor/growth/tension), `entry_state`/`exit_state` deltas,
+`dialogue_density_target`, `length_target_words`, `opening_beat_type`,
 `ending_beat_type`, `continuity_anchors[]` (facts that must appear consistent, with evidence refs),
-`must_not[]`, `speaker_pairs[]` (pairs who will talk → speech level/address terms pre-resolved from ledgers
-so the writer receives them explicitly).
+`must_not[]`, `speaker_pairs[]` (pairs who will talk → **English dialogue register** (formality, address terms,
+titles, contraction usage) pre-resolved from the register policy and relationship ledger so the writer
+receives it explicitly).
 
 ## 9. Planning roles and calls
 
@@ -127,7 +133,8 @@ so the writer receives them explicitly).
 | Scene plan | `scene_planner` | mid | 1 (+repair) |
 | Plan validators | deterministic + `plan_continuity_checker` (mid) | — | — |
 
-Every planner call carries: Story Spec (hard/soft/assumptions labelled), `planner_compact` style block,
+Every planner call carries: the Active Constraint Set (hard requirements in scope, ADR-0033) plus soft
+preferences and labelled assumptions, the `planner_compact` Narrative Identity Block,
 relevant blueprint section, parent plan, canon summary at the appropriate tier, promise ledger slice,
 protagonist state & progression position, recent arc summaries (L2) for repetition avoidance, and explicit
 `must_not[]`.
