@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/story-intake.schema.json",
+  "title": "Story Intake",
+  "description": "User-provided premise and requirements at project creation (FR-1.1). Free text may be Korean or English; generation is always Korean.",
+  "type": "object",
+  "required": ["title_working", "premise", "genre", "target_chapters", "target_chars_per_chapter"],
+  "additionalProperties": false,
+  "properties": {
+    "title_working": { "type": "string", "minLength": 1 },
+    "premise": { "type": "string", "minLength": 20, "description": "Free-text premise" },
+    "genre": {
+      "type": "object",
+      "required": ["primary"],
+      "additionalProperties": false,
+      "properties": {
+        "primary": { "$ref": "#/$defs/genreId" },
+        "secondary": { "type": "array", "items": { "$ref": "#/$defs/genreId" }, "maxItems": 2 },
+        "notes": { "type": "string" }
+      }
+    },
+    "main_character": { "$ref": "#/$defs/characterSketch" },
+    "supporting_characters": { "type": "array", "items": { "$ref": "#/$defs/characterSketch" }, "maxItems": 20 },
+    "world_concept": { "type": "string" },
+    "desired_tropes": { "type": "array", "items": { "type": "string" }, "maxItems": 30 },
+    "forbidden_developments": {
+      "type": "array",
+      "description": "Each becomes a hard must_not inherited by every plan and contract.",
+      "items": { "type": "string" },
+      "maxItems": 50
+    },
+    "target_audience": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rating": { "type": "string", "enum": ["all", "12", "15", "19"] },
+        "description": { "type": "string" }
+      }
+    },
+    "tone": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "keywords": { "type": "array", "items": { "type": "string" } },
+        "humor_level": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "darkness_level": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "pace": { "type": "string", "enum": ["fast", "medium", "slow"] }
+      }
+    },
+    "romance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "presence": { "type": "string", "enum": ["none", "subplot", "main"] },
+        "pace": { "type": "string", "enum": ["slow_burn", "medium", "fast"] },
+        "constraints": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "progression_system": { "type": "string", "description": "Power/progression system concept" },
+    "ending_preference": { "type": "string", "enum": ["happy", "bittersweet", "open", "tragic", "unspecified"] },
+    "target_chapters": { "type": "integer", "minimum": 1, "maximum": 5000 },
+    "target_chars_per_chapter": { "type": "integer", "minimum": 1500, "maximum": 20000, "description": "Korean characters incl. spaces (ADR-0024)" },
+    "mandatory_scenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["description"],
+        "additionalProperties": false,
+        "properties": {
+          "description": { "type": "string" },
+          "placement_hint": { "type": "string", "description": "e.g. '1부 후반', 'ch.50 이전'" }
+        }
+      }
+    },
+    "content_restrictions": { "type": "array", "items": { "type": "string" } },
+    "style_preferences": { "type": "array", "items": { "type": "string" } },
+    "operating_mode": { "type": "string", "enum": ["assisted", "semi_auto", "autopilot"], "default": "assisted" },
+    "quality_tier": { "type": "string", "enum": ["economy", "standard", "premium"], "default": "standard" }
+  },
+  "$defs": {
+    "genreId": {
+      "type": "string",
+      "enum": [
+        "hunter-gate", "system-progression", "regression", "modern-fantasy", "murim", "romance-fantasy",
+        "villainess", "academy", "possession", "reincarnation", "dungeon", "apocalypse-survival",
+        "management", "idol-entertainment", "game-world", "comedy", "character-drama", "slow-burn-romance"
+      ]
+    },
+    "characterSketch": {
+      "type": "object",
+      "required": ["name_ko"],
+      "additionalProperties": false,
+      "properties": {
+        "name_ko": { "type": "string", "minLength": 1 },
+        "role": { "type": "string" },
+        "description": { "type": "string" },
+        "speech_notes": { "type": "string", "description": "e.g. '항상 존댓말', '사투리'" }
+      }
+    }
+  }
+}

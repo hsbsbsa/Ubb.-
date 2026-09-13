@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/scorecard.schema.json",
+  "title": "Scorecard",
+  "description": "Merged evaluation result for one manuscript version.",
+  "type": "object",
+  "required": ["id", "manuscript_version_id", "canon_version", "overall", "sections", "issues", "acceptance"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "manuscript_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "canon_version": { "type": "integer", "minimum": 0 },
+    "quality_tier": { "type": "string", "enum": ["economy", "standard", "premium"] },
+    "overall": {
+      "type": "object",
+      "required": ["score", "blocking_count", "major_count", "minor_count"],
+      "additionalProperties": false,
+      "properties": {
+        "score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "blocking_count": { "type": "integer", "minimum": 0 },
+        "major_count": { "type": "integer", "minimum": 0 },
+        "minor_count": { "type": "integer", "minimum": 0 },
+        "note_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contract_compliance": { "$ref": "#/$defs/section" },
+        "continuity": { "$ref": "#/$defs/section" },
+        "knowledge": { "$ref": "#/$defs/section" },
+        "promises": { "$ref": "#/$defs/section" },
+        "pacing_hook": { "$ref": "#/$defs/section" },
+        "style": {
+          "allOf": [
+            { "$ref": "#/$defs/section" },
+            {
+              "type": "object",
+              "properties": {
+                "nativeness": { "type": "number", "minimum": 0, "maximum": 100 },
+                "lint_composite": { "type": "number", "minimum": 0, "maximum": 1 },
+                "register_violation_rate": { "type": "number", "minimum": 0 },
+                "voice_score": { "type": "number", "minimum": 0, "maximum": 100 },
+                "drift_flags": { "type": "array", "items": { "type": "string", "enum": ["translation", "western_exposition", "literary_register", "format", "register", "voice", "genre", "serial", "light_novel"] } },
+                "dimension_scores": { "type": "object", "additionalProperties": { "type": "number", "minimum": 1, "maximum": 5 } }
+              }
+            }
+          ]
+        },
+        "repetition": { "$ref": "#/$defs/section" },
+        "length": { "$ref": "#/$defs/section" }
+      }
+    },
+    "lint_report_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "issues": { "type": "array", "items": { "$ref": "issue.schema.json" } },
+    "acceptance": {
+      "type": "object",
+      "required": ["criteria_results", "auto_acceptable"],
+      "additionalProperties": false,
+      "properties": {
+        "criteria_results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["criterion_id", "passed"],
+            "additionalProperties": false,
+            "properties": {
+              "criterion_id": { "type": "string" },
+              "passed": { "type": "boolean" },
+              "evidence_paragraph_ids": { "type": "array", "items": { "type": "string" } },
+              "note_ko": { "type": "string" }
+            }
+          }
+        },
+        "auto_acceptable": { "type": "boolean" },
+        "threshold_used": { "type": "number" }
+      }
+    },
+    "evaluator_calls": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" }, "description": "llm_call ids" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+  },
+  "$defs": {
+    "section": {
+      "type": "object",
+      "required": ["score", "passed"],
+      "additionalProperties": true,
+      "properties": {
+        "score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "passed": { "type": "boolean" },
+        "issue_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
+        "evaluator_call_id": { "$ref": "common.schema.json#/$defs/uuid" }
+      }
+    }
+  }
+}

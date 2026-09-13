@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/issue.schema.json",
+  "title": "Issue",
+  "description": "One evaluation finding with evidence (docs/05-generation/02 §1).",
+  "type": "object",
+  "required": ["id", "source", "kind", "severity", "confidence", "claim_ko", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "source": { "type": "string", "description": "lint | register | judge:<role> | verifier | human" },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "requirement_violation", "forbidden_development", "content_restriction", "canon_contradiction", "timeline_error",
+        "location_error", "injury_forgotten", "inventory_impossible", "rank_incorrect", "resource_impossible",
+        "world_rule_violation", "power_rule_violation", "character_inconsistency", "relationship_inconsistency",
+        "knowledge_leak", "knowledge_ignorance", "reader_knowledge_violation", "missing_required_event",
+        "promise_forgotten", "payoff_without_setup", "repeated_scene", "repeated_paragraph", "repetitive_arc",
+        "excessive_exposition", "weak_pacing", "weak_ending", "late_hook", "korean_language", "style_drift",
+        "translationese", "honorific_error", "speech_level_error", "address_term_error", "voice_drift",
+        "format_drift", "invalid_structured_output", "truncated_output", "length_out_of_range", "glossary_spelling",
+        "frame_error", "numeric_inconsistency", "other"
+      ]
+    },
+    "severity": { "$ref": "common.schema.json#/$defs/severity" },
+    "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+    "claim_ko": { "type": "string", "description": "What is wrong, in Korean" },
+    "chapter_span": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "manuscript_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
+        "paragraph_ids": { "type": "array", "items": { "type": "string" } },
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 },
+        "quote": { "type": "string" }
+      }
+    },
+    "conflicting_canon": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "id", "statement_ko"],
+        "additionalProperties": false,
+        "properties": {
+          "kind": { "type": "string", "enum": ["fact", "event", "knowledge", "relationship", "promise", "requirement", "plan", "glossary", "style_rule"] },
+          "id": { "type": "string" },
+          "statement_ko": { "type": "string" }
+        }
+      }
+    },
+    "canon_evidence": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/evidenceRef" } },
+    "unsupported": { "type": "boolean", "description": "Set when a canon-conflict claim lacks evidence; severity capped at minor" },
+    "repair": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": { "type": "string", "enum": ["sentence", "paragraph", "dialogue", "scene", "chapter", "plan", "canon"] },
+        "suggestion_ko": { "type": "string" },
+        "must_preserve_fact_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "rule_id": { "type": "string" }, "value": { "type": "number" }, "threshold": { "type": "number" } }
+    },
+    "status": { "type": "string", "enum": ["open", "patched", "overridden", "dismissed"] },
+    "override_reason_ko": { "type": "string" },
+    "resolved_in_version_id": { "$ref": "common.schema.json#/$defs/uuid" }
+  }
+}

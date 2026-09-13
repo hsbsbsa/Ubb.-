@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/budget.schema.json",
+  "title": "Budget",
+  "description": "Spend limits at a scope (ADR-0018).",
+  "type": "object",
+  "required": ["id", "workspace_id", "scope", "hard_limit_cents"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "workspace_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "scope": { "type": "string", "enum": ["workspace", "project", "chapter_default", "workflow_default"] },
+    "hard_limit_cents": { "type": "number", "minimum": 0 },
+    "soft_limit_cents": { "type": "number", "minimum": 0 },
+    "period": { "type": "string", "enum": ["total", "monthly"] },
+    "spent_cents": { "type": "number", "minimum": 0 },
+    "reserved_cents": { "type": "number", "minimum": 0 },
+    "alert_thresholds": { "type": "array", "items": { "type": "number", "minimum": 0, "maximum": 1 } },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_candidates": { "type": "integer", "minimum": 1 },
+        "max_revision_rounds": { "type": "integer", "minimum": 0 },
+        "max_retries_per_step": { "type": "integer", "minimum": 0 },
+        "max_scene_rewrites": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

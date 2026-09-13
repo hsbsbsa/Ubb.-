@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/scene-draft.schema.json",
+  "title": "Scene Draft (writer output envelope)",
+  "description": "Prose plus annotations that travel with it so deterministic checks can run without re-parsing dialogue attribution.",
+  "type": "object",
+  "required": ["scene_no", "text_ko", "paragraphs", "speaker_annotations", "claims"],
+  "additionalProperties": false,
+  "properties": {
+    "scene_no": { "type": "integer", "minimum": 1 },
+    "text_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
+    "paragraphs": {
+      "type": "array",
+      "description": "Paragraph boundaries as code-point offsets into text_ko; ids are stable within the version.",
+      "items": {
+        "type": "object",
+        "required": ["id", "start", "end", "kind"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^p[0-9]+$" },
+          "start": { "type": "integer", "minimum": 0 },
+          "end": { "type": "integer", "minimum": 0 },
+          "kind": { "type": "string", "enum": ["narration", "dialogue", "monologue", "system_block", "mixed"] },
+          "stylistic_repeat": { "type": "boolean", "description": "Deliberate repetition for effect (≤2 per chapter)" }
+        }
+      }
+    },
+    "speaker_annotations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["utterance_start", "utterance_end", "speaker_id"],
+        "additionalProperties": false,
+        "properties": {
+          "utterance_start": { "type": "integer", "minimum": 0 },
+          "utterance_end": { "type": "integer", "minimum": 0 },
+          "speaker_id": { "$ref": "common.schema.json#/$defs/uuid" },
+          "addressee_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
+          "intended_speech_level": { "$ref": "common.schema.json#/$defs/speechLevel" },
+          "intentional_shift": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["reason"],
+            "properties": {
+              "reason": { "type": "string", "enum": ["anger", "intimacy_step", "disguise", "mockery", "public_formality", "age_reveal", "emotional_outburst"] },
+              "note_ko": { "type": "string" }
+            }
+          },
+          "is_monologue": { "type": "boolean" }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "description": "Facts/events the scene asserts, as the writer understands them; used by pre-pass and for 'fact-bearing span' detection.",
+      "items": {
+        "type": "object",
+        "required": ["statement_ko", "paragraph_id"],
+        "additionalProperties": false,
+        "properties": {
+          "statement_ko": { "type": "string" },
+          "paragraph_id": { "type": "string" },
+          "entity_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
+          "frame": { "$ref": "common.schema.json#/$defs/realityFrame" }
+        }
+      }
+    },
+    "system_blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["paragraph_id", "kind"],
+        "additionalProperties": false,
+        "properties": {
+          "paragraph_id": { "type": "string" },
+          "kind": { "type": "string", "enum": ["status_window", "system_message", "ranking_board", "community_post", "letter", "other"] }
+        }
+      }
+    },
+    "writer_notes_ko": { "type": "string", "description": "Optional; never enters canon" }
+  }
+}

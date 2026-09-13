@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/patch.schema.json",
+  "title": "Patch",
+  "description": "Targeted replacement of a span in a manuscript version, producing a new version (ADR-0014).",
+  "type": "object",
+  "required": ["id", "from_version_id", "scope", "span", "new_text_ko", "changed_claims", "preserved_facts_ack", "issue_ids"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "from_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "to_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "scope": { "type": "string", "enum": ["sentence", "paragraph", "dialogue", "scene", "seam"] },
+    "span": {
+      "type": "object",
+      "required": ["start", "end"],
+      "additionalProperties": false,
+      "properties": {
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 },
+        "paragraph_ids": { "type": "array", "items": { "type": "string" } },
+        "original_quote": { "type": "string" }
+      }
+    },
+    "new_text_ko": { "type": "string" },
+    "changed_claims": { "type": "array", "items": { "type": "string" }, "description": "Non-empty → continuity re-check on the span" },
+    "preserved_facts_ack": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" }, "description": "Must list every must_preserve fact id supplied" },
+    "speaker_annotations": { "type": "array", "items": { "$ref": "scene-draft.schema.json#/properties/speaker_annotations/items" } },
+    "issue_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
+    "reviser_call_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "regression": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "checks_run": { "type": "array", "items": { "type": "string" } },
+        "passed": { "type": "boolean" },
+        "reverted": { "type": "boolean" },
+        "notes_ko": { "type": "string" }
+      }
+    },
+    "attempt": { "type": "integer", "minimum": 1 }
+  }
+}

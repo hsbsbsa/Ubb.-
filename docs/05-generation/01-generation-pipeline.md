@@ -115,11 +115,11 @@ accepted chapter (amortized).
 | scene_planner | 1 | mid |
 | scene_writer | 3 (+≤1 retry) | prose-strong |
 | chapter_assembler | 1 | mid |
-| evaluators | contract 1, continuity 1, knowledge 1, world/relationship/promise merged into continuity pack? No — kept separate for evidence quality but **batched**: `continuity_checker` covers facts/timeline/location/inventory/injury/rank/world rules/relationships (1 call, 20k pack); `knowledge_leak_checker` 1; `promise_checker` 1 (cheap); `pacing_hook_judge` 1 (cheap-mid); `style_judge` 1; `voice_judge` 1 (cheap-mid); `repetition_judge` 1 (cheap) | 7 |
+| evaluators (parallel) | `contract_compliance_judge` 1 (mid); `continuity_checker` 1 (R; covers facts/timeline/location/inventory/injury/rank/world & power rules/relationships in one 20k pack); `knowledge_leak_checker` 1 (mid); `promise_checker` 1 (cheap); `pacing_hook_judge` 1 (cheap-mid); `style_judge` 1 (mid, other family); `voice_judge` 1 (cheap-mid); `repetition_judge` 1 (cheap) | 8 |
 | revision (typical 1 round, 2–4 patches) | 1–3 reviser calls + 1–2 re-checks | mid/prose-strong |
 | extraction | 2 extractors + 0–1 adjudicator | mid (one may be prose-strong family for diversity) |
 | summaries | L1 1 | cheap |
-| **Total** | **≈ 17–22** | |
+| **Total** | **≈ 18–23** | |
 
 Economy tier: single extractor pass + deterministic cross-check (B pass only on `major` items), merged
 style+voice judge, no pacing judge (lint heuristics only) → ≈ 11–13 calls. Premium: N=2 candidates for

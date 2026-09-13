@@ -1,0 +1,82 @@
+{
+  "id": "kr-webnovel-base",
+  "kind": "base",
+  "version": 1,
+  "name": "한국 웹소설 기본 스타일 프로필",
+  "prose": {
+    "sentence_length": { "target_chars": 28, "max_chars": 90, "variance": "high" },
+    "paragraph": { "max_sentences": 3, "max_chars": 180, "single_line_ok": true },
+    "ending_variety": { "max_consecutive_same": 2, "max_ratio_single": 0.55 },
+    "pronoun": { "third_person_per_1000": 3, "forbid_그녀_as_default_subject": true },
+    "tense": { "narration": "past" },
+    "quotes": { "dialogue": "“ ”", "thought": "‘ ’" },
+    "ellipsis": "…",
+    "english_leakage": "system_ui_only",
+    "hanja_inline": "forbid"
+  },
+  "dialogue": {
+    "ratio_band": { "min": 0.35, "max": 0.55, "target": 0.45 },
+    "attribution_max_tagged_ratio": 0.25,
+    "forbid_adverb_tags": true,
+    "reaction_beats": "interleave",
+    "monologue_ratio_band": { "min": 0.08, "max": 0.25 },
+    "monologue_format": "‘ ’",
+    "onomatopoeia": "moderate",
+    "speech_level_policy": "from_speech_profiles"
+  },
+  "structure": {
+    "hook_within_sentences": 5,
+    "opening_types_allowed": ["continue_cliffhanger", "in_medias_res", "sharp_dialogue", "status_update", "time_skip_with_tension"],
+    "opening_types_forbidden": ["weather_landscape", "lore_dump", "waking_up_routine"],
+    "scene_count_band": { "min": 2, "max": 4 },
+    "local_payoff_required_any_of": ["사이다", "정보_공개", "감정_진전", "성장_확인", "유머_포인트"],
+    "ending_types_allowed": ["cliffhanger", "reveal", "decision", "arrival_of_threat", "emotional_peak", "quiet_ominous"],
+    "ending_types_forbidden": ["mid_scene_fade", "summary_reflection"],
+    "cadence": { "progression_event_every_chapters": 4, "cider_every_chapters": 3, "max_frustration_streak": 3 },
+    "exposition": { "max_consecutive_sentences": 4, "lore_via": ["action", "dialogue", "status_text", "narration_slot"], "lore_terms_per_chapter_max": 6 }
+  },
+  "forbidden_patterns": [
+    { "id": "TRN-01", "category": "translationese", "pattern": "에\\s?의해(서)?\\s", "severity": "minor", "weight": 1.0, "note_ko": "피동 행위자 표지. 능동으로 바꾼다." },
+    { "id": "TRN-03", "category": "translationese", "pattern": "(^|[\\n。.!?”’]\\s*)그것은\\s", "severity": "minor", "weight": 1.0, "note_ko": "문두 '그것은' — 'It was' 직역" },
+    { "id": "TRN-09", "category": "translationese", "pattern": "(을|를)\\s?가지고\\s?있(다|었다|는)", "severity": "minor", "weight": 0.6, "note_ko": "'have' 직역(추상 명사 소유)" },
+    { "id": "TRN-10", "category": "translationese", "pattern": "중\\s?하나(이다|였다|다)", "severity": "minor", "weight": 0.6, "note_ko": "'one of the' 직역" },
+    { "id": "TRN-11", "category": "translationese", "pattern": "(그|그녀|나|너)의\\s(손|눈|얼굴|머리|어깨|가슴|입|어머니|아버지|형|동생)", "severity": "minor", "weight": 0.8, "note_ko": "신체·친족 앞 소유 대명사" },
+    { "id": "TRN-15", "category": "translationese", "pattern": "이상의\\s(어떤\\s)?(것|무언가)", "severity": "minor", "weight": 0.6 },
+    { "id": "TRN-20", "category": "translationese", "pattern": "당신", "severity": "major", "weight": 1.0, "note_ko": "호칭이 정해진 인물 간 대화에서 2인칭 '당신' 금지(프로필 예외 없을 때)" },
+    { "id": "LN-01", "category": "light_novel", "pattern": "[「」『』ー]", "severity": "major", "weight": 1.0 },
+    { "id": "SP-01", "category": "screenplay", "pattern": "(^|\\n)\\s*(S#|장면\\s?\\d|#컷|INT\\.|EXT\\.|\\(내레이션\\)|\\[대사\\])", "severity": "blocking", "weight": 2.0 },
+    { "id": "SP-02", "category": "screenplay", "pattern": "(^|\\n)\\s*(#{1,6}\\s|[-*]\\s|\\d+\\)\\s)", "severity": "major", "weight": 1.0, "note_ko": "마크다운/개요 표식" },
+    { "id": "EN-01", "category": "english_leakage", "pattern": "[A-Za-z]{3,}", "severity": "major", "weight": 0.8, "note_ko": "용어집 허용 목록 외 라틴 문자 단어" }
+  ],
+  "exemplar_policy": { "functions": ["hook", "action", "banter", "emotional_beat", "cliffhanger"], "max_count": 4, "min_score": 4.5, "allow_user_exemplars": true },
+  "speech_defaults": { "unknown_adult_pair": "해요체", "notes_ko": "관계가 정의되지 않은 성인 간 기본은 해요체. 오버레이가 변경할 수 있다." },
+  "rubric": [
+    { "dimension": "문장 자연스러움", "weight": 0.15, "anchors_ko": { "5": "모국어 화자의 연재 문장. 주어 생략과 어순이 자연스럽다.", "3": "대체로 자연스럽지만 어색한 연결어미·어순이 간헐적으로 보인다.", "1": "문장마다 어색한 어순·연결이 있어 읽기 흐름이 끊긴다." } },
+    { "dimension": "번역투 부재", "weight": 0.15, "anchors_ko": { "5": "번역투 표지가 전혀 없다.", "3": "간헐적 대명사 주어·피동 표현이 눈에 띈다.", "1": "문장마다 '그/그녀'가 주어이고 영어식 어순·관용구 직역이 반복된다." } },
+    { "dimension": "서술 밀도·설명 통제", "weight": 0.1, "anchors_ko": { "5": "설정은 행동·대화·시스템 텍스트로만 드러난다.", "3": "설명 문단이 한두 곳 길다.", "1": "백과사전식 설정 설명이 장면을 멈춘다." } },
+    { "dimension": "대화 자연스러움·화계 정확성", "weight": 0.15, "anchors_ko": { "5": "인물별 화계·호칭이 정확하고 대화가 살아 있다.", "3": "화계는 맞으나 대화가 설명적이다.", "1": "화계 오류가 있거나 모든 인물이 같은 말투다." } },
+    { "dimension": "리듬·모바일 가독성", "weight": 0.1, "anchors_ko": { "5": "짧은 문장과 중간 문장이 교차하고 문단이 짧다.", "3": "문단이 가끔 길다.", "1": "긴 문단과 긴 문장이 연속된다." } },
+    { "dimension": "연재 구조", "weight": 0.15, "anchors_ko": { "5": "5문장 내 훅, 로컬 페이오프, 강한 엔딩 풀.", "3": "훅은 있으나 엔딩이 약하다.", "1": "훅 없이 시작하고 장면 중간에 흐지부지 끝난다." } },
+    { "dimension": "장르 관습 적합성", "weight": 0.1, "anchors_ko": { "5": "장르 어휘·장치·독자 판타지가 정확히 구현된다.", "3": "장르 어휘는 있으나 장치가 약하다.", "1": "장르 관습이 보이지 않거나 다른 장르(라노벨 등)의 관습이 섞인다." } },
+    { "dimension": "캐릭터 어조 일관성", "weight": 0.05, "anchors_ko": { "5": "대사만 보고 화자를 알 수 있다.", "3": "주요 인물은 구분되나 조연은 비슷하다.", "1": "모든 인물이 같은 어조다." } },
+    { "dimension": "클리셰 남용", "weight": 0.05, "anchors_ko": { "5": "장르 클리셰를 의식적으로 변주한다.", "3": "익숙한 장면이 있지만 과하지 않다.", "1": "같은 반응·같은 장면이 반복된다." } }
+  ],
+  "lint_thresholds": {
+    "KL-END-01": { "warn": 3, "fail": 4 },
+    "KL-END-02": { "warn": 0.55, "fail": 0.7 },
+    "KL-PRO-01": { "warn": 3, "fail": 6 },
+    "KL-PRO-02": { "warn": 2, "fail": 3 },
+    "KL-LEN-01": { "warn": 90, "fail": 140 },
+    "KL-LEN-02": { "warn": 180, "fail": 260 },
+    "KL-LEN-03": { "warn": 8, "fail": 5 },
+    "KL-DLG-02": { "warn": 0.15, "fail": 0.3 },
+    "KL-DLG-03": { "warn": 0.25, "fail": 0.4 },
+    "KL-EXP-01": { "warn": 4, "fail": 7 },
+    "KL-EXP-02": { "warn": 6, "fail": 10 },
+    "KL-HOOK-01": { "warn": 5, "fail": 8 },
+    "KL-REP-01": { "warn": 2, "fail": 4 },
+    "KL-REP-02": { "warn": 1, "fail": 1 },
+    "KL-LENGTH-01": { "warn": 0.12, "fail": 0.2 },
+    "TRN-RATE": { "warn": 0.8, "fail": 1.6 }
+  }
+}

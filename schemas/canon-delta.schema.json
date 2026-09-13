@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/canon-delta.schema.json",
+  "title": "Canon Delta",
+  "description": "Proposed (extractor output) or reconciled/verified set of canon changes from one accepted chapter (FR-7.2). Applied atomically by canon.commit_delta.",
+  "type": "object",
+  "required": ["project_id", "chapter_id", "manuscript_version_id", "base_canon_version", "stage", "items", "summary_l1_ko"],
+  "additionalProperties": false,
+  "properties": {
+    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "chapter_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "manuscript_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "base_canon_version": { "type": "integer", "minimum": 0 },
+    "stage": { "type": "string", "enum": ["extracted_a", "extracted_b", "reconciled", "verified"] },
+    "extractor_call_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "items": { "type": "array", "items": { "$ref": "#/$defs/deltaItem" } },
+    "unresolved_questions_ko": { "type": "array", "items": { "type": "string" } },
+    "hypothesis_results": {
+      "type": "array",
+      "description": "For each contract-planned delta: realized/unrealized with evidence.",
+      "items": {
+        "type": "object",
+        "required": ["hypothesis_ref", "result"],
+        "additionalProperties": false,
+        "properties": {
+          "hypothesis_ref": { "type": "string" },
+          "result": { "type": "string", "enum": ["realized", "partially_realized", "unrealized"] },
+          "evidence": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/evidenceRef" } },
+          "note_ko": { "type": "string" }
+        }
+      }
+    },
+    "summary_l1_ko": { "type": "string", "maxLength": 600 },
+    "ending_hook_ko": { "type": "string" },
+    "reconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "agreed": { "type": "integer" },
+        "single_source": { "type": "integer" },
+        "conflicts": { "type": "integer" },
+        "adjudicated": { "type": "integer" },
+        "human_queue": { "type": "integer" },
+        "rejected_no_evidence": { "type": "integer" }
+      }
+    }
+  },
+  "$defs": {
+    "deltaItem": {
+      "type": "object",
+      "required": ["local_id", "type", "op", "payload", "frame", "evidence", "confidence", "importance"],
+      "additionalProperties": false,
+      "properties": {
+        "local_id": { "type": "string" },
+        "type": { "type": "string", "enum": ["fact", "event", "knowledge_state", "relationship_state", "promise_event", "proposition", "entity", "alias"] },
+        "op": { "type": "string", "enum": ["assert", "supersede", "retract", "open", "advance", "pay", "create"] },
+        "payload": { "type": "object", "description": "Shape per type: fact.schema / event.schema / knowledge-state.schema / relationship-state.schema / promise (event) / proposition / entity (without ids assigned yet)" },
+        "frame": { "$ref": "common.schema.json#/$defs/realityFrame" },
+        "story_clock": { "$ref": "common.schema.json#/$defs/storyClock" },
+        "evidence": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/evidenceRef" }, "minItems": 1 },
+        "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+        "importance": { "type": "string", "enum": ["core", "major", "minor"] },
+        "supersedes_ref": { "type": "string", "description": "Existing canon item id being superseded/retracted" },
+        "reconciliation_status": { "type": "string", "enum": ["agreed", "single_source", "adjudicated", "human_resolved", "rejected"] },
+        "adjudication_call_id": { "$ref": "common.schema.json#/$defs/uuid" },
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "evidence_ok": { "type": "boolean" },
+            "entities_ok": { "type": "boolean" },
+            "frame_ok": { "type": "boolean" },
+            "validity_ok": { "type": "boolean" },
+            "contradiction": { "type": "string", "enum": ["none", "supersedes", "unexplained", "locked_violation"] },
+            "leak_check_ok": { "type": "boolean" },
+            "notes_ko": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

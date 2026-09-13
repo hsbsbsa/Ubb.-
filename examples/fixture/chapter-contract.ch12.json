@@ -1,0 +1,407 @@
+{
+  "id": "0191b2a0-0000-7000-8000-000000070012",
+  "project_id": "0191b2a0-0000-7000-8000-000000000001",
+  "chapter_number": 12,
+  "version": 2,
+  "arc_id": "0191b2a0-0000-7000-8000-0000000e0002",
+  "minor_arc_id": "0191b2a0-0000-7000-8000-0000000e0022",
+  "season_id": "0191b2a0-0000-7000-8000-0000000f0001",
+  "beat_refs": [
+    "arc2.beat.04",
+    "arc2.beat.05"
+  ],
+  "pinned": {
+    "spec_version": 3,
+    "bible_version": 2,
+    "style_profile_version_id": "0191b2a0-0000-7000-8000-000000060001",
+    "canon_version": 11,
+    "template_version": "pack.chapter_planner@1.0.0"
+  },
+  "status": "approved",
+  "purpose_ko": "한유리가 파티에 합류하고, 도윤과 서하를 남매로 오해하는 코미디 엔진을 가동한다. 동시에 무진의 독 회복이 느리다는 사실로 14화 흉터 복선을 깐다.",
+  "reader_experience_ko": "가벼운 웃음 뒤에 남는 작은 불안.",
+  "arc_objective_contribution_ko": "독안개 던전 아크의 파티 결성 완료. 다음 공략(13화)의 인원 구성이 확정된다.",
+  "must_happen": [
+    {
+      "id": "MH-1",
+      "kind": "event",
+      "description_ko": "한유리가 협회 신입 배정으로 도윤 파티에 합류한다.",
+      "entity_ids": [
+        "0191b2a0-0000-7000-8000-0000000c0005"
+      ],
+      "verifiable_by": "extraction"
+    },
+    {
+      "id": "MH-2",
+      "kind": "comedic_beat",
+      "description_ko": "유리가 도윤과 서하가 남매라고 오해하게 되는 계기가 장면 안에서 자연스럽게 발생한다(같은 성씨 아님 — 서하가 도윤의 어머니 이야기를 아는 듯한 말을 한 것이 원인).",
+      "proposition_ids": [
+        "0191b2a0-0000-7000-8000-0000000b0006"
+      ],
+      "verifiable_by": "extraction"
+    },
+    {
+      "id": "MH-3",
+      "kind": "event",
+      "description_ko": "무진이 다리의 독이 아직 다 빠지지 않았다고 무심하게 언급한다(14화 흉터 복선).",
+      "entity_ids": [
+        "0191b2a0-0000-7000-8000-0000000c0003"
+      ],
+      "verifiable_by": "judge"
+    }
+  ],
+  "must_not_happen": [
+    {
+      "id": "MN-1",
+      "description_ko": "도윤이 회귀 사실을 말하거나 암시로 인정하는 것",
+      "source": "spec",
+      "requirement_id": "REQ-00021"
+    },
+    {
+      "id": "MN-2",
+      "description_ko": "유리의 오해가 이 화에서 풀리는 것(44화 예정)",
+      "source": "arc"
+    },
+    {
+      "id": "MN-3",
+      "description_ko": "서하의 출생 비밀(P2)이 어떤 형태로든 언급되는 것",
+      "source": "spec",
+      "requirement_id": "REQ-00023"
+    },
+    {
+      "id": "MN-4",
+      "description_ko": "도윤·서하의 스킨십 또는 연애 감정의 직접적 표현",
+      "source": "spec",
+      "requirement_id": "REQ-00024"
+    }
+  ],
+  "hard_requirement_refs": [
+    "REQ-00021",
+    "REQ-00023",
+    "REQ-00024",
+    "REQ-00031"
+  ],
+  "pov": {
+    "character_id": "0191b2a0-0000-7000-8000-0000000c0001",
+    "person": "third_limited"
+  },
+  "participants": [
+    {
+      "character_id": "0191b2a0-0000-7000-8000-0000000c0001",
+      "role_in_chapter": "protagonist",
+      "on_page": true
+    },
+    {
+      "character_id": "0191b2a0-0000-7000-8000-0000000c0002",
+      "role_in_chapter": "love_interest",
+      "on_page": true
+    },
+    {
+      "character_id": "0191b2a0-0000-7000-8000-0000000c0003",
+      "role_in_chapter": "mentor",
+      "on_page": true
+    },
+    {
+      "character_id": "0191b2a0-0000-7000-8000-0000000c0005",
+      "role_in_chapter": "comic_relief",
+      "on_page": true
+    }
+  ],
+  "mentioned_only": [
+    "0191b2a0-0000-7000-8000-0000000c0004"
+  ],
+  "locations": [
+    "0191b2a0-0000-7000-8000-000000010001",
+    "0191b2a0-0000-7000-8000-000000010005"
+  ],
+  "story_time": {
+    "start": {
+      "chapter_no": 12,
+      "ordinal": 0,
+      "world_date": "D+41",
+      "precision": "exact"
+    },
+    "end": {
+      "chapter_no": 12,
+      "ordinal": 99,
+      "world_date": "D+41",
+      "precision": "exact"
+    },
+    "elapsed_since_previous_ko": "11화 다음 날 아침"
+  },
+  "timeline_id": "0191b2a0-0000-7000-8000-000000050001",
+  "knowledge_deltas": [
+    {
+      "knower": {
+        "kind": "character",
+        "entity_id": "0191b2a0-0000-7000-8000-0000000c0005"
+      },
+      "proposition_id": "0191b2a0-0000-7000-8000-0000000b0006",
+      "from_stance": "unaware",
+      "to_stance": "believes_false",
+      "how_ko": "서하가 도윤의 어머니 병력을 아는 듯 말하는 것을 듣고 남매라고 추론",
+      "channel_kind": "inferred"
+    },
+    {
+      "knower": {
+        "kind": "reader"
+      },
+      "proposition_id": "0191b2a0-0000-7000-8000-0000000b0006",
+      "from_stance": "unaware",
+      "to_stance": "knows",
+      "how_ko": "서술로 오해임이 드러남(독자는 남매가 아님을 안다)",
+      "channel_kind": "witnessed"
+    }
+  ],
+  "state_deltas": [
+    {
+      "entity_id": "0191b2a0-0000-7000-8000-0000000c0005",
+      "attribute": "affiliation.party",
+      "from": null,
+      "to": "도윤 파티",
+      "when_in_chapter": "middle",
+      "description_ko": "협회 배정으로 파티 합류"
+    }
+  ],
+  "relationship_deltas": [
+    {
+      "from_id": "0191b2a0-0000-7000-8000-0000000c0005",
+      "to_id": "0191b2a0-0000-7000-8000-0000000c0001",
+      "axis": "type",
+      "direction": "change",
+      "new_type": "colleague",
+      "address_term_change": [
+        "도윤 오빠"
+      ],
+      "speech_level_change": "해요체",
+      "description_ko": "첫 만남. 유리→도윤 '도윤 오빠', 해요체(흥분 시 반말 슬립 허용)"
+    },
+    {
+      "from_id": "0191b2a0-0000-7000-8000-0000000c0005",
+      "to_id": "0191b2a0-0000-7000-8000-0000000c0003",
+      "axis": "type",
+      "direction": "change",
+      "new_type": "colleague",
+      "address_term_change": [
+        "무진 아저씨"
+      ],
+      "speech_level_change": "해요체",
+      "description_ko": "유리→무진은 반드시 해요체(연장자). 반말 금지."
+    }
+  ],
+  "introduces": [
+    {
+      "kind": "character",
+      "name_ko": "한유리",
+      "aliases": [
+        "유리"
+      ],
+      "note_ko": "바이블에 존재; 첫 등장"
+    }
+  ],
+  "setups": [
+    {
+      "promise_id": "0191b2a0-0000-7000-8000-0000000d0002",
+      "how_ko": "무진이 '딸 또래'라며 유리를 보고 잠깐 말을 멈춘다(11화 딸 언급의 진전)",
+      "kind": "advance"
+    }
+  ],
+  "payoffs": [],
+  "emotional_movement": {
+    "start_ko": "피로와 경계",
+    "peak_ko": "유리의 오해로 터지는 웃음",
+    "end_ko": "무진의 다리를 보는 도윤의 불안"
+  },
+  "conflict": {
+    "type": "interpersonal",
+    "description_ko": "신입을 받기 싫은 도윤 vs 협회 배정, 그리고 유리의 눈치 없는 질문들",
+    "reversal_ko": "귀찮기만 하던 유리가 던전 진입 전 점검에서 뜻밖의 관찰력을 보인다"
+  },
+  "local_satisfaction": [
+    {
+      "type": "유머_포인트",
+      "description_ko": "남매 오해 장면"
+    },
+    {
+      "type": "정보_공개",
+      "description_ko": "무진의 독이 완전히 빠지지 않았다는 정보(독자에게 불안 제공)"
+    }
+  ],
+  "ending_state_ko": "파티 4인 결성. 다음 날 독안개 던전 재진입 예정. 도윤은 무진의 다리를 보며 전생의 죽음을 떠올린다(말하지 않음).",
+  "hook": {
+    "type": "quiet_ominous",
+    "description_ko": "무진이 계단을 오르다 아주 잠깐 멈춘다. 도윤만 그것을 본다.",
+    "question_raised_ko": "무진의 다리는 정말 괜찮은가?"
+  },
+  "opening": {
+    "type": "sharp_dialogue",
+    "description_ko": "협회 직원의 '신입 한 명 받으셔야 합니다'로 시작"
+  },
+  "scene_count": 3,
+  "dialogue_density_target": 0.5,
+  "monologue_density_target": 0.12,
+  "length_target_chars": 5500,
+  "length_tolerance_ratio": 0.12,
+  "style_profile_version_id": "0191b2a0-0000-7000-8000-000000060001",
+  "tone_notes_ko": [
+    "코미디는 유리의 대사와 반응 비트로만, 서술자가 웃기려 하지 않는다",
+    "무진 다리 언급은 한 문장으로 무심하게"
+  ],
+  "continuity_risks": [
+    {
+      "description_ko": "무진의 독 부위는 왼쪽 다리(9화). 오른쪽으로 쓰지 않도록 주의.",
+      "related_fact_ids": [
+        "0191b2a0-0000-7000-8000-000000040001"
+      ],
+      "mitigation_ko": "continuity_anchors에 근거 포함"
+    },
+    {
+      "description_ko": "도윤의 현재 등급은 E(8화). D로 오르는 것은 20화.",
+      "related_fact_ids": [
+        "0191b2a0-0000-7000-8000-000000040002"
+      ]
+    },
+    {
+      "description_ko": "나침반은 도윤이 소지(3화~). 서하에게 넘기는 것은 30화.",
+      "related_fact_ids": [
+        "0191b2a0-0000-7000-8000-000000040003"
+      ]
+    }
+  ],
+  "continuity_anchors": [
+    {
+      "fact_id": "0191b2a0-0000-7000-8000-000000040001",
+      "statement_ko": "박무진은 9화 독안개 던전에서 왼쪽 다리에 마수의 독을 입었다.",
+      "evidence": [
+        {
+          "manuscript_version_id": "0191b2a0-0000-7000-8000-000000030009",
+          "chapter_no": 9,
+          "paragraph_id": "p41",
+          "start": 4120,
+          "end": 4150,
+          "quote": "검은 독이 무진의 왼쪽 종아리를 타고 올라오고 있었다."
+        }
+      ]
+    },
+    {
+      "fact_id": "0191b2a0-0000-7000-8000-000000040002",
+      "statement_ko": "강도윤의 협회 등급은 E다(8화 재측정)."
+    }
+  ],
+  "knowledge_guards": [
+    {
+      "character_id": "0191b2a0-0000-7000-8000-0000000c0002",
+      "must_not_know_proposition_ids": [
+        "0191b2a0-0000-7000-8000-0000000b0001"
+      ],
+      "note_ko": "서하는 도윤이 회귀자임을 모른다(31화 의심 시작)."
+    },
+    {
+      "character_id": "0191b2a0-0000-7000-8000-0000000c0005",
+      "must_not_know_proposition_ids": [
+        "0191b2a0-0000-7000-8000-0000000b0001",
+        "0191b2a0-0000-7000-8000-0000000b0002"
+      ]
+    },
+    {
+      "character_id": "0191b2a0-0000-7000-8000-0000000c0003",
+      "must_not_know_proposition_ids": [
+        "0191b2a0-0000-7000-8000-0000000b0001",
+        "0191b2a0-0000-7000-8000-0000000b0002"
+      ]
+    },
+    {
+      "character_id": "0191b2a0-0000-7000-8000-0000000c0001",
+      "must_not_know_proposition_ids": [
+        "0191b2a0-0000-7000-8000-0000000b0002"
+      ],
+      "note_ko": "도윤은 서하의 출생 비밀을 모른다(72화)."
+    }
+  ],
+  "validation": {
+    "canon_ok": true,
+    "plan_ok": true,
+    "style_ok": true,
+    "issues": [],
+    "validated_at_canon_version": 11
+  },
+  "acceptance_criteria": [
+    {
+      "id": "AC-MH-1",
+      "kind": "judge",
+      "description_ko": "유리 합류 사건이 본문에 존재",
+      "check_ref": "contract_compliance_judge:MH-1"
+    },
+    {
+      "id": "AC-MH-2",
+      "kind": "judge",
+      "description_ko": "남매 오해의 계기가 장면 내에 존재하고 독자는 오해임을 알 수 있음",
+      "check_ref": "contract_compliance_judge:MH-2"
+    },
+    {
+      "id": "AC-MH-3",
+      "kind": "judge",
+      "description_ko": "무진 다리 독 잔존 언급 존재",
+      "check_ref": "contract_compliance_judge:MH-3"
+    },
+    {
+      "id": "AC-MN-ALL",
+      "kind": "judge",
+      "description_ko": "must_not_happen 항목 모두 부재",
+      "check_ref": "contract_compliance_judge:must_not"
+    },
+    {
+      "id": "AC-LEN",
+      "kind": "deterministic",
+      "description_ko": "5,500자 ±12%",
+      "check_ref": "KL-LENGTH-01"
+    },
+    {
+      "id": "AC-LINT",
+      "kind": "deterministic",
+      "description_ko": "린트 fail 0건",
+      "check_ref": "lint:fail_count",
+      "threshold": 0
+    },
+    {
+      "id": "AC-REG",
+      "kind": "deterministic",
+      "description_ko": "화계 위반(KL-REG-01~03) 0건 — 특히 유리→무진 해요체",
+      "check_ref": "KL-REG",
+      "threshold": 0
+    },
+    {
+      "id": "AC-STYLE",
+      "kind": "judge",
+      "description_ko": "스타일 점수 ≥ 78",
+      "check_ref": "style_judge:style_score",
+      "threshold": 78
+    },
+    {
+      "id": "AC-CONT",
+      "kind": "judge",
+      "description_ko": "블로킹 연속성 이슈 0건",
+      "check_ref": "continuity_checker:blocking",
+      "threshold": 0
+    },
+    {
+      "id": "AC-LEAK",
+      "kind": "judge",
+      "description_ko": "지식 누출 0건(P1, P2)",
+      "check_ref": "knowledge_leak_checker",
+      "threshold": 0
+    },
+    {
+      "id": "AC-HOOK",
+      "kind": "judge",
+      "description_ko": "quiet_ominous 엔딩 존재",
+      "check_ref": "pacing_hook_judge:ending"
+    },
+    {
+      "id": "AC-HUMAN",
+      "kind": "human",
+      "description_ko": "Assisted 모드 승인",
+      "check_ref": "gate:approve"
+    }
+  ]
+}

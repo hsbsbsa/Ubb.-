@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/proposition.schema.json",
+  "title": "Proposition",
+  "description": "Atomic canonical statement that can be known, suspected, believed falsely, or kept secret.",
+  "type": "object",
+  "required": ["id", "project_id", "statement_ko", "kind", "truth_value"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "statement_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
+    "kind": { "type": "string", "enum": ["identity", "event", "location", "ability", "intent", "relationship", "world_rule", "secret", "other"] },
+    "truth_value": {
+      "type": "object",
+      "description": "Objective truth per timeline",
+      "required": ["main"],
+      "additionalProperties": { "type": "string", "enum": ["true", "false", "unknown"] },
+      "properties": { "main": { "type": "string", "enum": ["true", "false", "unknown"] } }
+    },
+    "linked_fact_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
+    "linked_event_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
+    "entity_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
+    "secret": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["owner_ids", "allowed_knower_ids"],
+          "additionalProperties": false,
+          "properties": {
+            "owner_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" }, "minItems": 1 },
+            "allowed_knower_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
+            "reader_may_know": { "type": "boolean", "default": true },
+            "reveal_plan_ref": { "type": "string", "description": "Plan item id for the planned reveal" },
+            "reveal_not_before_chapter": { "type": "integer", "minimum": 1 }
+          }
+        }
+      ]
+    },
+    "created_commit_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "created_in_chapter_id": { "$ref": "common.schema.json#/$defs/uuid" }
+  }
+}

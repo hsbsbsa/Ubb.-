@@ -1,0 +1,334 @@
+{
+  "project_id": "0191b2a0-0000-7000-8000-000000000001",
+  "chapter_id": "0191b2a0-0000-7000-8000-000000020009",
+  "manuscript_version_id": "0191b2a0-0000-7000-8000-000000030009",
+  "base_canon_version": 8,
+  "stage": "verified",
+  "items": [
+    {
+      "local_id": "ev-1",
+      "type": "event",
+      "op": "assert",
+      "frame": "canonical",
+      "story_clock": {
+        "chapter_no": 9,
+        "ordinal": 40,
+        "world_date": "D+35",
+        "precision": "exact"
+      },
+      "payload": {
+        "type": "injury",
+        "summary_ko": "독안개 던전 2층에서 도윤을 밀어내던 무진이 독안개 마수의 촉수에 왼쪽 종아리를 찔려 독에 감염된다.",
+        "location_id": "0191b2a0-0000-7000-8000-000000010002",
+        "participants": [
+          {
+            "entity_id": "0191b2a0-0000-7000-8000-0000000c0003",
+            "role": "patient"
+          },
+          {
+            "entity_id": "0191b2a0-0000-7000-8000-0000000c0001",
+            "role": "witness"
+          }
+        ],
+        "importance": "core"
+      },
+      "evidence": [
+        {
+          "manuscript_version_id": "0191b2a0-0000-7000-8000-000000030009",
+          "chapter_no": 9,
+          "paragraph_id": "p41",
+          "start": 4120,
+          "end": 4150,
+          "quote": "검은 독이 무진의 왼쪽 종아리를 타고 올라오고 있었다."
+        }
+      ],
+      "confidence": 0.97,
+      "importance": "core",
+      "reconciliation_status": "agreed",
+      "verification": {
+        "evidence_ok": true,
+        "entities_ok": true,
+        "frame_ok": true,
+        "validity_ok": true,
+        "contradiction": "none",
+        "leak_check_ok": true
+      }
+    },
+    {
+      "local_id": "f-1",
+      "type": "fact",
+      "op": "assert",
+      "frame": "canonical",
+      "story_clock": {
+        "chapter_no": 9,
+        "ordinal": 40,
+        "world_date": "D+35",
+        "precision": "exact"
+      },
+      "payload": {
+        "entity_id": "0191b2a0-0000-7000-8000-0000000c0003",
+        "attribute": "status.injury",
+        "key": "left_leg_poison",
+        "value": {
+          "part": "왼쪽 종아리",
+          "kind": "마수 독",
+          "severity": "serious",
+          "expected_recovery_ko": "미정"
+        },
+        "value_text_ko": "왼쪽 종아리 마수 독 감염(중상)",
+        "valid_from": {
+          "chapter_no": 9,
+          "ordinal": 40,
+          "world_date": "D+35",
+          "precision": "exact"
+        },
+        "valid_to": null
+      },
+      "evidence": [
+        {
+          "manuscript_version_id": "0191b2a0-0000-7000-8000-000000030009",
+          "chapter_no": 9,
+          "paragraph_id": "p41",
+          "start": 4120,
+          "end": 4150,
+          "quote": "검은 독이 무진의 왼쪽 종아리를 타고 올라오고 있었다."
+        }
+      ],
+      "confidence": 0.97,
+      "importance": "core",
+      "reconciliation_status": "agreed",
+      "verification": {
+        "evidence_ok": true,
+        "entities_ok": true,
+        "frame_ok": true,
+        "validity_ok": true,
+        "contradiction": "none",
+        "leak_check_ok": true
+      }
+    },
+    {
+      "local_id": "f-2",
+      "type": "fact",
+      "op": "supersede",
+      "frame": "canonical",
+      "story_clock": {
+        "chapter_no": 9,
+        "ordinal": 5,
+        "world_date": "D+35",
+        "precision": "exact"
+      },
+      "supersedes_ref": "0191b2a0-0000-7000-8000-000000040004",
+      "payload": {
+        "entity_id": "0191b2a0-0000-7000-8000-0000000c0003",
+        "attribute": "status.location",
+        "value": "0191b2a0-0000-7000-8000-000000010002",
+        "value_text_ko": "독안개 던전 2층",
+        "valid_from": {
+          "chapter_no": 9,
+          "ordinal": 5,
+          "world_date": "D+35",
+          "precision": "exact"
+        },
+        "valid_to": null
+      },
+      "evidence": [
+        {
+          "manuscript_version_id": "0191b2a0-0000-7000-8000-000000030009",
+          "chapter_no": 9,
+          "paragraph_id": "p6",
+          "start": 512,
+          "end": 538,
+          "quote": "2층 계단을 내려서자 안개가 무릎까지 차올랐다."
+        }
+      ],
+      "confidence": 0.9,
+      "importance": "minor",
+      "reconciliation_status": "single_source",
+      "verification": {
+        "evidence_ok": true,
+        "entities_ok": true,
+        "frame_ok": true,
+        "validity_ok": true,
+        "contradiction": "supersedes",
+        "leak_check_ok": true
+      }
+    },
+    {
+      "local_id": "k-1",
+      "type": "knowledge_state",
+      "op": "assert",
+      "frame": "canonical",
+      "story_clock": {
+        "chapter_no": 9,
+        "ordinal": 44,
+        "world_date": "D+35",
+        "precision": "exact"
+      },
+      "payload": {
+        "knower": {
+          "kind": "character",
+          "entity_id": "0191b2a0-0000-7000-8000-0000000c0003"
+        },
+        "proposition_id": "0191b2a0-0000-7000-8000-0000000b0007",
+        "stance": "unaware",
+        "source": {
+          "kind": "narration",
+          "chapter_id": "0191b2a0-0000-7000-8000-000000020009"
+        },
+        "valid_from": {
+          "chapter_no": 9,
+          "ordinal": 44,
+          "precision": "exact"
+        },
+        "valid_to": null
+      },
+      "evidence": [
+        {
+          "manuscript_version_id": "0191b2a0-0000-7000-8000-000000030009",
+          "chapter_no": 9,
+          "paragraph_id": "p45",
+          "start": 4510,
+          "end": 4548,
+          "quote": "무진은 도윤의 주머니에서 흘러나온 낡은 나침반을 흘끗 보고는 잊었다."
+        }
+      ],
+      "confidence": 0.82,
+      "importance": "minor",
+      "reconciliation_status": "agreed",
+      "verification": {
+        "evidence_ok": true,
+        "entities_ok": true,
+        "frame_ok": true,
+        "validity_ok": true,
+        "contradiction": "none",
+        "leak_check_ok": true
+      }
+    },
+    {
+      "local_id": "r-1",
+      "type": "relationship_state",
+      "op": "supersede",
+      "frame": "canonical",
+      "story_clock": {
+        "chapter_no": 9,
+        "ordinal": 60,
+        "world_date": "D+35",
+        "precision": "exact"
+      },
+      "payload": {
+        "from_entity_id": "0191b2a0-0000-7000-8000-0000000c0003",
+        "to_entity_id": "0191b2a0-0000-7000-8000-0000000c0001",
+        "type": "mentor",
+        "axes": {
+          "trust": 3,
+          "affection": 2,
+          "respect": 2,
+          "hostility": 0,
+          "dependency": 1
+        },
+        "power_dynamic": "from_dominant",
+        "address_terms": [
+          "도윤아",
+          "자네"
+        ],
+        "speech_level": "해체",
+        "valid_from": {
+          "chapter_no": 9,
+          "ordinal": 60,
+          "precision": "exact"
+        },
+        "valid_to": null
+      },
+      "evidence": [
+        {
+          "manuscript_version_id": "0191b2a0-0000-7000-8000-000000030009",
+          "chapter_no": 9,
+          "paragraph_id": "p58",
+          "start": 5620,
+          "end": 5658,
+          "quote": "“자네가 아니었으면 내가 먼저 죽었어. 빚은 갚는 사람이다, 나는.”"
+        }
+      ],
+      "confidence": 0.88,
+      "importance": "major",
+      "reconciliation_status": "adjudicated",
+      "adjudication_call_id": "0191b2a0-0000-7000-8000-000000090001",
+      "verification": {
+        "evidence_ok": true,
+        "entities_ok": true,
+        "frame_ok": true,
+        "validity_ok": true,
+        "contradiction": "supersedes",
+        "leak_check_ok": true,
+        "notes_ko": "A는 trust 4, B는 trust 3으로 상이 → 판정자가 인용 근거로 3 채택"
+      }
+    },
+    {
+      "local_id": "pr-1",
+      "type": "promise_event",
+      "op": "advance",
+      "frame": "canonical",
+      "story_clock": {
+        "chapter_no": 9,
+        "ordinal": 45,
+        "precision": "exact"
+      },
+      "payload": {
+        "promise_id": "0191b2a0-0000-7000-8000-0000000d0001",
+        "kind": "advanced",
+        "note_ko": "나침반이 독안개 속에서 미세하게 떨렸다(숨겨진 게이트 복선 진전)"
+      },
+      "evidence": [
+        {
+          "manuscript_version_id": "0191b2a0-0000-7000-8000-000000030009",
+          "chapter_no": 9,
+          "paragraph_id": "p46",
+          "start": 4570,
+          "end": 4594,
+          "quote": "나침반 바늘이 안개 속에서 미세하게 떨렸다."
+        }
+      ],
+      "confidence": 0.8,
+      "importance": "major",
+      "reconciliation_status": "agreed",
+      "verification": {
+        "evidence_ok": true,
+        "entities_ok": true,
+        "frame_ok": true,
+        "validity_ok": true,
+        "contradiction": "none",
+        "leak_check_ok": true
+      }
+    }
+  ],
+  "unresolved_questions_ko": [
+    "독의 종류가 무엇인지(회복 기간 결정에 필요) — 13화 서하 진단에서 확정 예정(계획)"
+  ],
+  "hypothesis_results": [
+    {
+      "hypothesis_ref": "contract:ch09:MH-1",
+      "result": "realized",
+      "note_ko": "무진 부상 발생"
+    },
+    {
+      "hypothesis_ref": "contract:ch09:MH-2",
+      "result": "realized",
+      "note_ko": "2층 진입"
+    },
+    {
+      "hypothesis_ref": "contract:ch09:MH-3",
+      "result": "unrealized",
+      "note_ko": "계획된 마석 3개 획득은 본문에 2개만 등장 → 계약 부분 미실현으로 기록, 다음 계약에서 보정"
+    }
+  ],
+  "summary_l1_ko": "독안개 던전 2층. 안개 속 마수의 기습에서 무진이 도윤을 밀어내고 왼쪽 종아리에 독을 입는다. 도윤은 전생 기억으로 마수의 약점(발광 기관)을 노려 격퇴하지만, 무진은 그것을 운으로 여긴다. 철수 중 나침반 바늘이 떨린다. 무진은 도윤에게 빚을 갚겠다고 말한다. 마석 2개 획득.",
+  "ending_hook_ko": "던전 밖으로 나온 순간, 무진의 다리에서 검은 독이 무릎까지 올라와 있었다.",
+  "reconciliation": {
+    "agreed": 4,
+    "single_source": 1,
+    "conflicts": 1,
+    "adjudicated": 1,
+    "human_queue": 0,
+    "rejected_no_evidence": 1
+  }
+}

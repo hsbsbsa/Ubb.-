@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/story-spec.schema.json",
+  "title": "Story Spec",
+  "description": "Normalized, versioned requirement set (FR-1.2..1.5). Every item is hard, soft, or assumption with provenance.",
+  "type": "object",
+  "required": ["project_id", "version", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "version": { "type": "integer", "minimum": 1 },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "items": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/requirement" }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["item_ids", "description_ko", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "item_ids": { "type": "array", "items": { "type": "string" }, "minItems": 2 },
+          "description_ko": { "type": "string" },
+          "status": { "type": "string", "enum": ["open", "resolved"] },
+          "resolution_ko": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "requirement": {
+      "type": "object",
+      "required": ["id", "kind", "category", "text_ko", "provenance", "scope"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^REQ-[0-9]{3,5}$" },
+        "kind": { "$ref": "common.schema.json#/$defs/requirementKind" },
+        "category": {
+          "type": "string",
+          "enum": [
+            "genre", "premise", "character", "world", "progression", "romance", "tone", "ending",
+            "structure", "length", "mandatory_scene", "forbidden_development", "content_restriction",
+            "style", "audience", "direction", "other"
+          ]
+        },
+        "text_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
+        "structured": { "type": "object", "description": "Machine-usable form when applicable (e.g. {chapter_count: 180})" },
+        "provenance": { "type": "string", "enum": ["user", "system_default", "model_inferred"] },
+        "confirmed_by_user": { "type": "boolean", "default": false },
+        "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+        "rationale_ko": { "type": "string", "description": "For assumptions: why the system assumed this" },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "level": { "type": "string", "enum": ["series", "season", "arc", "chapter_range", "character", "relationship"] },
+            "season_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
+            "arc_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
+            "chapter_from": { "type": "integer", "minimum": 1 },
+            "chapter_to": { "type": "integer", "minimum": 1 },
+            "entity_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } }
+          },
+          "required": ["level"]
+        },
+        "effective_from_spec_version": { "type": "integer", "minimum": 1 },
+        "retired_in_spec_version": { "type": "integer", "minimum": 1 },
+        "injection_flag": { "type": "boolean", "description": "True if the meta-instruction classifier flagged this text; requires confirmation" }
+      }
+    }
+  }
+}

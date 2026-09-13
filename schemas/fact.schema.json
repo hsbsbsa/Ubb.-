@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/fact.schema.json",
+  "title": "Fact (bitemporal)",
+  "description": "A typed assertion about an entity with story-time validity and canon-version assertion period (ADR-0006).",
+  "type": "object",
+  "required": [
+    "id",
+    "project_id",
+    "timeline_id",
+    "entity_id",
+    "attribute",
+    "value",
+    "valid_from",
+    "asserted_at_version",
+    "source",
+    "frame"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "timeline_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "entity_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "attribute": {
+      "type": "string",
+      "description": "Dotted attribute family: identity.*, status.location, status.injury, status.condition, status.alive, power.rank, power.level, power.stat.*, power.ability.*, inventory.item, resource.*, affiliation.*, role.*, world.rule.*, relation.*, speech.*",
+      "pattern": "^[a-z_]+(\\.[a-z_*]+)*$"
+    },
+    "key": {
+      "type": "string",
+      "description": "Sub-key for multi-valued attributes (e.g., item entity id for inventory.item, stat name for power.stat)"
+    },
+    "value": {
+      "description": "JSON value (string/number/object)"
+    },
+    "value_text_ko": {
+      "type": "string",
+      "description": "Human-readable Korean rendering used in packs"
+    },
+    "valid_from": {
+      "$ref": "common.schema.json#/$defs/storyClock"
+    },
+    "valid_to": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/storyClock"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "asserted_at_version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "retracted_at_version": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "bible",
+        "extraction",
+        "user_correction",
+        "retcon"
+      ]
+    },
+    "confidence": {
+      "$ref": "common.schema.json#/$defs/confidence"
+    },
+    "locked": {
+      "type": "boolean",
+      "default": false
+    },
+    "frame": {
+      "type": "string",
+      "enum": [
+        "canonical",
+        "flashback",
+        "prior_loop",
+        "alternate_timeline",
+        "source_story"
+      ],
+      "description": "Facts exist only in reality-bearing frames"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/evidenceRef"
+      },
+      "description": "≥1 required unless source=bible or user_correction"
+    },
+    "commit_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "superseded_by_fact_id": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "justification_ko": {
+      "type": "string",
+      "description": "Required for user_correction"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "source"
+        ],
+        "properties": {
+          "source": {
+            "const": "extraction"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "evidence"
+        ],
+        "properties": {
+          "evidence": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "source"
+        ],
+        "properties": {
+          "source": {
+            "const": "user_correction"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "justification_ko"
+        ]
+      }
+    }
+  ]
+}

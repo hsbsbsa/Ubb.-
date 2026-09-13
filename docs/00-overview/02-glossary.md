@@ -14,7 +14,8 @@ where the Korean term is the natural one in the domain.
 | **Story Spec** | The normalized, versioned set of requirements + confirmed assumptions for a project. |
 | **Story Bible (설정집)** | Approved reference for the series: characters, speech profiles, world rules, power system, factions, locations, glossary, style profile binding. Versioned. |
 | **Series Blueprint** | Top-level plan: story promise, reader fantasy, main conflict, protagonist arc, ending, endgame requirements, season list. |
-| **Season / Volume / Arc / Chapter / Scene** | Planning hierarchy. Season (시즌) = major narrative movement; Volume (권) = export unit (~25–50 chapters); Arc (에피소드/장) = conflict unit spanning chapters; Chapter (화/회차) = published unit; Scene = draft unit. See `docs/03-story-planning/`. |
+| **Season / Arc / Chapter / Scene** | Planning hierarchy. Season (시즌) = major narrative movement; Arc (에피소드/장, major or minor) = conflict unit spanning chapters; Chapter (화/회차) = published and acceptance unit; Scene = draft unit. See `docs/03-story-planning/`. |
+| **Volume (권)** | Export grouping over accepted chapters (default 25), not a planning level; boundaries are placed near major-arc climaxes. |
 | **Chapter Contract** | Structured specification a chapter must satisfy to be accepted (why it exists, must/must-not, participants, knowledge & state deltas, hook, style profile, length, acceptance criteria). |
 | **Planning Horizon** | Number of chapters ahead planned in detail (default 6); arcs ahead planned at outline level (default 2); seasons planned at summary level (all). |
 | **Job / Workflow / Activity** | Temporal terms. A *Workflow* is a durable orchestration (e.g., `ChapterProductionWorkflow`); an *Activity* is a retriable unit of work (e.g., one LLM call, one DB commit). A *Job* is the user-visible record of a workflow run. |

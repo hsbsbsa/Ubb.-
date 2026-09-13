@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/export-request.schema.json",
+  "title": "Export Request",
+  "type": "object",
+  "required": ["project_id", "scope", "format"],
+  "additionalProperties": false,
+  "properties": {
+    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "scope": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string", "enum": ["chapter_range", "volume", "season", "series"] },
+        "chapter_from": { "type": "integer", "minimum": 1 },
+        "chapter_to": { "type": "integer", "minimum": 1 },
+        "volume_no": { "type": "integer", "minimum": 1 },
+        "season_id": { "$ref": "common.schema.json#/$defs/uuid" }
+      }
+    },
+    "format": { "type": "string", "enum": ["txt", "docx", "epub", "platform_profile"] },
+    "platform_profile_id": { "type": "string" },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "chapter_header_format": { "type": "string", "description": "e.g. '{n}화. {title}'" },
+        "include_glossary_appendix": { "type": "boolean" },
+        "ai_disclosure_text_ko": { "type": "string" },
+        "rights_statement_ko": { "type": "string" },
+        "include_provenance_record": { "type": "boolean" },
+        "only_accepted": { "type": "boolean", "default": true }
+      }
+    }
+  }
+}

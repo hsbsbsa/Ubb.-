@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/style-profile.schema.json",
+  "title": "Style Profile",
+  "description": "Versioned Korean webnovel style profile: base, genre overlay, or project-bound composition (docs/02-korean-style/02).",
+  "type": "object",
+  "required": ["id", "kind", "version", "name"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "description": "e.g. kr-webnovel-base, genre/hunter-gate, project/<uuid>" },
+    "kind": { "type": "string", "enum": ["base", "overlay", "project"] },
+    "version": { "type": "integer", "minimum": 1 },
+    "name": { "type": "string" },
+    "content_hash": { "type": "string" },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base": { "type": "string" },
+        "overlays": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+        "primary_overlay": { "type": "string" }
+      }
+    },
+    "prose": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sentence_length": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "target_chars": { "type": "integer", "minimum": 10, "maximum": 80 },
+            "max_chars": { "type": "integer", "minimum": 40, "maximum": 200 },
+            "variance": { "type": "string", "enum": ["low", "medium", "high"] }
+          }
+        },
+        "paragraph": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_sentences": { "type": "integer", "minimum": 1, "maximum": 8 },
+            "max_chars": { "type": "integer", "minimum": 60, "maximum": 600 },
+            "single_line_ok": { "type": "boolean" }
+          }
+        },
+        "ending_variety": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_consecutive_same": { "type": "integer", "minimum": 1, "maximum": 6 },
+            "max_ratio_single": { "type": "number", "minimum": 0.2, "maximum": 1 }
+          }
+        },
+        "pronoun": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "third_person_per_1000": { "type": "number", "minimum": 0, "maximum": 30 },
+            "forbid_그녀_as_default_subject": { "type": "boolean" }
+          }
+        },
+        "tense": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "narration": { "type": "string", "enum": ["past", "present", "mixed"] } }
+        },
+        "quotes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "dialogue": { "type": "string" }, "thought": { "type": "string" } }
+        },
+        "ellipsis": { "type": "string" },
+        "english_leakage": { "type": "string", "enum": ["forbid", "system_ui_only", "allow_glossary"] },
+        "hanja_inline": { "type": "string", "enum": ["forbid", "technique_names_first_mention", "allow"] }
+      }
+    },
+    "dialogue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ratio_band": { "$ref": "#/$defs/band" },
+        "attribution_max_tagged_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "forbid_adverb_tags": { "type": "boolean" },
+        "reaction_beats": { "type": "string", "enum": ["interleave", "sparse", "free"] },
+        "monologue_ratio_band": { "$ref": "#/$defs/band" },
+        "monologue_format": { "type": "string" },
+        "onomatopoeia": { "type": "string", "enum": ["minimal", "moderate", "heavy"] },
+        "speech_level_policy": { "type": "string", "enum": ["from_speech_profiles"] }
+      }
+    },
+    "structure": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hook_within_sentences": { "type": "integer", "minimum": 1, "maximum": 15 },
+        "opening_types_allowed": { "type": "array", "items": { "$ref": "#/$defs/openingType" } },
+        "opening_types_forbidden": { "type": "array", "items": { "$ref": "#/$defs/openingType" } },
+        "scene_count_band": { "$ref": "#/$defs/intBand" },
+        "local_payoff_required_any_of": { "type": "array", "items": { "$ref": "#/$defs/payoffType" } },
+        "ending_types_allowed": { "type": "array", "items": { "$ref": "#/$defs/endingType" } },
+        "ending_types_forbidden": { "type": "array", "items": { "$ref": "#/$defs/endingType" } },
+        "cadence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "progression_event_every_chapters": { "type": "integer", "minimum": 1 },
+            "cider_every_chapters": { "type": "integer", "minimum": 1, "description": "사이다 beat interval" },
+            "max_frustration_streak": { "type": "integer", "minimum": 1, "description": "max 고구마 streak" },
+            "relationship_milestone_every_chapters": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "exposition": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_consecutive_sentences": { "type": "integer", "minimum": 1 },
+            "lore_via": { "type": "array", "items": { "type": "string", "enum": ["action", "dialogue", "status_text", "narration_slot"] } },
+            "lore_terms_per_chapter_max": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "vocabulary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "preferred_terms": { "type": "array", "items": { "type": "string" } },
+        "discouraged_terms": { "type": "array", "items": { "type": "string" } },
+        "fixed_spellings": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "devices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description_ko"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "description_ko": { "type": "string" },
+          "format_grammar": { "type": "string", "description": "e.g. 상태창 block grammar (EBNF-ish or example)" },
+          "max_per_chapter": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "forbidden_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "pattern", "severity"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "type": "string", "enum": ["translationese", "light_novel", "screenplay", "english_leakage", "stale_cliche", "project_specific"] },
+          "pattern": { "type": "string", "description": "Regex (JS syntax) or literal" },
+          "is_regex": { "type": "boolean", "default": true },
+          "severity": { "$ref": "common.schema.json#/$defs/severity" },
+          "weight": { "type": "number", "minimum": 0, "maximum": 2 },
+          "note_ko": { "type": "string" }
+        }
+      }
+    },
+    "taboos": { "type": "array", "items": { "type": "string" }, "description": "Over-used clichés to ration (overlay)" },
+    "exemplar_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "functions": { "type": "array", "items": { "$ref": "#/$defs/exemplarFunction" } },
+        "max_count": { "type": "integer", "minimum": 0, "maximum": 8 },
+        "min_score": { "type": "number", "minimum": 0, "maximum": 5 },
+        "allow_user_exemplars": { "type": "boolean" }
+      }
+    },
+    "preferences": {
+      "type": "array",
+      "description": "Project-level textual preferences",
+      "items": {
+        "type": "object",
+        "required": ["text_ko", "priority"],
+        "additionalProperties": false,
+        "properties": {
+          "text_ko": { "type": "string" },
+          "priority": { "type": "string", "enum": ["must", "prefer"] },
+          "scope": { "type": "string", "enum": ["all", "dialogue", "narration", "structure"] }
+        }
+      }
+    },
+    "forbidden_expressions": { "type": "array", "items": { "type": "string" } },
+    "speech_defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "unknown_adult_pair": { "$ref": "common.schema.json#/$defs/speechLevel" },
+        "notes_ko": { "type": "string" }
+      }
+    },
+    "rubric": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dimension", "anchors_ko"],
+        "additionalProperties": false,
+        "properties": {
+          "dimension": { "type": "string" },
+          "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+          "anchors_ko": {
+            "type": "object",
+            "description": "Keys '1'..'5' → Korean anchor text",
+            "additionalProperties": { "type": "string" }
+          }
+        }
+      }
+    },
+    "lint_thresholds": {
+      "type": "object",
+      "description": "rule_id → {warn, fail}",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["warn", "fail"],
+        "additionalProperties": false,
+        "properties": { "warn": { "type": "number" }, "fail": { "type": "number" } }
+      }
+    },
+    "rubric_notes_ko": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "band": {
+      "type": "object",
+      "required": ["min", "max"],
+      "additionalProperties": false,
+      "properties": { "min": { "type": "number", "minimum": 0, "maximum": 1 }, "max": { "type": "number", "minimum": 0, "maximum": 1 }, "target": { "type": "number" } }
+    },
+    "intBand": {
+      "type": "object",
+      "required": ["min", "max"],
+      "additionalProperties": false,
+      "properties": { "min": { "type": "integer", "minimum": 1 }, "max": { "type": "integer", "minimum": 1 } }
+    },
+    "openingType": {
+      "type": "string",
+      "enum": ["continue_cliffhanger", "in_medias_res", "sharp_dialogue", "status_update", "time_skip_with_tension", "weather_landscape", "lore_dump", "waking_up_routine"]
+    },
+    "endingType": {
+      "type": "string",
+      "enum": ["cliffhanger", "reveal", "decision", "arrival_of_threat", "emotional_peak", "quiet_ominous", "mid_scene_fade", "summary_reflection"]
+    },
+    "payoffType": {
+      "type": "string",
+      "enum": ["사이다", "정보_공개", "감정_진전", "성장_확인", "유머_포인트"]
+    },
+    "exemplarFunction": {
+      "type": "string",
+      "enum": ["hook", "action", "banter", "status_window", "emotional_beat", "cliffhanger", "exposition_in_action", "comedy_beat"]
+    }
+  }
+}

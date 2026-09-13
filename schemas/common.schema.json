@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/common.schema.json",
+  "title": "Common definitions",
+  "description": "Shared primitive types referenced by all Yeonjae Studio schemas.",
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUIDv7"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC ISO-8601"
+    },
+    "koreanText": {
+      "type": "string",
+      "minLength": 1,
+      "description": "UTF-8, NFC-normalized Korean text. Never machine-translated."
+    },
+    "storyClock": {
+      "type": "object",
+      "description": "Position in story time. Ordering: (timeline_id, world_date if comparable, chapter_no, ordinal).",
+      "required": ["chapter_no", "ordinal", "precision"],
+      "additionalProperties": false,
+      "properties": {
+        "chapter_no": { "type": "integer", "minimum": 0, "description": "0 = before chapter 1 (backstory)" },
+        "ordinal": { "type": "integer", "minimum": 0, "description": "Order within the chapter" },
+        "world_date": { "type": "string", "description": "In-world date/time (ISO-like or era-relative string)" },
+        "precision": { "type": "string", "enum": ["exact", "approx", "unknown"] }
+      }
+    },
+    "realityFrame": {
+      "type": "string",
+      "enum": [
+        "canonical",
+        "flashback",
+        "dream",
+        "hallucination",
+        "lie",
+        "hypothetical",
+        "prediction",
+        "plan",
+        "prior_loop",
+        "alternate_timeline",
+        "source_story",
+        "non_canonical_draft"
+      ],
+      "description": "See ADR-0007. Only canonical/flashback/prior_loop/alternate_timeline may produce facts."
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["blocking", "major", "minor", "note"]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "evidenceRef": {
+      "type": "object",
+      "description": "Exact span into an immutable manuscript version. quote must equal text[start:end] after NFC.",
+      "required": ["manuscript_version_id", "start", "end", "quote"],
+      "additionalProperties": false,
+      "properties": {
+        "manuscript_version_id": { "$ref": "#/$defs/uuid" },
+        "chapter_no": { "type": "integer", "minimum": 1 },
+        "paragraph_id": { "type": "string", "description": "Stable paragraph id within the version, e.g. p14" },
+        "start": { "type": "integer", "minimum": 0, "description": "Code-point offset (inclusive)" },
+        "end": { "type": "integer", "minimum": 0, "description": "Code-point offset (exclusive)" },
+        "quote": { "$ref": "#/$defs/koreanText" },
+        "quote_hash": { "type": "string", "description": "SHA-256 of quote" }
+      }
+    },
+    "entityRef": {
+      "type": "object",
+      "required": ["entity_id"],
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": { "$ref": "#/$defs/uuid" },
+        "name_ko": { "$ref": "#/$defs/koreanText" }
+      }
+    },
+    "knowerRef": {
+      "type": "object",
+      "description": "A character entity or a pseudo-knower.",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string", "enum": ["character", "narrator", "reader"] },
+        "entity_id": { "$ref": "#/$defs/uuid" }
+      },
+      "if": { "properties": { "kind": { "const": "character" } } },
+      "then": { "required": ["kind", "entity_id"] }
+    },
+    "stance": {
+      "type": "string",
+      "enum": ["knows", "suspects", "believes_false", "pretends", "unaware", "forgot", "doubts"]
+    },
+    "speechLevel": {
+      "type": "string",
+      "enum": ["하십시오체", "해요체", "해체", "하게체", "하오체", "해라체"],
+      "description": "Korean sentence-final speech levels (상대 높임법). 해체 = 반말."
+    },
+    "requirementKind": {
+      "type": "string",
+      "enum": ["hard", "soft", "assumption"]
+    },
+    "provenance": {
+      "type": "string",
+      "enum": ["user", "system_default", "model_inferred", "bible", "extraction", "user_correction", "retcon", "rollback"]
+    },
+    "versionRef": {
+      "type": "object",
+      "description": "Pinned input versions for reproducibility.",
+      "additionalProperties": false,
+      "properties": {
+        "spec_version": { "type": "integer", "minimum": 1 },
+        "bible_version": { "type": "integer", "minimum": 1 },
+        "style_profile_version_id": { "$ref": "#/$defs/uuid" },
+        "canon_version": { "type": "integer", "minimum": 0 },
+        "prompt_set_id": { "$ref": "#/$defs/uuid" },
+        "template_version": { "type": "string" }
+      }
+    }
+  }
+}

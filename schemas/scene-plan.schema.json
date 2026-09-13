@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/scene-plan.schema.json",
+  "title": "Scene Plan",
+  "description": "Drafting unit within a chapter (docs/03-story-planning/01 §8).",
+  "type": "object",
+  "required": ["scene_no", "objective_ko", "pov", "participants", "location_id", "beats", "length_target_chars", "speaker_pairs"],
+  "additionalProperties": false,
+  "properties": {
+    "scene_no": { "type": "integer", "minimum": 1 },
+    "objective_ko": { "type": "string" },
+    "pov": {
+      "type": "object",
+      "required": ["character_id", "person"],
+      "additionalProperties": false,
+      "properties": {
+        "character_id": { "$ref": "common.schema.json#/$defs/uuid" },
+        "person": { "type": "string", "enum": ["first", "third_limited", "third_omniscient"] }
+      }
+    },
+    "participants": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" }, "minItems": 1 },
+    "location_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "story_time": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "start": { "$ref": "common.schema.json#/$defs/storyClock" }, "end": { "$ref": "common.schema.json#/$defs/storyClock" }, "elapsed_hint_ko": { "type": "string" } }
+    },
+    "opening_beat_type": { "type": "string" },
+    "ending_beat_type": { "type": "string" },
+    "beats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["description_ko", "type"],
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string", "enum": ["action", "dialogue", "revelation", "decision", "emotional", "comedic", "progression", "transition", "status_text", "cliffhanger"] },
+          "description_ko": { "type": "string" },
+          "emotional_target_ko": { "type": "string" },
+          "reveals_proposition_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
+          "tags": { "type": "array", "items": { "type": "string", "enum": ["사이다", "감정", "정보", "유머", "성장", "긴장"] } }
+        }
+      }
+    },
+    "entry_state_ko": { "type": "string" },
+    "exit_state_ko": { "type": "string" },
+    "state_deltas": { "type": "array", "items": { "$ref": "chapter-contract.schema.json#/$defs/stateDelta" } },
+    "dialogue_density_target": { "type": "number", "minimum": 0, "maximum": 1 },
+    "length_target_chars": { "type": "integer", "minimum": 300 },
+    "continuity_anchors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["fact_id", "statement_ko"],
+        "additionalProperties": false,
+        "properties": {
+          "fact_id": { "$ref": "common.schema.json#/$defs/uuid" },
+          "statement_ko": { "type": "string" },
+          "evidence": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/evidenceRef" } }
+        }
+      }
+    },
+    "must_not_ko": { "type": "array", "items": { "type": "string" } },
+    "speaker_pairs": {
+      "type": "array",
+      "description": "Pre-resolved speech levels and address terms for pairs who will talk in this scene.",
+      "items": {
+        "type": "object",
+        "required": ["speaker_id", "addressee_id", "speech_level", "address_terms"],
+        "additionalProperties": false,
+        "properties": {
+          "speaker_id": { "$ref": "common.schema.json#/$defs/uuid" },
+          "addressee_id": { "$ref": "common.schema.json#/$defs/uuid" },
+          "speech_level": { "$ref": "common.schema.json#/$defs/speechLevel" },
+          "address_terms": { "type": "array", "items": { "type": "string" } },
+          "allowed_shift": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "reason": { "type": "string", "enum": ["anger", "intimacy_step", "disguise", "mockery", "public_formality", "age_reveal", "emotional_outburst"] },
+              "to_level": { "$ref": "common.schema.json#/$defs/speechLevel" }
+            }
+          },
+          "source_relationship_state_id": { "$ref": "common.schema.json#/$defs/uuid" }
+        }
+      }
+    }
+  }
+}
