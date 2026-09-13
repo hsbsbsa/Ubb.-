@@ -42,9 +42,9 @@
     "value": {
       "description": "JSON value (string/number/object)"
     },
-    "value_text_ko": {
+    "value_text": {
       "type": "string",
-      "description": "Human-readable Korean rendering used in packs"
+      "description": "Human-readable English rendering used in packs"
     },
     "valid_from": {
       "$ref": "common.schema.json#/$defs/storyClock"
@@ -117,7 +117,7 @@
         }
       ]
     },
-    "justification_ko": {
+    "justification": {
       "type": "string",
       "description": "Required for user_correction"
     }
@@ -158,7 +158,7 @@
       },
       "then": {
         "required": [
-          "justification_ko"
+          "justification"
         ]
       }
     }

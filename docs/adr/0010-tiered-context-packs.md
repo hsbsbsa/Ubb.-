@@ -5,11 +5,13 @@
 - **Deciders:** principal architects (product, software, AI systems, data, Korean webnovel production)
 
 ## Context
-Token limits force trimming; trimming must never drop hard requirements, style rules or critical canon.
+Token limits force trimming; trimming must never drop hard requirements, the narrative identity contracts
+or critical canon.
 Calls must be reproducible and auditable.
 
 ## Decision
-Assemble packs from role templates with four tiers: T0 mandatory (never trimmed; overflow = error),
+Assemble packs from role templates with four tiers: T0 mandatory (never trimmed; overflow = error; hard
+requirements enter as the compiled Active Constraint Set, ADR-0033),
 T1 critical (compress only via approved lossless renderers; degradation ladder; never dropped), T2 relevant
 (ranked, truncated), T3 optional (dropped first). Packs are pure functions of pinned inputs, manifested,
 hashed, cached, validated byte-for-byte for T0 before the call. No LLM calls during assembly.

@@ -1,8 +1,10 @@
 # ADR-0005: Fail-closed Style Guard on every style-sensitive call
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0027
 - **Date:** 2026-09-13
 - **Deciders:** principal architects (product, software, AI systems, data, Korean webnovel production)
+
+> **Superseded.** The guard now requires both an English Output-Language Contract and a Korean-webnovel Narrative-Tradition Contract; the 'Style Block' is the Narrative Identity Block. Kept for history.
 
 ## Context
 Previous attempts lost the Korean-webnovel instruction after the first call. A prompt-level convention is

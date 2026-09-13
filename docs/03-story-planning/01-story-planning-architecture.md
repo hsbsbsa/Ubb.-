@@ -22,7 +22,7 @@ Series Blueprint (1)
      └─ Arc: major (8–30 ch) ─ contains minor arcs (2–6 ch)  "conflict unit"
          └─ Chapter Contract (1 chapter, ~1,800–3,500 words)   "acceptance unit"
              └─ Scene Plan (2–4 per chapter)                    "drafting unit"
-Volume = export grouping over chapters (권), not a planning level; default 25 chapters/volume, adjustable.
+Volume = export grouping over chapters, not a planning level; default 25 chapters/volume, adjustable.
 ```
 
 Why not plan volumes: volumes are a publication artifact and their boundaries move with platform needs;
@@ -54,7 +54,7 @@ arcs[] outline, promise budget (which blueprint promises open/close here).
 
 Arc (major/minor): `objective`, `conflict`, `antagonistic_force`, `stakes`, `entry_state`, `exit_state`
 (assertions to be realized), `participants`, `locations`, `story_time_window`, `beats[]` (ordered; each with
-type: setup, escalation, reversal, 사이다, revelation, emotional, progression, climax, aftermath; and target
+type: setup, escalation, reversal, satisfaction (사이다), revelation, emotional, progression, climax, aftermath; and target
 chapter offset), `promises_opened[]`, `promises_advanced[]`, `promises_paid[]`, `progression_milestones[]`,
 `relationship_milestones[]`, `knowledge_changes_planned[]` (who will learn what, when — as `plan` frame),
 `cadence_check` (deterministic validation vs the tradition/genre profiles: satisfaction-beat interval,
@@ -146,7 +146,7 @@ protagonist state & progression position, recent arc summaries (L2) for repetiti
   for variation with explicit "avoid" list.
 - Chapter-level: contract `local_satisfaction` and `ending_type` distributions over the last 10 chapters
   are checked deterministically (no more than 3 identical ending types in a row; vary payoff types).
-- Scene-level: deterministic repeated-paragraph checks after drafting (lint `KL-REP-*`).
+- Scene-level: deterministic repeated-paragraph checks after drafting (lint `EP-REP-*`).
 
 ## 11. Reacting to feedback (Beta)
 

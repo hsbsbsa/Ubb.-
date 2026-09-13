@@ -1,0 +1,98 @@
+{
+  "id": "project/0191b2a0-0000-7000-8000-000000000001",
+  "kind": "composed",
+  "version": 1,
+  "name": "Second Awakening — composed narrative identity",
+  "content_hash": "sha256:placeholder-composed-v1",
+  "lineage": {
+    "output_language": "lang/en@1",
+    "tradition": "tradition/kr-webnovel@1",
+    "genres": ["genre/hunter-gate@1", "genre/regression@1"],
+    "primary_genre": "genre/hunter-gate@1",
+    "setting": "project/setting@1",
+    "naming": "project/naming@1",
+    "register_policy": "project/register-policy@1",
+    "terminology": "project/terminology@1",
+    "preferences": "project/preferences@1"
+  },
+  "output_language": {
+    "language": "en",
+    "locale": "en-US",
+    "contract_text": "Write the reader-facing manuscript in natural, idiomatic English (spelling: en-US). Compose directly in English — do not write in another language and translate, and do not imitate another language's grammar or idioms. Use standard English article usage, word order, and dialogue punctuation (curly quotes, em dashes, the ellipsis character). Render address terms, titles, and formality the way natural English speakers of this setting would speak them (see the dialogue register notes) — never as transliterated honorific suffixes attached to names. Use only the approved romanized or preserved terms listed in the terminology notes; everything else is plain English. Do not produce translation-like English.",
+    "contract_hash": "sha256:placeholder-lang-en-contract-v1"
+  },
+  "tradition": {
+    "tradition_id": "kr-webnovel",
+    "contract_text": "Follow Korean serialized-webnovel structure and pacing: open on tension or continuation within the first few sentences; write dialogue-forward scenes with short reaction beats; keep paragraphs short and mobile-readable; deliver at least one local payoff in this episode (a satisfaction beat, a revelation, an emotional step, confirmed growth, or humor); keep exposition inside action, dialogue, or status text; maintain the progression cadence; end with strong forward pull (cliffhanger, reveal, decision, threat, emotional peak, or quiet menace). Do not drift into Western epic-fantasy, literary-fiction, or traditionally published novel pacing. Preserve the configured genre conventions. Do not imitate named authors or copyrighted works.",
+    "contract_hash": "sha256:placeholder-kr-webnovel-contract-v1",
+    "structure": {
+      "cadence": { "progression_event_every_chapters": 3, "satisfaction_every_chapters": 2, "max_frustration_streak": 3 }
+    },
+    "rhythm": { "hindsight_monologue_max_ratio": 0.2 }
+  },
+  "setting": {
+    "setting_type": "modern_korea",
+    "place_names_policy": "Real Seoul districts, romanized (Gangnam, Mapo)",
+    "institutions": ["Hunter Association", "guilds (White Night)", "measurement bureau", "Baekyeon Group"],
+    "currency": "won (Arabic numerals with commas)",
+    "measurement": "metric",
+    "cultural_texture": "preserve_behaviors_localize_language",
+    "cultural_reference_policy": "Explain in-world through action or dialogue when needed; never footnote."
+  },
+  "naming": {
+    "style": "korean_romanized",
+    "romanization_system": "revised_romanization",
+    "name_order": "family_given",
+    "given_name_hyphenation": "hyphenated",
+    "notes": ["Kang Do-yoon, Lee Seo-ha, Park Mu-jin, Choi Hyun-seok, Han Yu-ri, Lee Tae-san, Yoon Jae-kyung, Jung Min-jae"]
+  },
+  "register_policy": {
+    "rendering_rules": [
+      { "condition": "formality>=3 && deference>=3", "guidance": "Full titles or sir/ma'am; few contractions; requests phrased as questions; no first names." },
+      { "condition": "formality==2", "guidance": "Surname with title or full name early on; neutral contractions; polite directness." },
+      { "condition": "formality<=1 && familiarity>=2", "guidance": "First names or nicknames; contractions free; teasing allowed." },
+      { "condition": "intimacy>=3", "guidance": "First name alone; softer directness; shared shorthand." },
+      { "condition": "public_variant", "guidance": "Revert to titles in public even after intimacy ('Hunter Kang' in front of the guild)." }
+    ],
+    "default_registers": [
+      { "relationship_class": "stranger", "register": { "formality": 3, "deference": 2, "familiarity": 0, "directness": 2, "contractions": "avoid", "address_terms": ["Hunter", "sir", "ma'am"] } }
+    ],
+    "anti_patterns": [
+      "Honorific suffixes as English morphemes (-ssi, -nim, -ah/-ya, -oppa/-hyung attached to names)",
+      "Literal kinship vocatives for non-kin ('Older brother, wait!')",
+      "Politeness calques ('Have you eaten?', 'I will go first', 'Work hard!')",
+      "Formality expressed through stilted archaic English between modern peers"
+    ],
+    "allowed_shift_reasons": ["anger", "intimacy_step", "disguise", "mockery", "public_formality", "age_reveal", "emotional_outburst"],
+    "strictness": "standard"
+  },
+  "terminology": {
+    "romanization_system": "revised_romanization",
+    "default_decision": "translate",
+    "terms": [
+      { "source_term": "헌터", "source_language": "ko", "decision": "translate", "english": "hunter" },
+      { "source_term": "게이트", "source_language": "ko", "decision": "translate", "english": "gate" },
+      { "source_term": "각성", "source_language": "ko", "decision": "translate", "english": "awakening" },
+      { "source_term": "마석", "source_language": "ko", "decision": "translate", "english": "mana stone" },
+      { "source_term": "협회", "source_language": "ko", "decision": "translate", "english": "the Association" },
+      { "source_term": "선배", "source_language": "ko", "decision": "translate", "english": "Senior + surname" },
+      { "source_term": "포터", "source_language": "ko", "decision": "translate", "english": "porter" },
+      { "source_term": "대붕괴", "source_language": "ko", "decision": "translate", "english": "the Collapse" },
+      { "source_term": "감시자", "source_language": "ko", "decision": "translate", "english": "the Watcher" },
+      { "source_term": "원", "source_language": "ko", "decision": "romanize", "romanized": "won" }
+    ],
+    "preserve_script_contexts": ["none"],
+    "export_glossary": false
+  },
+  "preferences": {
+    "numeric_overrides": { "tradition.rhythm.paragraph_max_words_narration": 55 },
+    "textual": [
+      { "text": "Short sentences.", "priority": "prefer", "scope": "narration" },
+      { "text": "Exposition through action and dialogue.", "priority": "must", "scope": "narration" },
+      { "text": "Hindsight monologue at most 20% of a chapter.", "priority": "must", "scope": "structure" }
+    ],
+    "forbidden_expressions": ["a chill ran down his spine"],
+    "exemplar_policy": { "functions": ["hook", "action", "banter", "emotional_beat", "cliffhanger"], "max_count": 4, "min_score": 85, "allow_user_exemplars": true }
+  },
+  "calibration": { "status": "uncalibrated", "notes": "Composed at bible approval; thresholds inherit starting values." }
+}

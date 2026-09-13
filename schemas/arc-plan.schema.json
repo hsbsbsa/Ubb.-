@@ -4,7 +4,7 @@
   "title": "Arc Plan",
   "description": "Major or minor arc plan (docs/03-story-planning/01 §4). Plan frame — never canon.",
   "type": "object",
-  "required": ["id", "project_id", "season_id", "kind", "ordinal", "title_ko", "objective_ko", "conflict_ko", "beats", "chapter_range_est", "status"],
+  "required": ["id", "project_id", "season_id", "kind", "ordinal", "title", "objective", "conflict", "beats", "chapter_range_est", "status"],
   "additionalProperties": false,
   "properties": {
     "id": { "$ref": "common.schema.json#/$defs/uuid" },
@@ -15,13 +15,13 @@
     "ordinal": { "type": "integer", "minimum": 1 },
     "version": { "type": "integer", "minimum": 1 },
     "pinned": { "$ref": "common.schema.json#/$defs/versionRef" },
-    "title_ko": { "type": "string" },
-    "objective_ko": { "type": "string" },
-    "conflict_ko": { "type": "string" },
-    "antagonistic_force_ko": { "type": "string" },
-    "stakes_ko": { "type": "string" },
-    "entry_state_ko": { "type": "string" },
-    "exit_state_assertions_ko": { "type": "array", "items": { "type": "string" } },
+    "title": { "type": "string" },
+    "objective": { "type": "string" },
+    "conflict": { "type": "string" },
+    "antagonistic_force": { "type": "string" },
+    "stakes": { "type": "string" },
+    "entry_state": { "type": "string" },
+    "exit_state_assertions": { "type": "array", "items": { "type": "string" } },
     "participants": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
     "locations": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
     "story_time_window": {
@@ -40,12 +40,12 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "type", "description_ko", "target_chapter_offset"],
+        "required": ["id", "type", "description", "target_chapter_offset"],
         "additionalProperties": false,
         "properties": {
           "id": { "type": "string" },
           "type": { "type": "string", "enum": ["setup", "escalation", "reversal", "cider", "revelation", "emotional", "progression", "climax", "aftermath", "comedic", "relationship"] },
-          "description_ko": { "type": "string" },
+          "description": { "type": "string" },
           "target_chapter_offset": { "type": "integer", "minimum": 0 },
           "participants": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
           "promise_refs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
@@ -59,7 +59,7 @@
                 "knower": { "$ref": "common.schema.json#/$defs/knowerRef" },
                 "proposition_ref": { "type": "string", "description": "proposition id or 'new:<text>'" },
                 "to_stance": { "$ref": "common.schema.json#/$defs/stance" },
-                "channel_ko": { "type": "string" }
+                "channel": { "type": "string" }
               }
             }
           },
@@ -79,18 +79,18 @@
         "cider_interval_ok": { "type": "boolean" },
         "progression_interval_ok": { "type": "boolean" },
         "frustration_streak_ok": { "type": "boolean" },
-        "notes_ko": { "type": "array", "items": { "type": "string" } }
+        "notes": { "type": "array", "items": { "type": "string" } }
       }
     },
-    "risks_ko": { "type": "array", "items": { "type": "string" } },
-    "must_not_ko": { "type": "array", "items": { "type": "string" } },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "must_not": { "type": "array", "items": { "type": "string" } },
     "repetition_check": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "compared_arc_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
         "similarity_score": { "type": "number", "minimum": 0, "maximum": 1 },
-        "notes_ko": { "type": "string" }
+        "notes": { "type": "string" }
       }
     },
     "status": { "type": "string", "enum": ["draft", "validated", "approved", "stale", "superseded", "realized"] },

@@ -1,70 +1,652 @@
 {
-  "_comment": "Knowledge ledger excerpt for the fixture story: expected knowledge_states after canon commits through chapter 60 (season 1). Timeline = main unless noted. Story clocks abbreviated to chapter_no/ordinal. Used as expected output for extraction/long-form tests and as the seed for knowledge-matrix UI tests.",
+  "_comment": "Knowledge ledger excerpt for the fixture story: expected knowledge_states after canon commits through chapter 60 (season 1). Timeline = main unless noted. Story clocks abbreviated to chapter.ordinal. Proposition truth is per timeline (ADR-0031). Used as expected output for extraction/long-form tests and as the seed for knowledge-matrix UI tests. Working text is English.",
   "project_id": "0191b2a0-0000-7000-8000-000000000001",
+  "timelines": {
+    "main": "0191b2a0-0000-7000-8000-000000050001",
+    "prior_loop_1": "0191b2a0-0000-7000-8000-000000050002"
+  },
   "propositions": [
-    { "id": "0191b2a0-0000-7000-8000-0000000b0001", "statement_ko": "강도윤은 회귀자다.", "kind": "secret", "truth_value": { "main": "true" }, "entity_ids": ["0191b2a0-0000-7000-8000-0000000c0001"], "secret": { "owner_ids": ["0191b2a0-0000-7000-8000-0000000c0001"], "allowed_knower_ids": [], "reader_may_know": true, "reveal_not_before_chapter": 58 } },
-    { "id": "0191b2a0-0000-7000-8000-0000000b0002", "statement_ko": "이서하는 이태산 회장의 사생아다.", "kind": "secret", "truth_value": { "main": "true" }, "entity_ids": ["0191b2a0-0000-7000-8000-0000000c0002", "0191b2a0-0000-7000-8000-0000000c0006"], "secret": { "owner_ids": ["0191b2a0-0000-7000-8000-0000000c0002"], "allowed_knower_ids": ["0191b2a0-0000-7000-8000-0000000c0006"], "reader_may_know": true, "reveal_not_before_chapter": 72 } },
-    { "id": "0191b2a0-0000-7000-8000-0000000b0003", "statement_ko": "강도윤이 레이드 정보를 브로커에게 팔고 있다.", "kind": "intent", "truth_value": { "main": "false" }, "entity_ids": ["0191b2a0-0000-7000-8000-0000000c0001"], "secret": null },
-    { "id": "0191b2a0-0000-7000-8000-0000000b0004", "statement_ko": "윤재경 협회장이 「감시자」다.", "kind": "secret", "truth_value": { "main": "true" }, "entity_ids": ["0191b2a0-0000-7000-8000-0000000c0007"], "secret": { "owner_ids": ["0191b2a0-0000-7000-8000-0000000c0007"], "allowed_knower_ids": [], "reader_may_know": true, "reveal_not_before_chapter": 120 } },
-    { "id": "0191b2a0-0000-7000-8000-0000000b0005", "statement_ko": "강남 게이트 브레이크는 3월 14일에 일어나며 사상자는 200명이다.", "kind": "event", "truth_value": { "main": "false", "0191b2a0-0000-7000-8000-000000050002": "true" }, "entity_ids": [], "secret": null },
-    { "id": "0191b2a0-0000-7000-8000-0000000b0006", "statement_ko": "강도윤과 이서하는 남매다.", "kind": "relationship", "truth_value": { "main": "false" }, "entity_ids": ["0191b2a0-0000-7000-8000-0000000c0001", "0191b2a0-0000-7000-8000-0000000c0002"], "secret": null },
-    { "id": "0191b2a0-0000-7000-8000-0000000b0007", "statement_ko": "낡은 나침반은 숨겨진 게이트를 가리킨다.", "kind": "world_rule", "truth_value": { "main": "true" }, "entity_ids": ["0191b2a0-0000-7000-8000-0000000a0001"], "secret": null },
-    { "id": "0191b2a0-0000-7000-8000-0000000b0008", "statement_ko": "이서하는 대붕괴에서 죽었다.", "kind": "event", "truth_value": { "main": "unknown", "0191b2a0-0000-7000-8000-000000050002": "true" }, "entity_ids": ["0191b2a0-0000-7000-8000-0000000c0002"], "secret": null }
+    {
+      "id": "0191b2a0-0000-7000-8000-0000000b0001",
+      "statement": "Kang Do-yoon is a regressor.",
+      "kind": "secret",
+      "truth": [
+        {
+          "timeline_id": "0191b2a0-0000-7000-8000-000000050001",
+          "value": "true"
+        }
+      ],
+      "entity_ids": [
+        "0191b2a0-0000-7000-8000-0000000c0001"
+      ],
+      "secret": {
+        "owner_ids": [
+          "0191b2a0-0000-7000-8000-0000000c0001"
+        ],
+        "allowed_knower_ids": [],
+        "reader_may_know": true,
+        "reveal_not_before_chapter": 58
+      }
+    },
+    {
+      "id": "0191b2a0-0000-7000-8000-0000000b0002",
+      "statement": "Lee Seo-ha is Chairman Lee Tae-san's illegitimate daughter.",
+      "kind": "secret",
+      "truth": [
+        {
+          "timeline_id": "0191b2a0-0000-7000-8000-000000050001",
+          "value": "true"
+        }
+      ],
+      "entity_ids": [
+        "0191b2a0-0000-7000-8000-0000000c0002",
+        "0191b2a0-0000-7000-8000-0000000c0006"
+      ],
+      "secret": {
+        "owner_ids": [
+          "0191b2a0-0000-7000-8000-0000000c0002"
+        ],
+        "allowed_knower_ids": [
+          "0191b2a0-0000-7000-8000-0000000c0006"
+        ],
+        "reader_may_know": true,
+        "reveal_not_before_chapter": 72
+      }
+    },
+    {
+      "id": "0191b2a0-0000-7000-8000-0000000b0003",
+      "statement": "Kang Do-yoon sells raid intelligence to brokers.",
+      "kind": "intent",
+      "truth": [
+        {
+          "timeline_id": "0191b2a0-0000-7000-8000-000000050001",
+          "value": "false"
+        }
+      ],
+      "entity_ids": [
+        "0191b2a0-0000-7000-8000-0000000c0001"
+      ],
+      "secret": null
+    },
+    {
+      "id": "0191b2a0-0000-7000-8000-0000000b0004",
+      "statement": "Chairman Yoon Jae-kyung is the Watcher.",
+      "kind": "secret",
+      "truth": [
+        {
+          "timeline_id": "0191b2a0-0000-7000-8000-000000050001",
+          "value": "true"
+        }
+      ],
+      "entity_ids": [
+        "0191b2a0-0000-7000-8000-0000000c0007"
+      ],
+      "secret": {
+        "owner_ids": [
+          "0191b2a0-0000-7000-8000-0000000c0007"
+        ],
+        "allowed_knower_ids": [],
+        "reader_may_know": true,
+        "reveal_not_before_chapter": 120
+      }
+    },
+    {
+      "id": "0191b2a0-0000-7000-8000-0000000b0005",
+      "statement": "The Gangnam gate break happens on March 14 with 200 casualties.",
+      "kind": "event",
+      "truth": [
+        {
+          "timeline_id": "0191b2a0-0000-7000-8000-000000050002",
+          "value": "true"
+        },
+        {
+          "timeline_id": "0191b2a0-0000-7000-8000-000000050001",
+          "value": "false",
+          "valid_from": {
+            "chapter_no": 19,
+            "ordinal": 80,
+            "precision": "exact"
+          }
+        }
+      ],
+      "entity_ids": [],
+      "secret": null,
+      "_note": "On main the truth is 'false' once the divergent break occurs at ch.19 (March 12, 12 casualties); before that it is 'unknown' by inheritance."
+    },
+    {
+      "id": "0191b2a0-0000-7000-8000-0000000b0006",
+      "statement": "Kang Do-yoon and Lee Seo-ha are siblings.",
+      "kind": "relationship",
+      "truth": [
+        {
+          "timeline_id": "0191b2a0-0000-7000-8000-000000050001",
+          "value": "false"
+        }
+      ],
+      "entity_ids": [
+        "0191b2a0-0000-7000-8000-0000000c0001",
+        "0191b2a0-0000-7000-8000-0000000c0002"
+      ],
+      "secret": null
+    },
+    {
+      "id": "0191b2a0-0000-7000-8000-0000000b0007",
+      "statement": "The old compass points to hidden gates.",
+      "kind": "world_rule",
+      "truth": [
+        {
+          "timeline_id": "0191b2a0-0000-7000-8000-000000050001",
+          "value": "true"
+        }
+      ],
+      "entity_ids": [
+        "0191b2a0-0000-7000-8000-0000000a0001"
+      ],
+      "secret": null
+    },
+    {
+      "id": "0191b2a0-0000-7000-8000-0000000b0008",
+      "statement": "Lee Seo-ha died in the Collapse.",
+      "kind": "event",
+      "truth": [
+        {
+          "timeline_id": "0191b2a0-0000-7000-8000-000000050002",
+          "value": "true"
+        },
+        {
+          "timeline_id": "0191b2a0-0000-7000-8000-000000050001",
+          "value": "unknown"
+        }
+      ],
+      "entity_ids": [
+        "0191b2a0-0000-7000-8000-0000000c0002"
+      ],
+      "secret": null
+    }
   ],
   "knowledge_states": [
-    { "knower": "도윤", "proposition": "P1", "stance": "knows", "source": { "kind": "prior_loop_memory" }, "valid_from": "1.0", "valid_to": null },
-    { "knower": "reader", "proposition": "P1", "stance": "knows", "source": { "kind": "narration" }, "valid_from": "1.0", "valid_to": null },
-    { "knower": "서하", "proposition": "P1", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "10.0", "valid_to": "31.20" },
-    { "knower": "서하", "proposition": "P1", "stance": "suspects", "certainty": 0.4, "source": { "kind": "witnessed", "note_ko": "도윤이 게이트 패턴을 미리 말함" }, "valid_from": "31.20", "valid_to": "58.70" },
-    { "knower": "서하", "proposition": "P1", "stance": "knows", "source": { "kind": "told", "informer": "도윤" }, "valid_from": "58.70", "valid_to": null },
-    { "knower": "무진", "proposition": "P1", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "2.0", "valid_to": "52.10" },
-    { "knower": "무진", "proposition": "P1", "stance": "suspects", "certainty": 0.5, "source": { "kind": "deduced" }, "valid_from": "52.10", "valid_to": null, "_note": "knows at 66 (season 2, outside this excerpt)" },
-    { "knower": "유리", "proposition": "P1", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "12.0", "valid_to": null },
-    { "knower": "현석", "proposition": "P1", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "21.0", "valid_to": null },
-
-    { "knower": "서하", "proposition": "P2", "stance": "knows", "source": { "kind": "remembered" }, "valid_from": "0.0", "valid_to": null },
-    { "knower": "이태산", "proposition": "P2", "stance": "knows", "source": { "kind": "remembered" }, "valid_from": "0.0", "valid_to": null },
-    { "knower": "현석", "proposition": "P2", "stance": "knows", "source": { "kind": "told", "informer": "이태산", "chapter": 17 }, "valid_from": "17.30", "valid_to": null },
-    { "knower": "reader", "proposition": "P2", "stance": "knows", "source": { "kind": "narration", "chapter": 17 }, "valid_from": "17.30", "valid_to": null },
-    { "knower": "도윤", "proposition": "P2", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "10.0", "valid_to": null, "_note": "knows at 72 (told by 서하)" },
-    { "knower": "유리", "proposition": "P2", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "12.0", "valid_to": null },
-
-    { "knower": "현석", "proposition": "P3", "stance": "knows", "believed_value_ko": null, "source": { "kind": "narration", "note_ko": "거짓임을 아는 발화자(lie event ch.23)" }, "valid_from": "23.10", "valid_to": null },
-    { "knower": "서하", "proposition": "P3", "stance": "believes_false", "believed_value_ko": "도윤이 정보를 팔고 있다(사실이라고 믿음)", "source": { "kind": "told", "informer": "현석", "chapter": 23 }, "valid_from": "23.12", "valid_to": "40.55" },
-    { "knower": "서하", "proposition": "P3", "stance": "doubts", "source": { "kind": "witnessed", "note_ko": "도윤이 브로커를 거절하는 장면을 봄" }, "valid_from": "40.55", "valid_to": "58.60" },
-    { "knower": "서하", "proposition": "P3", "stance": "knows", "source": { "kind": "told", "informer": "도윤", "chapter": 58 }, "valid_from": "58.60", "valid_to": null, "_note": "knows it is false" },
-    { "knower": "reader", "proposition": "P3", "stance": "knows", "source": { "kind": "narration", "note_ko": "현석 POV로 거짓임이 드러남" }, "valid_from": "23.10", "valid_to": null },
-    { "knower": "유리", "proposition": "P3", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "23.0", "valid_to": null },
-
-    { "knower": "도윤", "proposition": "P4", "stance": "knows", "certainty": 0.95, "source": { "kind": "prior_loop_memory", "note_ko": "증명 불가" }, "valid_from": "1.0", "valid_to": null },
-    { "knower": "reader", "proposition": "P4", "stance": "knows", "source": { "kind": "narration", "chapter": 5, "frame": "flashback" }, "valid_from": "5.30", "valid_to": null },
-    { "knower": "윤재경", "proposition": "P4", "stance": "knows", "source": { "kind": "remembered" }, "valid_from": "0.0", "valid_to": null },
-    { "knower": "서하", "proposition": "P4", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "10.0", "valid_to": null },
-    { "knower": "무진", "proposition": "P4", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "2.0", "valid_to": null },
-
-    { "knower": "도윤", "proposition": "P5", "stance": "knows", "source": { "kind": "prior_loop_memory" }, "valid_from": "1.0", "valid_to": "19.80", "_note": "on prior_loop timeline this remains true; on main it diverges" },
-    { "knower": "도윤", "proposition": "P5", "stance": "doubts", "source": { "kind": "witnessed", "chapter": 19, "note_ko": "3월 12일, 사상자 12명으로 어긋남 → diverged=true" }, "valid_from": "19.80", "valid_to": null },
-
-    { "knower": "유리", "proposition": "P6", "stance": "believes_false", "believed_value_ko": "도윤 오빠와 서하 언니는 남매다", "source": { "kind": "inferred", "chapter": 12 }, "valid_from": "12.40", "valid_to": "44.30" },
-    { "knower": "유리", "proposition": "P6", "stance": "knows", "source": { "kind": "told", "informer": "서하", "chapter": 44 }, "valid_from": "44.30", "valid_to": null, "_note": "knows it is false" },
-    { "knower": "reader", "proposition": "P6", "stance": "knows", "source": { "kind": "narration", "chapter": 12 }, "valid_from": "12.40", "valid_to": null },
-    { "knower": "도윤", "proposition": "P6", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "12.40", "valid_to": "30.20", "_note": "unaware that 유리 holds this belief; the belief itself is about him" },
-    { "knower": "서하", "proposition": "P6", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "12.40", "valid_to": "30.20" },
-
-    { "knower": "도윤", "proposition": "P7", "stance": "unaware", "source": { "kind": "narration" }, "valid_from": "3.0", "valid_to": null, "_note": "knows at 61 by witnessing (season 2)" },
-    { "knower": "reader", "proposition": "P7", "stance": "suspects", "certainty": 0.5, "source": { "kind": "narration", "reader_infers": true, "chapter": 3 }, "valid_from": "3.50", "valid_to": null },
-
-    { "knower": "도윤", "proposition": "P8", "stance": "knows", "source": { "kind": "prior_loop_memory" }, "valid_from": "1.0", "valid_to": null, "_note": "frame prior_loop; dream at ch.27 must not create a main-timeline fact" }
+    {
+      "knower": "Do-yoon",
+      "proposition": "P1",
+      "stance": "knows",
+      "source": {
+        "kind": "prior_loop_memory"
+      },
+      "valid_from": "1.0",
+      "valid_to": null
+    },
+    {
+      "knower": "reader",
+      "proposition": "P1",
+      "stance": "knows",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "1.0",
+      "valid_to": null
+    },
+    {
+      "knower": "Seo-ha",
+      "proposition": "P1",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "10.0",
+      "valid_to": "31.20"
+    },
+    {
+      "knower": "Seo-ha",
+      "proposition": "P1",
+      "stance": "suspects",
+      "certainty": 0.4,
+      "source": {
+        "kind": "witnessed",
+        "note": "Do-yoon predicts a gate pattern before it appears"
+      },
+      "valid_from": "31.20",
+      "valid_to": "58.70"
+    },
+    {
+      "knower": "Seo-ha",
+      "proposition": "P1",
+      "stance": "knows",
+      "source": {
+        "kind": "told",
+        "informer": "Do-yoon"
+      },
+      "valid_from": "58.70",
+      "valid_to": null
+    },
+    {
+      "knower": "Mu-jin",
+      "proposition": "P1",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "2.0",
+      "valid_to": "52.10"
+    },
+    {
+      "knower": "Mu-jin",
+      "proposition": "P1",
+      "stance": "suspects",
+      "certainty": 0.5,
+      "source": {
+        "kind": "deduced"
+      },
+      "valid_from": "52.10",
+      "valid_to": null,
+      "_note": "knows at ch.66 (season 2, outside this excerpt)"
+    },
+    {
+      "knower": "Yu-ri",
+      "proposition": "P1",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "12.0",
+      "valid_to": null
+    },
+    {
+      "knower": "Hyun-seok",
+      "proposition": "P1",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "21.0",
+      "valid_to": null
+    },
+    {
+      "knower": "Seo-ha",
+      "proposition": "P2",
+      "stance": "knows",
+      "source": {
+        "kind": "remembered"
+      },
+      "valid_from": "0.0",
+      "valid_to": null
+    },
+    {
+      "knower": "Lee Tae-san",
+      "proposition": "P2",
+      "stance": "knows",
+      "source": {
+        "kind": "remembered"
+      },
+      "valid_from": "0.0",
+      "valid_to": null
+    },
+    {
+      "knower": "Hyun-seok",
+      "proposition": "P2",
+      "stance": "knows",
+      "source": {
+        "kind": "told",
+        "informer": "Lee Tae-san",
+        "chapter": 17
+      },
+      "valid_from": "17.30",
+      "valid_to": null
+    },
+    {
+      "knower": "reader",
+      "proposition": "P2",
+      "stance": "knows",
+      "source": {
+        "kind": "narration",
+        "chapter": 17
+      },
+      "valid_from": "17.30",
+      "valid_to": null
+    },
+    {
+      "knower": "Do-yoon",
+      "proposition": "P2",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "10.0",
+      "valid_to": null,
+      "_note": "knows at ch.72 (told by Seo-ha)"
+    },
+    {
+      "knower": "Yu-ri",
+      "proposition": "P2",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "12.0",
+      "valid_to": null
+    },
+    {
+      "knower": "Hyun-seok",
+      "proposition": "P3",
+      "stance": "knows",
+      "source": {
+        "kind": "narration",
+        "note": "The liar knows it is false (lie event ch.23)"
+      },
+      "valid_from": "23.10",
+      "valid_to": null
+    },
+    {
+      "knower": "Seo-ha",
+      "proposition": "P3",
+      "stance": "believes_false",
+      "believed_value": "Do-yoon is selling raid intelligence (believed true)",
+      "source": {
+        "kind": "told",
+        "informer": "Hyun-seok",
+        "chapter": 23
+      },
+      "valid_from": "23.12",
+      "valid_to": "40.55"
+    },
+    {
+      "knower": "Seo-ha",
+      "proposition": "P3",
+      "stance": "doubts",
+      "source": {
+        "kind": "witnessed",
+        "note": "Sees Do-yoon refuse a broker"
+      },
+      "valid_from": "40.55",
+      "valid_to": "58.60"
+    },
+    {
+      "knower": "Seo-ha",
+      "proposition": "P3",
+      "stance": "knows",
+      "source": {
+        "kind": "told",
+        "informer": "Do-yoon",
+        "chapter": 58
+      },
+      "valid_from": "58.60",
+      "valid_to": null,
+      "_note": "knows it is false"
+    },
+    {
+      "knower": "reader",
+      "proposition": "P3",
+      "stance": "knows",
+      "source": {
+        "kind": "narration",
+        "note": "Hyun-seok's POV reveals the lie"
+      },
+      "valid_from": "23.10",
+      "valid_to": null
+    },
+    {
+      "knower": "Yu-ri",
+      "proposition": "P3",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "23.0",
+      "valid_to": null
+    },
+    {
+      "knower": "Do-yoon",
+      "proposition": "P4",
+      "stance": "knows",
+      "certainty": 0.95,
+      "source": {
+        "kind": "prior_loop_memory",
+        "note": "cannot prove it"
+      },
+      "valid_from": "1.0",
+      "valid_to": null
+    },
+    {
+      "knower": "reader",
+      "proposition": "P4",
+      "stance": "knows",
+      "source": {
+        "kind": "narration",
+        "chapter": 5,
+        "frame": "flashback"
+      },
+      "valid_from": "5.30",
+      "valid_to": null
+    },
+    {
+      "knower": "Yoon Jae-kyung",
+      "proposition": "P4",
+      "stance": "knows",
+      "source": {
+        "kind": "remembered"
+      },
+      "valid_from": "0.0",
+      "valid_to": null
+    },
+    {
+      "knower": "Seo-ha",
+      "proposition": "P4",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "10.0",
+      "valid_to": null
+    },
+    {
+      "knower": "Mu-jin",
+      "proposition": "P4",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "2.0",
+      "valid_to": null
+    },
+    {
+      "knower": "Do-yoon",
+      "proposition": "P5",
+      "stance": "knows",
+      "source": {
+        "kind": "prior_loop_memory"
+      },
+      "valid_from": "1.0",
+      "valid_to": "19.80",
+      "_note": "True on prior_loop_1; on main it diverges"
+    },
+    {
+      "knower": "Do-yoon",
+      "proposition": "P5",
+      "stance": "doubts",
+      "source": {
+        "kind": "witnessed",
+        "chapter": 19,
+        "note": "March 12, 12 casualties → diverged=true"
+      },
+      "valid_from": "19.80",
+      "valid_to": null
+    },
+    {
+      "knower": "Yu-ri",
+      "proposition": "P6",
+      "stance": "believes_false",
+      "believed_value": "Do-yoon and Seo-ha are siblings",
+      "source": {
+        "kind": "inferred",
+        "chapter": 12
+      },
+      "valid_from": "12.40",
+      "valid_to": "44.30"
+    },
+    {
+      "knower": "Yu-ri",
+      "proposition": "P6",
+      "stance": "knows",
+      "source": {
+        "kind": "told",
+        "informer": "Seo-ha",
+        "chapter": 44
+      },
+      "valid_from": "44.30",
+      "valid_to": null,
+      "_note": "knows it is false"
+    },
+    {
+      "knower": "reader",
+      "proposition": "P6",
+      "stance": "knows",
+      "source": {
+        "kind": "narration",
+        "chapter": 12
+      },
+      "valid_from": "12.40",
+      "valid_to": null
+    },
+    {
+      "knower": "Do-yoon",
+      "proposition": "P6",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "12.40",
+      "valid_to": "30.20",
+      "_note": "unaware that Yu-ri holds this belief"
+    },
+    {
+      "knower": "Seo-ha",
+      "proposition": "P6",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "12.40",
+      "valid_to": "30.20"
+    },
+    {
+      "knower": "Do-yoon",
+      "proposition": "P7",
+      "stance": "unaware",
+      "source": {
+        "kind": "narration"
+      },
+      "valid_from": "3.0",
+      "valid_to": null,
+      "_note": "knows at ch.61 by witnessing (season 2)"
+    },
+    {
+      "knower": "reader",
+      "proposition": "P7",
+      "stance": "suspects",
+      "certainty": 0.5,
+      "source": {
+        "kind": "narration",
+        "reader_infers": true,
+        "chapter": 3
+      },
+      "valid_from": "3.50",
+      "valid_to": null
+    },
+    {
+      "knower": "Do-yoon",
+      "proposition": "P8",
+      "stance": "knows",
+      "source": {
+        "kind": "prior_loop_memory"
+      },
+      "valid_from": "1.0",
+      "valid_to": null,
+      "_note": "frame prior_loop; the ch.27 dream must not create a main-timeline fact"
+    }
   ],
   "guards_by_chapter": {
-    "12": [ { "character": "서하", "must_not_know": ["P1"] }, { "character": "유리", "must_not_know": ["P1", "P2"] }, { "character": "무진", "must_not_know": ["P1", "P2"] }, { "character": "도윤", "must_not_know": ["P2"] } ],
-    "31": [ { "character": "서하", "must_not_know": ["P1"], "allowed_stance_max": "suspects" } ],
-    "45": [ { "character": "유리", "must_not_know": ["P2"] } ],
-    "58": [ { "character": "유리", "must_not_know": ["P1", "P2"] }, { "character": "현석", "must_not_know": ["P1"] } ]
+    "12": [
+      {
+        "character": "Seo-ha",
+        "must_not_know": [
+          "P1"
+        ]
+      },
+      {
+        "character": "Yu-ri",
+        "must_not_know": [
+          "P1",
+          "P2"
+        ]
+      },
+      {
+        "character": "Mu-jin",
+        "must_not_know": [
+          "P1",
+          "P2"
+        ]
+      },
+      {
+        "character": "Do-yoon",
+        "must_not_know": [
+          "P2"
+        ]
+      }
+    ],
+    "31": [
+      {
+        "character": "Seo-ha",
+        "must_not_know": [
+          "P1"
+        ],
+        "allowed_stance_max": "suspects"
+      }
+    ],
+    "45": [
+      {
+        "character": "Yu-ri",
+        "must_not_know": [
+          "P2"
+        ]
+      }
+    ],
+    "58": [
+      {
+        "character": "Yu-ri",
+        "must_not_know": [
+          "P1",
+          "P2"
+        ]
+      },
+      {
+        "character": "Hyun-seok",
+        "must_not_know": [
+          "P1"
+        ]
+      }
+    ]
   },
   "expected_leak_detections": [
-    { "trap": "T5", "chapter": 31, "knower": "서하", "proposition": "P1", "utterance_ko": "당신이 회귀자라는 걸 알아요", "expected": "knowledge_leak blocking (stance is suspects, not knows; also 당신 → TRN-20)" },
-    { "trap": "T11", "chapter": 45, "knower": "유리", "proposition": "P2", "expected": "knowledge_leak blocking" },
-    { "trap": "T4", "chapter": 29, "knower": "서하", "proposition": "P3", "expected": "relationship_inconsistency major: full trust while believes_false(P3)" }
+    {
+      "trap": "T5",
+      "chapter": 31,
+      "knower": "Seo-ha",
+      "proposition": "P1",
+      "utterance": "I know you're a regressor.",
+      "expected": "knowledge_leak blocking (stance is suspects, not knows)"
+    },
+    {
+      "trap": "T11",
+      "chapter": 45,
+      "knower": "Yu-ri",
+      "proposition": "P2",
+      "expected": "knowledge_leak blocking"
+    },
+    {
+      "trap": "T4",
+      "chapter": 29,
+      "knower": "Seo-ha",
+      "proposition": "P3",
+      "expected": "relationship_inconsistency major: full trust while believes_false(P3)"
+    }
   ]
 }

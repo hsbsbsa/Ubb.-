@@ -1,78 +1,228 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://yeonjae.studio/schemas/lint-report.schema.json",
-  "title": "Korean Lint Report",
-  "description": "Deterministic Korean lint + register check output for one manuscript version (docs/02-korean-style/04).",
+  "title": "Prose & Structure Lint Report",
+  "description": "Deterministic English prose lint (EP-*), structure lint (ST-*) and dialogue-register check (RG-*) output for one manuscript version (docs/02-narrative-identity/04). Offsets are Unicode code points.",
   "type": "object",
-  "required": ["manuscript_version_id", "style_profile_version_id", "analyzer_version", "metrics", "violations"],
+  "required": [
+    "manuscript_version_id",
+    "narrative_identity_version_id",
+    "analyzer_version",
+    "output_language_check",
+    "metrics",
+    "violations"
+  ],
   "additionalProperties": false,
   "properties": {
-    "manuscript_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "style_profile_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "analyzer_version": { "type": "string" },
-    "rules_version": { "type": "string" },
+    "manuscript_version_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "narrative_identity_version_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "output_language_check": {
+      "type": "object",
+      "required": [
+        "passed",
+        "english_confidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "passed": {
+          "type": "boolean"
+        },
+        "english_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "non_english_segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "start": {
+                "type": "integer"
+              },
+              "end": {
+                "type": "integer"
+              },
+              "detected_language": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "analyzer_version": {
+      "type": "string"
+    },
+    "rules_version": {
+      "type": "string"
+    },
     "metrics": {
       "type": "object",
-      "additionalProperties": { "type": "number" },
+      "additionalProperties": {
+        "type": "number"
+      },
       "properties": {
-        "char_count_incl_spaces": { "type": "number" },
-        "char_count_excl_spaces": { "type": "number" },
-        "sentence_count": { "type": "number" },
-        "paragraph_count": { "type": "number" },
-        "avg_sentence_chars": { "type": "number" },
-        "sentence_length_stdev": { "type": "number" },
-        "dialogue_ratio": { "type": "number" },
-        "monologue_ratio": { "type": "number" },
-        "third_person_pronoun_per_1000": { "type": "number" },
-        "translation_marker_rate": { "type": "number" },
-        "tagged_attribution_ratio": { "type": "number" },
-        "adverb_tag_ratio": { "type": "number" },
-        "max_ending_run": { "type": "number" },
-        "top_ending_ratio": { "type": "number" },
-        "max_exposition_run": { "type": "number" },
-        "hook_sentence_index": { "type": "number" },
-        "register_violation_rate": { "type": "number" }
+        "words": {
+          "type": "number"
+        },
+        "code_points": {
+          "type": "number"
+        },
+        "sentence_count": {
+          "type": "number"
+        },
+        "paragraph_count": {
+          "type": "number"
+        },
+        "avg_sentence_words": {
+          "type": "number"
+        },
+        "sentence_length_stdev": {
+          "type": "number"
+        },
+        "dialogue_ratio": {
+          "type": "number"
+        },
+        "monologue_ratio": {
+          "type": "number"
+        },
+        "translation_marker_rate": {
+          "type": "number",
+          "description": "per 1,000 words"
+        },
+        "tagged_attribution_ratio": {
+          "type": "number"
+        },
+        "adverb_tag_ratio": {
+          "type": "number"
+        },
+        "filter_words_per_1000": {
+          "type": "number"
+        },
+        "max_same_opening_run": {
+          "type": "number"
+        },
+        "pronoun_opening_ratio": {
+          "type": "number"
+        },
+        "max_exposition_run": {
+          "type": "number"
+        },
+        "hook_sentence_index": {
+          "type": "number"
+        },
+        "register_violation_rate": {
+          "type": "number"
+        },
+        "locale_inconsistencies": {
+          "type": "number"
+        },
+        "unapproved_terms": {
+          "type": "number"
+        },
+        "long_paragraph_ratio": {
+          "type": "number"
+        }
       }
     },
     "violations": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["rule_id", "severity", "span", "message_ko"],
+        "required": [
+          "rule_id",
+          "dimension",
+          "severity",
+          "span",
+          "message"
+        ],
         "additionalProperties": false,
         "properties": {
-          "rule_id": { "type": "string", "pattern": "^(KL|TRN)-[A-Z0-9-]+$" },
-          "severity": { "$ref": "common.schema.json#/$defs/severity" },
+          "rule_id": {
+            "type": "string",
+            "pattern": "^(EP|ST|RG|TRN)-[A-Z0-9-]+$"
+          },
+          "severity": {
+            "$ref": "common.schema.json#/$defs/severity"
+          },
           "span": {
             "type": "object",
-            "required": ["start", "end"],
+            "required": [
+              "start",
+              "end"
+            ],
             "additionalProperties": false,
             "properties": {
-              "start": { "type": "integer", "minimum": 0 },
-              "end": { "type": "integer", "minimum": 0 },
-              "paragraph_ids": { "type": "array", "items": { "type": "string" } },
-              "quote": { "type": "string" }
+              "start": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "end": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "paragraph_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "quote": {
+                "type": "string"
+              }
             }
           },
-          "message_ko": { "type": "string" },
-          "metric_value": { "type": "number" },
-          "threshold": { "type": "number" },
+          "message": {
+            "type": "string"
+          },
+          "metric_value": {
+            "type": "number"
+          },
+          "threshold": {
+            "type": "number"
+          },
           "register": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "speaker_id": { "$ref": "common.schema.json#/$defs/uuid" },
-              "addressee_id": { "$ref": "common.schema.json#/$defs/uuid" },
-              "detected_level": { "$ref": "common.schema.json#/$defs/speechLevel" },
-              "expected_level": { "$ref": "common.schema.json#/$defs/speechLevel" },
-              "source_relationship_state_id": { "$ref": "common.schema.json#/$defs/uuid" },
-              "resolution_confidence": { "$ref": "common.schema.json#/$defs/confidence" }
+              "speaker_id": {
+                "$ref": "common.schema.json#/$defs/uuid"
+              },
+              "addressee_id": {
+                "$ref": "common.schema.json#/$defs/uuid"
+              },
+              "source_relationship_state_id": {
+                "$ref": "common.schema.json#/$defs/uuid"
+              },
+              "resolution_confidence": {
+                "$ref": "common.schema.json#/$defs/confidence"
+              },
+              "detected_register": {
+                "$ref": "common.schema.json#/$defs/dialogueRegister"
+              },
+              "expected_register": {
+                "$ref": "common.schema.json#/$defs/dialogueRegister"
+              }
             }
+          },
+          "dimension": {
+            "$ref": "common.schema.json#/$defs/qualityDimension"
           }
         }
       }
     },
-    "system_blocks_parsed": { "type": "integer", "minimum": 0 },
-    "incremental_from_version_id": { "$ref": "common.schema.json#/$defs/uuid" }
+    "system_blocks_parsed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "incremental_from_version_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    }
   }
 }

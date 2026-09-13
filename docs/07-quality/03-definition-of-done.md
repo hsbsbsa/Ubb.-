@@ -3,10 +3,12 @@
 ## 1. Per backlog item
 
 - Behavior matches the referenced requirement IDs and ADRs; deviations have an ADR.
-- Schemas updated first if the wire/storage shape changes; generated types regenerated; examples validate.
+- Schemas updated first if the wire/storage shape changes; generated types regenerated; examples validate;
+  `tools/validate-planning-package.py` green (schemas, examples, contradiction scan).
 - Unit + integration tests added/updated; fixture-story assertions extended when story semantics are
   touched.
-- Prompt changes pass the prompt regression suite and record results; prompt version bumped, never edited.
+- Prompt changes pass the prompt regression suite (including contrast sets and the output-language check
+  for manuscript roles) and record results; prompt version bumped, never edited.
 - Observability: new activity/role emits spans + metrics; cost accounted.
 - Security: RLS on new tables; inputs schema-validated; no secrets; untrusted text handling respected.
 - Docs: affected `docs/` updated; traceability matrix row updated.
@@ -18,13 +20,18 @@ Each phase has explicit exit criteria in `docs/08-delivery/01-implementation-roa
 when all its P0 backlog items meet §1, the fixture-story checks for that phase pass in CI, and a demo
 script for the phase runs end to end on staging.
 
-## 3. MVP done
+## 3. MVP done (vertical slice, ADR-0036)
 
-- All FR items tagged **M/P0** implemented and traced.
-- Fixture story: all traps T1–T22 detected as specified; R1/C1/RB1 behave as specified; T16 isolation
-  proven.
-- Live 20-chapter run (Standard tier) completes with: zero blocking issues at acceptance, median style score
-  ≥ 78, cost per accepted chapter within tier envelope, every accepted fact traceable to evidence.
+- All FR items tagged **M/P0** implemented and traced, including the governing requirements OUTPUT-EN-001,
+  STYLE-KWN-001, STYLE-GUARD-001, EVAL-SEPARATION-001, NO-TRANSLATION-001.
+- Fixture story: all traps T1–T29 detected as specified; R1/C1/RB1 behave as specified (material vs
+  contextual dependents); T16 isolation proven.
+- Live 20-chapter run (Standard tier) completes with: **every accepted chapter passes the output-language
+  check (English)**; zero blocking issues at acceptance; median `prose_score` ≥ 78 **and** median
+  `structure_score` ≥ 78 (separately; no averaging); cost per accepted chapter within tier envelope; every
+  accepted fact traceable to evidence.
+- Contrast-set regression green for the pinned prompt set: `kwn_english` ranks highest jointly on prose and
+  structure in ≥ 95% of seed sets.
 - Chaos suite green; RLS suite green; prompt regression green for the pinned prompt set.
 - A user can complete UW-1…UW-17 (MVP variants) in the UI without operator help.
 - Runbooks: deploy, restore, rotate secrets, raise budgets, handle `needs_attention`.
@@ -32,12 +39,16 @@ script for the phase runs end to end on staging.
 ## 4. Review checklist (invariants)
 
 1. Canon only from `accepted` versions; commit atomic; version bump optimistic.
-2. Every fact/event/knowledge change with evidence (or bible source).
-3. Plans never rendered as facts; frames respected.
+2. Every fact/event/knowledge change with evidence (or bible source); offsets are code points.
+3. Plans never rendered as facts; frames respected; proposition truth per timeline.
 4. Rejected drafts quarantined; not reachable by assembler/extractor/exemplar/search.
-5. Style Guard enforced for style-sensitive roles; style version recorded.
-6. Prompt version recorded; no ad-hoc prompt strings in code.
-7. Context packs manifested and hashed; T0 validated.
-8. Activities idempotent; budgets checked pre-call.
-9. Korean text never machine-translated or reflowed by tooling.
-10. Tenancy: `workspace_id` + RLS on every new table.
+5. Narrative Identity Guard enforced for style-sensitive roles with **both** contracts; identity version and
+   contract hashes recorded.
+6. Manuscript-producing roles pass the output-language check; no translation step anywhere.
+7. Prompt version recorded; no ad-hoc prompt strings in code.
+8. Context packs manifested and hashed; T0 validated; Active Constraint Set bytes verified.
+9. Activities idempotent; budgets checked pre-call.
+10. Dependency edges carry materiality; only material edges mark stale by default.
+11. Numeric thresholds live in profile data with calibration status, never in code.
+12. Tenancy: `workspace_id` + RLS on every new table.
+13. English fixture prose and Korean terminology entries are never machine-translated or reflowed by tooling.

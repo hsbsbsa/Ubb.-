@@ -1,0 +1,61 @@
+{
+  "id": "tradition/kr-webnovel",
+  "kind": "tradition",
+  "version": 1,
+  "name": "Korean serialized-webnovel narrative tradition",
+  "tradition": {
+    "tradition_id": "kr-webnovel",
+    "contract_text": "Follow Korean serialized-webnovel structure and pacing: open on tension or continuation within the first few sentences; write dialogue-forward scenes with short reaction beats; keep paragraphs short and mobile-readable; deliver at least one local payoff in this episode (a satisfaction beat, a revelation, an emotional step, confirmed growth, or humor); keep exposition inside action, dialogue, or status text; maintain the progression cadence; end with strong forward pull (cliffhanger, reveal, decision, threat, emotional peak, or quiet menace). Do not drift into Western epic-fantasy, literary-fiction, or traditionally published novel pacing. Preserve the configured genre conventions. Do not imitate named authors or copyrighted works.",
+    "structure": {
+      "hook_within_sentences": 5,
+      "opening_types_allowed": ["continue_cliffhanger", "in_medias_res", "sharp_dialogue", "status_update", "time_skip_with_tension"],
+      "opening_types_forbidden": ["weather_landscape", "lore_dump", "waking_up_routine"],
+      "scene_count_band": { "min": 2, "max": 4 },
+      "local_payoff_required_any_of": ["satisfaction", "revelation", "emotional_step", "growth_confirmed", "humor_beat"],
+      "ending_types_allowed": ["cliffhanger", "reveal", "decision", "arrival_of_threat", "emotional_peak", "quiet_ominous"],
+      "ending_types_forbidden": ["mid_scene_fade", "summary_reflection"],
+      "cadence": { "progression_event_every_chapters": 4, "satisfaction_every_chapters": 3, "max_frustration_streak": 3 },
+      "exposition": { "max_consecutive_sentences": 4, "lore_via": ["action", "dialogue", "status_text", "narration_slot"], "new_terms_per_chapter_max": 6 }
+    },
+    "rhythm": {
+      "paragraph_max_sentences": 3,
+      "paragraph_max_words_narration": 60,
+      "paragraph_max_words_dialogue": 40,
+      "single_line_ok": true,
+      "sentence_variance": "high",
+      "dialogue_ratio_band": { "min": 0.35, "max": 0.55, "target": 0.45 },
+      "reaction_beats": "interleave",
+      "monologue_ratio_band": { "min": 0.08, "max": 0.25 },
+      "hindsight_monologue_max_ratio": 0.2
+    },
+    "devices": [
+      { "id": "status_window", "description": "Bracketed status block with fixed English grammar; present tense inside; numbers become facts.", "format_grammar": "[Status Window]\nName: <name>   Level: <n>   Class: <class>\nSTR <n>   AGI <n>   VIT <n>\nSkills: <Skill> Lv. <n>, ...", "max_per_chapter": 2 },
+      { "id": "system_message", "description": "Single-line bracketed system notice.", "format_grammar": "[<Message in present tense.>]" },
+      { "id": "community_interlude", "description": "Forum/comment thread interlude; casual register; no real platform names; ≤ 8 lines.", "format_grammar": "(└ <one-line comment>\\n){2,8}", "max_per_chapter": 1 },
+      { "id": "hindsight_monologue", "description": "Italicized inner monologue recalling the prior loop; ≤ 20% of a chapter." },
+      { "id": "rank_reveal", "description": "Device reading → bystander reactions → protagonist's reaction; reactions differentiated by character.", "max_per_chapter": 1 },
+      { "id": "letter", "description": "Formatted letter or message block." }
+    ],
+    "lint_thresholds": {
+      "ST-HOOK-01": { "warn": 5, "fail": 8 },
+      "ST-SCENE-01": { "warn": 1, "fail": 2 },
+      "ST-EXP-01": { "warn": 4, "fail": 7 },
+      "ST-EXP-02": { "warn": 6, "fail": 10 },
+      "ST-DLG-01": { "warn": 0.05, "fail": 0.12 },
+      "ST-MON-01": { "warn": 0.05, "fail": 0.12 },
+      "ST-MON-02": { "warn": 0.2, "fail": 0.3 },
+      "ST-CAD-01": { "warn": 1, "fail": 3 },
+      "ST-PARA-01": { "warn": 0.15, "fail": 0.3 }
+    },
+    "rubric": [
+      { "dimension": "Hook strength", "weight": 0.15, "anchors": { "5": "Tension or continuation lands within the first few sentences.", "3": "The hook arrives after some setup.", "1": "The chapter opens on description or routine with no pull." } },
+      { "dimension": "Episode payoff", "weight": 0.2, "anchors": { "5": "The reader gets a clear satisfaction, revelation, emotional step, growth, or laugh this episode.", "3": "Payoff is present but muted.", "1": "Nothing is delivered; the chapter only sets up." } },
+      { "dimension": "Pacing and scene rhythm", "weight": 0.15, "anchors": { "5": "Scenes move; beats alternate action, dialogue, reaction.", "3": "One scene sags.", "1": "Long stretches without movement." } },
+      { "dimension": "Exposition control", "weight": 0.1, "anchors": { "5": "World information arrives through action, dialogue, or status text.", "3": "One or two explanatory paragraphs.", "1": "Encyclopedic exposition stops the story." } },
+      { "dimension": "Dialogue-forwardness", "weight": 0.1, "anchors": { "5": "Dialogue drives scenes with short reaction beats.", "3": "Dialogue present but narration-heavy.", "1": "Scenes are narrated summaries with little dialogue." } },
+      { "dimension": "Ending pull", "weight": 0.2, "anchors": { "5": "The last lines create an immediate reason to open the next episode.", "3": "The chapter ends at a natural stopping point with mild curiosity.", "1": "The chapter ends on summary or reflection with no forward pull." } },
+      { "dimension": "Cadence and devices", "weight": 0.1, "anchors": { "5": "Progression and satisfaction cadence honored; genre devices used correctly.", "3": "Cadence slightly off or a device misused.", "1": "No progression for many chapters; devices absent or wrong." } }
+    ]
+  },
+  "calibration": { "status": "uncalibrated", "notes": "Starting values; calibrate per project after ≥ 10 accepted chapters (ADR-0029)." }
+}

@@ -4,78 +4,258 @@
   "title": "LLM Call Record",
   "description": "Audit record for every model call (NFR-A.1).",
   "type": "object",
-  "required": ["id", "workspace_id", "project_id", "job_id", "idempotency_key", "role", "prompt_version_id", "prompt_hash", "pack_id", "model_id", "provider", "params", "status", "attempt", "created_at"],
+  "required": [
+    "id",
+    "workspace_id",
+    "project_id",
+    "job_id",
+    "idempotency_key",
+    "role",
+    "prompt_version_id",
+    "prompt_hash",
+    "pack_id",
+    "model_id",
+    "provider",
+    "params",
+    "status",
+    "attempt",
+    "created_at"
+  ],
   "additionalProperties": false,
   "properties": {
-    "id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "workspace_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "job_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "parent_job_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "workflow_id": { "type": "string" },
-    "activity_id": { "type": "string" },
-    "idempotency_key": { "type": "string" },
-    "role": { "type": "string" },
-    "prompt_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "prompt_hash": { "type": "string" },
-    "prompt_set_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "pack_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "pack_hash": { "type": "string" },
-    "canon_version_read": { "type": "integer" },
-    "style_profile_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "style_block_hash": { "type": "string" },
-    "model_id": { "type": "string" },
-    "model_class": { "type": "string", "enum": ["R", "P", "M", "C", "E"] },
-    "provider": { "type": "string" },
-    "provider_request_id": { "type": "string" },
+    "id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "workspace_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "job_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "parent_job_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "workflow_id": {
+      "type": "string"
+    },
+    "activity_id": {
+      "type": "string"
+    },
+    "idempotency_key": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "prompt_version_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "prompt_hash": {
+      "type": "string"
+    },
+    "prompt_set_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "pack_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "pack_hash": {
+      "type": "string"
+    },
+    "canon_version_read": {
+      "type": "integer"
+    },
+    "narrative_identity_version_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "narrative_block_hash": {
+      "type": "string"
+    },
+    "output_language_contract_hash": {
+      "type": "string"
+    },
+    "tradition_contract_hash": {
+      "type": "string"
+    },
+    "output_language_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "performed": {
+          "type": "boolean"
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "english_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "model_id": {
+      "type": "string"
+    },
+    "model_class": {
+      "type": "string",
+      "enum": [
+        "R",
+        "P",
+        "M",
+        "C",
+        "E"
+      ]
+    },
+    "provider": {
+      "type": "string"
+    },
+    "provider_request_id": {
+      "type": "string"
+    },
     "params": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "temperature": { "type": "number" },
-        "max_tokens": { "type": "integer" },
-        "top_p": { "type": "number" },
-        "seed": { "type": "integer" },
-        "json_schema_mode": { "type": "boolean" }
+        "temperature": {
+          "type": "number"
+        },
+        "max_tokens": {
+          "type": "integer"
+        },
+        "top_p": {
+          "type": "number"
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "json_schema_mode": {
+          "type": "boolean"
+        }
       }
     },
-    "input_ref": { "type": "string", "description": "Encrypted object storage key" },
-    "output_ref": { "type": "string" },
+    "input_ref": {
+      "type": "string",
+      "description": "Encrypted object storage key"
+    },
+    "output_ref": {
+      "type": "string"
+    },
     "usage": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "input_tokens": { "type": "integer" },
-        "output_tokens": { "type": "integer" },
-        "cached_tokens": { "type": "integer" }
+        "input_tokens": {
+          "type": "integer"
+        },
+        "output_tokens": {
+          "type": "integer"
+        },
+        "cached_tokens": {
+          "type": "integer"
+        }
       }
     },
-    "cost_cents": { "type": "number", "minimum": 0 },
-    "latency_ms": { "type": "integer", "minimum": 0 },
-    "attempt": { "type": "integer", "minimum": 1 },
-    "status": { "type": "string", "enum": ["pending", "succeeded", "failed", "fallback_succeeded", "cancelled", "budget_blocked"] },
-    "finish_reason": { "type": "string" },
-    "schema_valid": { "type": "boolean" },
-    "repair_attempts": { "type": "integer", "minimum": 0 },
+    "cost_cents": {
+      "type": "number",
+      "minimum": 0
+    },
+    "latency_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "succeeded",
+        "failed",
+        "fallback_succeeded",
+        "cancelled",
+        "budget_blocked"
+      ]
+    },
+    "finish_reason": {
+      "type": "string"
+    },
+    "schema_valid": {
+      "type": "boolean"
+    },
+    "repair_attempts": {
+      "type": "integer",
+      "minimum": 0
+    },
     "error": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "class": { "type": "string", "enum": ["provider_outage", "timeout", "rate_limit", "invalid_output", "truncated", "budget", "style_guard", "unknown"] },
-        "message": { "type": "string" },
-        "history": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+        "class": {
+          "type": "string",
+          "enum": [
+            "provider_outage",
+            "timeout",
+            "rate_limit",
+            "invalid_output",
+            "truncated",
+            "budget",
+            "narrative_identity_guard",
+            "output_language",
+            "unknown"
+          ]
+        },
+        "message": {
+          "type": "string"
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
       }
     },
-    "fallback_from_model_id": { "type": "string" },
-    "duplicate_risk": { "type": "boolean" },
-    "trace_id": { "type": "string" },
+    "fallback_from_model_id": {
+      "type": "string"
+    },
+    "duplicate_risk": {
+      "type": "boolean"
+    },
+    "trace_id": {
+      "type": "string"
+    },
     "artifact_ref": {
       "type": "object",
       "description": "What this call produced",
       "additionalProperties": false,
-      "properties": { "kind": { "type": "string" }, "id": { "$ref": "common.schema.json#/$defs/uuid" } }
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        }
+      }
     },
-    "acceptance_status": { "type": "string", "enum": ["n/a", "pending", "accepted", "rejected", "quarantined"] },
-    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+    "acceptance_status": {
+      "type": "string",
+      "enum": [
+        "n/a",
+        "pending",
+        "accepted",
+        "rejected",
+        "quarantined"
+      ]
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    }
   }
 }

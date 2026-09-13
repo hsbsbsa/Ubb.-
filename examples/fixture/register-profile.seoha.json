@@ -1,0 +1,89 @@
+{
+  "character_id": "0191b2a0-0000-7000-8000-0000000c0002",
+  "version": 1,
+  "default_register": {
+    "formality": 3,
+    "deference": 2,
+    "familiarity": 1,
+    "intimacy": 0,
+    "directness": 3,
+    "contractions": "avoid",
+    "hedging": "low",
+    "address_terms": ["Hunter", "sir", "ma'am"],
+    "titles": [],
+    "note": "Polite, precise, clinical. Direct about medical facts, evasive about herself."
+  },
+  "by_counterpart": [
+    {
+      "counterpart": { "entity_id": "0191b2a0-0000-7000-8000-0000000c0001" },
+      "register": {
+        "formality": 3, "deference": 1, "familiarity": 1, "intimacy": 0, "directness": 3,
+        "contractions": "avoid",
+        "address_terms": ["Mr. Kang"],
+        "titles": ["Hunter Kang"],
+        "note": "Courteous but distant. Maintained until the ch.87 relationship transition."
+      },
+      "valid_from_chapter": 10,
+      "valid_to_chapter": 86
+    },
+    {
+      "counterpart": { "entity_id": "0191b2a0-0000-7000-8000-0000000c0001" },
+      "register": {
+        "formality": 1, "deference": 0, "familiarity": 3, "intimacy": 3, "directness": 3,
+        "contractions": "free",
+        "address_terms": ["Do-yoon"],
+        "titles": [],
+        "public_variant": { "formality": 3, "address_terms": ["Hunter Kang"], "titles": ["Hunter Kang"] },
+        "note": "First names and easy contractions in private after ch.87; titles return in public (public_formality)."
+      },
+      "valid_from_chapter": 87
+    },
+    {
+      "counterpart": { "entity_id": "0191b2a0-0000-7000-8000-0000000c0003" },
+      "register": {
+        "formality": 3, "deference": 3, "familiarity": 1, "intimacy": 0, "directness": 2,
+        "contractions": "neutral",
+        "address_terms": ["Senior Park"],
+        "titles": []
+      }
+    },
+    {
+      "counterpart": { "entity_id": "0191b2a0-0000-7000-8000-0000000c0004" },
+      "register": {
+        "formality": 4, "deference": 3, "familiarity": 0, "intimacy": 0, "directness": 1,
+        "contractions": "avoid",
+        "address_terms": ["Vice-Guildmaster"],
+        "titles": ["Vice-Guildmaster Choi"],
+        "note": "Surface courtesy maintained after ch.23; from ch.40 her word choice cools while the register stays formal."
+      }
+    },
+    {
+      "counterpart": { "entity_id": "0191b2a0-0000-7000-8000-0000000c0005" },
+      "register": {
+        "formality": 1, "deference": 0, "familiarity": 3, "intimacy": 1, "directness": 3,
+        "contractions": "free",
+        "address_terms": ["Yu-ri"],
+        "titles": [],
+        "note": "Warm and casual once Yu-ri starts treating her like an older sister (ch.13)."
+      },
+      "valid_from_chapter": 13
+    },
+    {
+      "counterpart": { "class": "stranger" },
+      "register": { "formality": 3, "deference": 2, "familiarity": 0, "intimacy": 0, "directness": 2, "contractions": "avoid", "address_terms": ["Hunter", "sir", "ma'am"], "titles": [] }
+    }
+  ],
+  "voice": {
+    "verbal_habits": ["Slips clinical vocabulary into ordinary talk (blood loss, recovery window)", "Changes the subject when family comes up"],
+    "sentence_length": "medium",
+    "vocabulary": "clinical, restrained",
+    "humor": "dry",
+    "forbidden_expressions": ["father", "Dad"],
+    "signature_lines_allowed": false
+  },
+  "register_shift_rules": [
+    { "trigger": "public_formality", "shift": { "formality": 3, "address_terms": ["Hunter Kang"], "contractions": "avoid" }, "note": "Even after ch.87, formal with Do-yoon in official settings." },
+    { "trigger": "anger", "shift": { "formality": 4, "directness": 4, "contractions": "avoid" }, "note": "Anger makes her more formal and more direct, never louder." }
+  ],
+  "voice_exemplar_ids": []
+}

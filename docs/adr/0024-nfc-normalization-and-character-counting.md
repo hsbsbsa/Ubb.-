@@ -1,8 +1,10 @@
 # ADR-0024: NFC normalization and Korean character counting
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0030 (addressing) and ADR-0034 (length)
 - **Date:** 2026-09-13
 - **Deciders:** principal architects (product, software, AI systems, data, Korean webnovel production)
+
+> **Superseded.** NFC normalization stands; addressing is now specified as Unicode code points across all runtimes, and length uses a language-neutral model with words as the English author-facing unit.
 
 ## Context
 Length targets are in Korean characters "공백 포함"; offsets must be stable; combining jamo and width

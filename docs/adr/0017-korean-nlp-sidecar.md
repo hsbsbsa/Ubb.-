@@ -1,8 +1,10 @@
 # ADR-0017: Korean morphological analysis via a versioned sidecar
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0028
 - **Date:** 2026-09-13
 - **Deciders:** principal architects (product, software, AI systems, data, Korean webnovel production)
+
+> **Superseded.** Manuscripts are English (ADR-0026); Korean morphological analysis does not apply. Replaced by English prose tooling.
 
 ## Context
 Deterministic lint and register checks need sentence-final ending classification, honorific morphemes and

@@ -4,38 +4,140 @@
   "title": "Knowledge State",
   "description": "Epistemic stance of a knower toward a proposition over story time (ADR-0008).",
   "type": "object",
-  "required": ["id", "project_id", "timeline_id", "knower", "proposition_id", "stance", "source", "valid_from", "asserted_at_version"],
+  "required": [
+    "id",
+    "project_id",
+    "timeline_id",
+    "knower",
+    "proposition_id",
+    "stance",
+    "source",
+    "valid_from",
+    "asserted_at_version"
+  ],
   "additionalProperties": false,
   "properties": {
-    "id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "timeline_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "knower": { "$ref": "common.schema.json#/$defs/knowerRef" },
-    "proposition_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "stance": { "$ref": "common.schema.json#/$defs/stance" },
-    "believed_value_ko": { "type": "string", "description": "For believes_false: what the knower thinks instead" },
-    "pretend_target_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" }, "description": "For pretends: toward whom" },
-    "certainty": { "$ref": "common.schema.json#/$defs/confidence" },
+    "id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "timeline_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "knower": {
+      "$ref": "common.schema.json#/$defs/knowerRef"
+    },
+    "proposition_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "stance": {
+      "$ref": "common.schema.json#/$defs/stance"
+    },
+    "believed_value": {
+      "type": "string",
+      "description": "For believes_false: what the knower thinks instead (English working text)"
+    },
+    "pretend_target_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/uuid"
+      },
+      "description": "For pretends: toward whom"
+    },
+    "certainty": {
+      "$ref": "common.schema.json#/$defs/confidence"
+    },
     "source": {
       "type": "object",
-      "required": ["kind", "chapter_id"],
+      "required": [
+        "kind",
+        "chapter_id"
+      ],
       "additionalProperties": false,
       "properties": {
-        "kind": { "type": "string", "enum": ["witnessed", "told", "inferred", "read", "prior_loop_memory", "source_story", "overheard", "deduced", "assumed", "remembered", "dream", "prediction", "narration"] },
-        "event_id": { "$ref": "common.schema.json#/$defs/uuid" },
-        "informer_id": { "$ref": "common.schema.json#/$defs/uuid" },
-        "chapter_id": { "$ref": "common.schema.json#/$defs/uuid" },
-        "evidence": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/evidenceRef" } },
-        "reader_infers": { "type": "boolean" }
+        "kind": {
+          "type": "string",
+          "enum": [
+            "witnessed",
+            "told",
+            "inferred",
+            "read",
+            "prior_loop_memory",
+            "source_story",
+            "overheard",
+            "deduced",
+            "assumed",
+            "remembered",
+            "dream",
+            "prediction",
+            "narration"
+          ]
+        },
+        "event_id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "informer_id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "chapter_id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/evidenceRef"
+          }
+        },
+        "reader_infers": {
+          "type": "boolean"
+        }
       },
-      "if": { "properties": { "kind": { "const": "told" } } },
-      "then": { "required": ["kind", "chapter_id", "informer_id"] }
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "told"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "kind",
+          "chapter_id",
+          "informer_id"
+        ]
+      }
     },
-    "valid_from": { "$ref": "common.schema.json#/$defs/storyClock" },
-    "valid_to": { "oneOf": [ { "$ref": "common.schema.json#/$defs/storyClock" }, { "type": "null" } ] },
-    "asserted_at_version": { "type": "integer", "minimum": 0 },
-    "retracted_at_version": { "type": ["integer", "null"] },
-    "commit_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "implied": { "type": "boolean", "description": "Extractor saw action-on-information without an on-page channel; verification demands a channel or flags a leak" }
+    "valid_from": {
+      "$ref": "common.schema.json#/$defs/storyClock"
+    },
+    "valid_to": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/storyClock"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "asserted_at_version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "retracted_at_version": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "commit_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "implied": {
+      "type": "boolean",
+      "description": "Extractor saw action-on-information without an on-page channel; verification demands a channel or flags a leak"
+    }
   }
 }

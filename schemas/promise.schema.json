@@ -4,13 +4,13 @@
   "title": "Promise (setup/payoff ledger entry)",
   "description": "A narrative debt the story owes a payoff for (FR-3.4).",
   "type": "object",
-  "required": ["id", "project_id", "type", "statement_ko", "importance", "status", "due_window"],
+  "required": ["id", "project_id", "type", "statement", "importance", "status", "due_window"],
   "additionalProperties": false,
   "properties": {
     "id": { "$ref": "common.schema.json#/$defs/uuid" },
     "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
     "type": { "type": "string", "enum": ["foreshadowing", "mystery", "chekhov", "relationship_beat", "character_goal", "world_question", "running_gag", "threat", "debt", "red_herring"] },
-    "statement_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
+    "statement": { "$ref": "common.schema.json#/$defs/text" },
     "importance": { "type": "string", "enum": ["core", "major", "minor"] },
     "status": { "type": "string", "enum": ["planned", "open", "advanced", "paid", "abandoned"] },
     "opened": {
@@ -39,7 +39,7 @@
         "additionalProperties": false,
         "properties": {
           "chapter_id": { "$ref": "common.schema.json#/$defs/uuid" },
-          "note_ko": { "type": "string" },
+          "note": { "type": "string" },
           "evidence": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/evidenceRef" } }
         }
       }
@@ -50,16 +50,16 @@
       "properties": {
         "chapter_id": { "$ref": "common.schema.json#/$defs/uuid" },
         "evidence": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/evidenceRef" }, "minItems": 1 },
-        "note_ko": { "type": "string" }
+        "note": { "type": "string" }
       }
     },
-    "abandon_reason_ko": { "type": "string", "description": "Required when status=abandoned; user decision only" },
+    "abandon_reason": { "type": "string", "description": "Required when status=abandoned; user decision only" },
     "related_proposition_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
     "related_entity_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-    "resolution_hint_ko": { "type": "string", "description": "Planned answer/payoff (plan frame; not canon)" }
+    "resolution_hint": { "type": "string", "description": "Planned answer/payoff (plan frame; not canon)" }
   },
   "allOf": [
     { "if": { "properties": { "status": { "const": "paid" } } }, "then": { "required": ["payoff"] } },
-    { "if": { "properties": { "status": { "const": "abandoned" } } }, "then": { "required": ["abandon_reason_ko"] } }
+    { "if": { "properties": { "status": { "const": "abandoned" } } }, "then": { "required": ["abandon_reason"] } }
   ]
 }

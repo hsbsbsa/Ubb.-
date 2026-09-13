@@ -4,70 +4,219 @@
   "title": "Issue",
   "description": "One evaluation finding with evidence (docs/05-generation/02 §1).",
   "type": "object",
-  "required": ["id", "source", "kind", "severity", "confidence", "claim_ko", "status"],
+  "required": [
+    "id",
+    "source",
+    "dimension",
+    "kind",
+    "severity",
+    "confidence",
+    "claim",
+    "status"
+  ],
   "additionalProperties": false,
   "properties": {
-    "id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "source": { "type": "string", "description": "lint | register | judge:<role> | verifier | human" },
+    "id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "source": {
+      "type": "string",
+      "description": "lint | register | judge:<role> | verifier | human"
+    },
+    "dimension": {
+      "$ref": "common.schema.json#/$defs/qualityDimension"
+    },
     "kind": {
       "type": "string",
       "enum": [
-        "requirement_violation", "forbidden_development", "content_restriction", "canon_contradiction", "timeline_error",
-        "location_error", "injury_forgotten", "inventory_impossible", "rank_incorrect", "resource_impossible",
-        "world_rule_violation", "power_rule_violation", "character_inconsistency", "relationship_inconsistency",
-        "knowledge_leak", "knowledge_ignorance", "reader_knowledge_violation", "missing_required_event",
-        "promise_forgotten", "payoff_without_setup", "repeated_scene", "repeated_paragraph", "repetitive_arc",
-        "excessive_exposition", "weak_pacing", "weak_ending", "late_hook", "korean_language", "style_drift",
-        "translationese", "honorific_error", "speech_level_error", "address_term_error", "voice_drift",
-        "format_drift", "invalid_structured_output", "truncated_output", "length_out_of_range", "glossary_spelling",
-        "frame_error", "numeric_inconsistency", "other"
+        "address_term_error",
+        "canon_contradiction",
+        "character_inconsistency",
+        "content_restriction",
+        "dialogue_tag_overuse",
+        "english_grammar",
+        "excessive_exposition",
+        "forbidden_development",
+        "format_drift",
+        "frame_error",
+        "injury_forgotten",
+        "invalid_structured_output",
+        "inventory_impossible",
+        "knowledge_ignorance",
+        "knowledge_leak",
+        "late_hook",
+        "length_out_of_range",
+        "literary_drift",
+        "location_error",
+        "missing_required_event",
+        "naming_registry_violation",
+        "non_english_output",
+        "numeric_inconsistency",
+        "other",
+        "paragraph_length",
+        "payoff_without_setup",
+        "power_rule_violation",
+        "promise_forgotten",
+        "rank_incorrect",
+        "reader_knowledge_violation",
+        "register_error",
+        "relationship_inconsistency",
+        "repeated_paragraph",
+        "repeated_scene",
+        "repetitive_arc",
+        "repetitive_sentence_openings",
+        "requirement_violation",
+        "resource_impossible",
+        "serial_drift",
+        "spelling_locale_inconsistency",
+        "terminology_violation",
+        "timeline_error",
+        "translation_like_english",
+        "truncated_output",
+        "unapproved_untranslated_term",
+        "voice_drift",
+        "weak_ending",
+        "weak_pacing",
+        "western_novel_drift",
+        "world_rule_violation"
       ]
     },
-    "severity": { "$ref": "common.schema.json#/$defs/severity" },
-    "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
-    "claim_ko": { "type": "string", "description": "What is wrong, in Korean" },
+    "severity": {
+      "$ref": "common.schema.json#/$defs/severity"
+    },
+    "confidence": {
+      "$ref": "common.schema.json#/$defs/confidence"
+    },
+    "claim": {
+      "type": "string",
+      "description": "What is wrong (English)"
+    },
     "chapter_span": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "manuscript_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
-        "paragraph_ids": { "type": "array", "items": { "type": "string" } },
-        "start": { "type": "integer", "minimum": 0 },
-        "end": { "type": "integer", "minimum": 0 },
-        "quote": { "type": "string" }
+        "manuscript_version_id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "paragraph_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "quote": {
+          "type": "string"
+        }
       }
     },
     "conflicting_canon": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["kind", "id", "statement_ko"],
+        "required": [
+          "kind",
+          "id",
+          "statement"
+        ],
         "additionalProperties": false,
         "properties": {
-          "kind": { "type": "string", "enum": ["fact", "event", "knowledge", "relationship", "promise", "requirement", "plan", "glossary", "style_rule"] },
-          "id": { "type": "string" },
-          "statement_ko": { "type": "string" }
+          "kind": {
+            "type": "string",
+            "enum": [
+              "fact",
+              "event",
+              "knowledge",
+              "relationship",
+              "promise",
+              "requirement",
+              "plan",
+              "glossary",
+              "style_rule"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "statement": {
+            "type": "string"
+          }
         }
       }
     },
-    "canon_evidence": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/evidenceRef" } },
-    "unsupported": { "type": "boolean", "description": "Set when a canon-conflict claim lacks evidence; severity capped at minor" },
+    "canon_evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/evidenceRef"
+      }
+    },
+    "unsupported": {
+      "type": "boolean",
+      "description": "Set when a canon-conflict claim lacks evidence; severity capped at minor"
+    },
     "repair": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "scope": { "type": "string", "enum": ["sentence", "paragraph", "dialogue", "scene", "chapter", "plan", "canon"] },
-        "suggestion_ko": { "type": "string" },
-        "must_preserve_fact_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } }
+        "scope": {
+          "type": "string",
+          "enum": [
+            "sentence",
+            "paragraph",
+            "dialogue",
+            "scene",
+            "chapter",
+            "plan",
+            "canon"
+          ]
+        },
+        "suggestion": {
+          "type": "string"
+        },
+        "must_preserve_fact_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          }
+        }
       }
     },
     "metric": {
       "type": "object",
       "additionalProperties": false,
-      "properties": { "rule_id": { "type": "string" }, "value": { "type": "number" }, "threshold": { "type": "number" } }
+      "properties": {
+        "rule_id": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "threshold": {
+          "type": "number"
+        }
+      }
     },
-    "status": { "type": "string", "enum": ["open", "patched", "overridden", "dismissed"] },
-    "override_reason_ko": { "type": "string" },
-    "resolved_in_version_id": { "$ref": "common.schema.json#/$defs/uuid" }
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "patched",
+        "overridden",
+        "dismissed"
+      ]
+    },
+    "override_reason": {
+      "type": "string"
+    },
+    "resolved_in_version_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    }
   }
 }

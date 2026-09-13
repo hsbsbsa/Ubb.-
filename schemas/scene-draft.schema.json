@@ -2,26 +2,71 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://yeonjae.studio/schemas/scene-draft.schema.json",
   "title": "Scene Draft (writer output envelope)",
-  "description": "Prose plus annotations that travel with it so deterministic checks can run without re-parsing dialogue attribution.",
+  "description": "Prose plus annotations that travel with it so deterministic checks can run without re-parsing dialogue attribution. text is English manuscript prose (OUTPUT-EN-001); offsets are Unicode code points (ADR-0030).",
   "type": "object",
-  "required": ["scene_no", "text_ko", "paragraphs", "speaker_annotations", "claims"],
+  "required": [
+    "scene_no",
+    "language",
+    "text",
+    "paragraphs",
+    "speaker_annotations",
+    "claims"
+  ],
   "additionalProperties": false,
   "properties": {
-    "scene_no": { "type": "integer", "minimum": 1 },
-    "text_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
+    "scene_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "language": {
+      "$ref": "common.schema.json#/$defs/manuscriptLanguage"
+    },
+    "text": {
+      "$ref": "common.schema.json#/$defs/text",
+      "description": "English scene prose"
+    },
+    "length": {
+      "$ref": "common.schema.json#/$defs/lengthModel"
+    },
     "paragraphs": {
       "type": "array",
-      "description": "Paragraph boundaries as code-point offsets into text_ko; ids are stable within the version.",
+      "description": "Paragraph boundaries as code-point offsets into text; ids are stable within the version.",
       "items": {
         "type": "object",
-        "required": ["id", "start", "end", "kind"],
+        "required": [
+          "id",
+          "start",
+          "end",
+          "kind"
+        ],
         "additionalProperties": false,
         "properties": {
-          "id": { "type": "string", "pattern": "^p[0-9]+$" },
-          "start": { "type": "integer", "minimum": 0 },
-          "end": { "type": "integer", "minimum": 0 },
-          "kind": { "type": "string", "enum": ["narration", "dialogue", "monologue", "system_block", "mixed"] },
-          "stylistic_repeat": { "type": "boolean", "description": "Deliberate repetition for effect (≤2 per chapter)" }
+          "id": {
+            "type": "string",
+            "pattern": "^p[0-9]+$"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "narration",
+              "dialogue",
+              "monologue",
+              "system_block",
+              "mixed"
+            ]
+          },
+          "stylistic_repeat": {
+            "type": "boolean",
+            "description": "Deliberate repetition for effect (≤2 per chapter)"
+          }
         }
       }
     },
@@ -29,24 +74,51 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["utterance_start", "utterance_end", "speaker_id"],
+        "required": [
+          "utterance_start",
+          "utterance_end",
+          "speaker_id"
+        ],
         "additionalProperties": false,
         "properties": {
-          "utterance_start": { "type": "integer", "minimum": 0 },
-          "utterance_end": { "type": "integer", "minimum": 0 },
-          "speaker_id": { "$ref": "common.schema.json#/$defs/uuid" },
-          "addressee_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-          "intended_speech_level": { "$ref": "common.schema.json#/$defs/speechLevel" },
+          "utterance_start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "utterance_end": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "speaker_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          },
+          "addressee_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/uuid"
+            }
+          },
           "intentional_shift": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["reason"],
+            "required": [
+              "reason"
+            ],
             "properties": {
-              "reason": { "type": "string", "enum": ["anger", "intimacy_step", "disguise", "mockery", "public_formality", "age_reveal", "emotional_outburst"] },
-              "note_ko": { "type": "string" }
+              "reason": {
+                "$ref": "common.schema.json#/$defs/registerShiftReason"
+              },
+              "note": {
+                "type": "string"
+              }
             }
           },
-          "is_monologue": { "type": "boolean" }
+          "is_monologue": {
+            "type": "boolean"
+          },
+          "intended_register": {
+            "$ref": "common.schema.json#/$defs/dialogueRegister"
+          }
         }
       }
     },
@@ -55,13 +127,27 @@
       "description": "Facts/events the scene asserts, as the writer understands them; used by pre-pass and for 'fact-bearing span' detection.",
       "items": {
         "type": "object",
-        "required": ["statement_ko", "paragraph_id"],
+        "required": [
+          "statement",
+          "paragraph_id"
+        ],
         "additionalProperties": false,
         "properties": {
-          "statement_ko": { "type": "string" },
-          "paragraph_id": { "type": "string" },
-          "entity_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-          "frame": { "$ref": "common.schema.json#/$defs/realityFrame" }
+          "statement": {
+            "type": "string"
+          },
+          "paragraph_id": {
+            "type": "string"
+          },
+          "entity_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/uuid"
+            }
+          },
+          "frame": {
+            "$ref": "common.schema.json#/$defs/realityFrame"
+          }
         }
       }
     },
@@ -69,14 +155,32 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["paragraph_id", "kind"],
+        "required": [
+          "paragraph_id",
+          "kind"
+        ],
         "additionalProperties": false,
         "properties": {
-          "paragraph_id": { "type": "string" },
-          "kind": { "type": "string", "enum": ["status_window", "system_message", "ranking_board", "community_post", "letter", "other"] }
+          "paragraph_id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "status_window",
+              "system_message",
+              "ranking_board",
+              "community_post",
+              "letter",
+              "other"
+            ]
+          }
         }
       }
     },
-    "writer_notes_ko": { "type": "string", "description": "Optional; never enters canon" }
+    "writer_notes": {
+      "type": "string",
+      "description": "Optional; never enters canon"
+    }
   }
 }

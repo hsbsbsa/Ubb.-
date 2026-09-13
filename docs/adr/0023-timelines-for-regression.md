@@ -12,7 +12,7 @@ story" knowledge in possession/villainess works behaves the same way.
 Model **timelines** (`main`, `prior_loop_n`, `alternate_*`) with divergence points; prior-loop facts live on
 their timeline (frame `prior_loop`/`source_story`) and reach the present only as **knowledge** of the
 regressor/possessor; `diverged` flags are computed when `main` contradicts prior-loop facts and surfaced to
-the writer as "회귀 전과 달라진 점". Default one prior loop; multiple loops supported by new timelines.
+the writer as a "what has changed since the first life" list. Default one prior loop; multiple loops supported by new timelines.
 
 ## Consequences
 Extractor guidance per overlay; UI timeline lanes; fixture traps T8/T15.

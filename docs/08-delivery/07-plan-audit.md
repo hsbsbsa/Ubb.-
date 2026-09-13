@@ -1,169 +1,145 @@
 # Plan Audit
 
-Self-audit of the planning package against the fifteen questions in the brief, plus a contradiction and
-gap review. Each answer names the mechanism, the document that specifies it, the schema that carries it,
-and the test that proves it.
+Self-audit of the planning package after the **English-manuscript correction** (ADR-0026). Part 1 audits
+the five governing requirements; Part 2 re-audits the original fifteen hard questions; Part 3 records the
+contradiction review and gap review; Part 4 cross-checks invariants. Each answer names the mechanism, the
+document, the schema and the test.
 
-## 1. The fifteen questions
+## Part 1 — Governing requirements
 
-### Q1. How does the application remember exactly what happened in the previous chapter?
-- **Mechanism:** the previous chapter's *accepted* manuscript version is immutable; its last ~2,000
-  characters are placed verbatim in T1 of the next chapter's pack, together with its stored L1 summary,
-  its recorded ending hook, and the exact state/knowledge/relationship deltas committed from it. The tail
-  hash is validated against the accepted version before the call.
-- **Docs:** `04-memory-canon/04-context-pack-assembly.md` §4, §2.7. **Schema:**
-  `context-pack-manifest` (`prev_chapter_tail`, `prev_chapter_hook`, `validation.prev_tail_hash_ok`).
-- **Test:** pack determinism/validation (`07-quality/01` §3); FR-7.13 blocks chapter k until k−1 is accepted.
+### OUTPUT-EN-001 — Reader-facing manuscripts are composed directly in natural English.
+- **Mechanism:** the Output-Language Profile (`lang/en`) renders the Output-Language Contract first in
+  every Narrative Identity Block; manuscript-producing roles are flagged and their outputs pass a
+  deterministic output-language check (English ≥ 0.99 on prose segments, registry romanizations excluded)
+  before any other evaluation; `manuscript_versions.language` is constrained to `en`; the scene-draft
+  envelope carries `language: "en"`.
+- **Docs:** `02-narrative-identity/01` §2–5; `05-generation/01` §4 step 2; `06-system/07` §1.
+- **Schema:** `common.manuscriptLanguage`, `scene-draft.language`, `llm-call-record.output_language_check`.
+- **Test:** §2 language-id unit tests; §4 failure path (Korean mock output discarded → regenerate →
+  reroute); §5 `scene_writer` 20/20; §7 long-form zero failures.
 
-### Q2. How does it retrieve something important from hundreds of chapters ago?
-- **Mechanism:** authoritative state comes from bitemporal structured queries (no ranking needed); older
-  events/evidence are recalled by hybrid retrieval (Korean-morpheme BM25 + pgvector kNN fused by RRF +
-  graph hops from contract entities/propositions/promises), ranked deterministically with diversity caps,
-  and inserted with verbatim evidence quotes. Summaries L2/L3 cover arcs/seasons.
-- **Docs:** `04-memory-canon/05-retrieval-and-indexing.md`, `04` §2. **ADR:** 0011.
-- **Test:** recall@pack targets on fixture (ch.9 injury recovered at ch.41; ch.23 lie recovered at ch.58).
+### STYLE-KWN-001 — Manuscripts use Korean serialized-webnovel conventions regardless of language.
+- **Mechanism:** the Narrative-Tradition Profile (`tradition/kr-webnovel`) carries the language-neutral
+  structure rules (hook timing, local payoff, cadence, exposition control, dialogue-forwardness, ending
+  pull, serial devices) and the Narrative-Tradition Contract; planners consume the compact block so contract
+  shape fields (hook/opening/ending types, payoff, scene count) are validated before drafting; Structure Lint
+  and the Structure Judge score adherence as dimension B.
+- **Docs:** `02-narrative-identity/01` §3.2, §6; `02` §2; `03-genre-catalog`; `03-story-planning/01`.
+- **Schema:** `narrative-identity.tradition`; `chapter-contract` shape fields; `scorecard.sections.structure`.
+- **Test:** §2 structure lint on `western_english`/`weak_serial`; §5 structure_judge goldens; §6 contrast sets.
 
-### Q3. How does it know what each individual character knows?
-- **Mechanism:** the knowledge ledger — `knowledge_states(knower, proposition, stance, certainty, source,
-  validity, assertion)` for every character plus `narrator` and `reader`. Contracts carry knowledge
-  deltas and guards; packs render per-participant 알고 있음/모름/오해/의심 tables; the leak checker verifies.
-- **Docs:** `04-memory-canon/03-character-knowledge-architecture.md`. **Schemas:** `knowledge-state`,
-  `proposition`, `chapter-contract.knowledge_guards`. **ADR:** 0008.
-- **Test:** `examples/fixture/knowledge-ledger.json` expected states; traps T5, T11.
+### STYLE-GUARD-001 — Every style-sensitive call receives both contracts.
+- **Mechanism:** the Narrative Identity Guard rejects style-sensitive calls unless the block manifest
+  carries both contract hashes, the block hash matches the compiler, and the header is embedded; the pack
+  validator checks `both_contracts_present` before the call; both hashes are persisted per call.
+- **Docs:** `02-narrative-identity/01` §5; `06-system/07` §1; `04-memory-canon/04` §2.7. **ADR:** 0027.
+- **Schema:** `context-pack-manifest.narrative_identity_block`, `llm-call-record` contract hash fields.
+- **Test:** Guard unit tests (missing either contract rejected); pack validation tests.
 
-### Q4. How does it distinguish truth, belief, suspicion, lies, and secrets?
-- **Mechanism:** objective truth = facts + `proposition.truth_value` (per timeline); belief/suspicion =
-  stances `believes_false` (with `believed_value_ko`), `suspects`, `doubts`, `pretends`; lies = `lie`
-  frame events that create knowledge stances but never facts; secrets = propositions with owner and
-  allowed-knower sets enforced by guards and the commit verifier.
-- **Docs:** `04-memory-canon/03` §2, `02` §1.6. **ADRs:** 0007, 0008.
-- **Test:** P3 (현석's lie) lifecycle in the ledger; trap T4.
+### EVAL-SEPARATION-001 — English fluency and structural adherence are separate dimensions.
+- **Mechanism:** Prose Judge (dimension A) and Structure Judge (dimension B) are separate calls with separate
+  rubrics in every tier (Economy folds genre into structure and voice into prose, never prose into
+  structure); scorecards have separate sections and separate gates; issues and patches carry a `dimension`;
+  revisers are dimension-specific; regression forbids cross-dimension regression.
+- **Docs:** `02-narrative-identity/01` §6; `05` §1–4; `05-generation/02`.
+- **Schema:** `common.qualityDimension`; `scorecard.sections` (prose + structure required); `issue.dimension`.
+- **Test:** §5 goldens; §6 dimension-targeted repair; contrast set expectations (`western_english` passes A,
+  fails B; `translation_like` fails A).
 
-### Q5. How does it distinguish future plans from completed events?
-- **Mechanism:** plans live in `plan_*` tables (frame `plan`), never in `events`/`facts`; extraction has no
-  access to plans except as labelled hypotheses it must confirm or reject with evidence; packs render plans
-  under `[예정 — 아직 일어나지 않음]`; facts cannot have future validity; realized/unrealized status is set
-  explicitly after commit.
-- **Docs:** `04-memory-canon/02` §3, `05-generation/01` §4 step 9. **Schema:** `canon-delta.hypothesis_results`.
-- **Test:** extractor golden case "zero items from unrealized hypotheses"; fixture ch.9 MH-3 unrealized.
+### NO-TRANSLATION-001 — No Korean prose is generated and translated.
+- **Mechanism:** all prompts are English and ask only for English; no role, workflow step or fallback
+  produces non-English manuscript text; the post-call output-language check catches any violation;
+  translation-like English is itself a detected drift class; the repository validator scans for
+  contradictory statements.
+- **Docs:** `05-generation/01` §1, §4; `05-generation/03` §2, §7. **ADR:** 0026, 0027.
+- **Test:** §4 failure path; §5 assertions; `tools/validate-planning-package.py` contradiction scan.
 
-### Q6. How are rejected drafts prevented from entering canon?
-- **Mechanism:** extraction accepts only `approved` versions (`assert_extractable`); rejected drafts move to
-  `quarantine_versions`; the assembler's source allowlist excludes quarantine and non-accepted versions;
-  exemplar and search rows are FK/trigger-restricted to accepted versions; nightly assertion job.
-- **Docs:** `04-memory-canon/02` §7; `06-system/02` §12. **ADR:** 0009.
-- **Test:** trap T16 (distinctive false fact in a rejected draft never appears anywhere).
+## Part 2 — The fifteen questions (re-audited after correction)
 
-### Q7. How does an approved chapter update memory?
-- **Mechanism:** approve → `CanonCommitWorkflow`: extractor A ∥ B ∥ deterministic pre-pass → reconcile →
-  adjudicate conflicts → verify evidence/entities/frames/validity/locks/leaks → single SQL transaction
-  `canon.commit_delta` (apply delta, close superseded, bump version with optimistic check, write commit +
-  inverse, dependency edges, L1 summary, search docs) → post-commit (embeddings, L2–L4, exemplars,
-  promises, horizon re-plan).
-- **Docs:** `04-memory-canon/02` §5; `05-generation/01` §4. **Schemas:** `canon-delta`, `canon-commit`.
-- **Test:** atomicity fault injection; racing commits; fixture delta ch.9.
+| # | Question | Mechanism (unchanged unless noted) | Docs |
+| --- | --- | --- | --- |
+| 1 | Remember previous chapter exactly | T1 verbatim tail (~400 words) + L1 + hook + committed deltas; tail hash validated | `04-memory-canon/04` §4 |
+| 2 | Retrieve from hundreds of chapters ago | structured state + English FTS with registry thesaurus + pgvector (per-model sets) + graph hops; evidence quotes | `04-memory-canon/05` |
+| 3 | Know what each character knows | knowledge ledger (knower × proposition × stance × source × validity) | `04-memory-canon/03` |
+| 4 | Truth/belief/suspicion/lies/secrets | stances + `lie` frame + secrets; **truth per timeline** (ADR-0031) | `04-memory-canon/03` §2 |
+| 5 | Future plans vs completed events | plan tables labelled `[PLANNED]`; extraction confirms hypotheses; no future validity | `04-memory-canon/02` §3 |
+| 6 | Rejected drafts never enter canon | `assert_extractable`, quarantine tables, allowlists, FKs, nightly assertion | `04-memory-canon/02` §7 |
+| 7 | Approved chapter updates memory | A ∥ B ∥ pre-pass → reconcile → adjudicate → verify → atomic commit → post-commit (+ edge promotion) | `04-memory-canon/02` §5 |
+| 8 | Conflicting extractions resolved | deterministic match → adjudicator → human queue | `04-memory-canon/02` §5.2 |
+| 9 | Earlier chapter changes propagate | **material** dependency edges → stale; contextual → review-suggested (ADR-0032) | `04-memory-canon/02` §8–9 |
+| 10 | Every relevant call preserves the narrative identity | Narrative Identity Guard with **both** contracts; IDENTITY_TAIL; planners get structure rules | `02-narrative-identity/01` §3–5 |
+| 11 | Detect drift | English Prose Lint + Structure Lint + register check + Prose/Structure/Genre/Voice judges; five-class contrast set | `02-narrative-identity/04`, `05` |
+| 12 | Repair locally | dimension-targeted patch-first revision with regression | `02-narrative-identity/05` §3 |
+| 13 | Reliability | Temporal, idempotency, leases, budgets, chaos suite; output-language failure path added | `06-system/04` |
+| 14 | Cost | hard limits, tiers, caching, early stop; cost per 1,000 words | `06-system/05` |
+| 15 | Another agent can begin | handoff guide (reading order starts with ADR-0026), roadmap, backlog, schemas, English fixture | `08-delivery/05` |
 
-### Q8. How are conflicting extractions resolved?
-- **Mechanism:** canonicalize + match by key; agreed → accept; single-source ≥ 0.8 with verifiable evidence →
-  accept flagged; conflicts → `extraction_adjudicator` with both spans; unresolved majors → human queue
-  (commit blocked for that item); items without verifiable quotes rejected.
-- **Docs:** `04-memory-canon/02` §5.2–5.3. **Test:** traps T20, T22.
+## Part 3 — Contradiction review (resolved during the correction)
 
-### Q9. How are earlier chapter changes propagated?
-- **Mechanism:** `dependency_edges` (artifact → canon item @ version) written at commit/plan/pack time; any
-  commit joins touched items to edges → `stale_marks` with reasons; retcon = new version → extraction diff
-  → commit retracting old items → propagation; regeneration retracts superseded items in the same commit;
-  MVP shows the stale list, Beta proposes patches.
-- **Docs:** `04-memory-canon/02` §8–9; `05-generation/01` §6. **Test:** R1, C1, RB1, trap T14.
-
-### Q10. How does every relevant LLM call preserve Korean webnovel style?
-- **Mechanism:** style-sensitive roles are registered; the gateway **Style Guard fails closed** if the
-  compiled, versioned Style Block (base + genre overlays + project overrides, role-specific variant, with
-  participants' speech digests) is missing, stale, or not embedded; STYLE_TAIL recency anchor for
-  writer/editor roles; planners get the structure rules so chapter shape is Korean too; every call records
-  the style version and block hash.
-- **Docs:** `02-korean-style/01` §3–4, `02`. **ADR:** 0005. **Schema:** `llm-call-record.style_block_hash`.
-- **Test:** Style Guard unit tests; audit record assertions.
-
-### Q11. How does the system detect Western-style or translation-like drift?
-- **Mechanism:** three layers — deterministic Korean lint (translation-marker set TRN-01..20, pronoun
-  density, ending repetition, paragraph/sentence length, dialogue/monologue ratios, adverb tags, exposition
-  runs, format/LN/English leakage), morphological register check (speech level/honorifics/address terms vs
-  ledgers), and an evidence-bound Style Judge (different model family, Korean rubric anchors, drift flags),
-  calibrated on contrast pairs and a monthly editor panel.
-- **Docs:** `02-korean-style/04`, `05`. **Examples:** `contrast-pairs.seed.json`. **Test:** §6 Korean suite; trap T18.
-
-### Q12. How does it repair errors without unnecessarily rewriting everything?
-- **Mechanism:** patch-first revision — issues clustered by span; revisers return span replacements with
-  `changed_claims` and `preserved_facts_ack`; only affected checks re-run; regression compares scorecards
-  and reverts on regression; escalation ladder sentence → paragraph → dialogue → scene → chapter with
-  attempt counters and round limits.
-- **Docs:** `05-generation/02` §4; `02-korean-style/05` §3–4. **ADR:** 0014. **Schema:** `patch`.
-- **Test:** traps T1–T6 repaired at the specified scope; T17 escalates.
-
-### Q13. How does it remain reliable during long generation workflows?
-- **Mechanism:** Temporal workflows with idempotent activities (spend-safe replay via `llm_calls`
-  idempotency keys), heartbeats/timeouts, per-error-class retry/fallback/circuit breakers, deterministic
-  workflow IDs + target leases, cooperative cancellation with artifact preservation, budget pause at
-  activity boundaries, stale-canon re-validation before commit, dead-letter `needs_attention` queue,
-  rehydration from artifacts, full tracing.
-- **Docs:** `06-system/04-workflow-reliability-plan.md`. **ADR:** 0003. **Test:** chaos suite (§8).
-
-### Q14. How are costs controlled?
-- **Mechanism:** hard limits at workspace/project/chapter/workflow enforced pre-call with reservations;
-  quality tiers set candidates/judge depth/routing; model classes route cheap roles to cheap models;
-  context caching (stable prefixes) and section dedup; early stopping; retry limits; cost prediction before
-  batches; cost per accepted chapter and per 1,000 Korean characters tracked.
-- **Docs:** `06-system/05-cost-and-observability-plan.md`. **ADR:** 0018. **Schema:** `budget`.
-- **Test:** cost-limit tests (§9).
-
-### Q15. How can another engineering agent begin implementation from the plan?
-- **Mechanism:** `AGENTS.md` ground rules; `08-delivery/05-implementation-handoff-guide.md` reading order,
-  invariants, build order, conventions; `01-implementation-roadmap.md` phases with exit criteria;
-  `02-backlog.md` items with acceptance tests; `schemas/` contracts with validated examples; the fixture
-  story as the shared integration test; ADRs for every structural decision; traceability matrix.
-
-## 2. Contradiction review (resolved during audit)
-
-| Found | Resolution |
+| Found (first plan) | Resolution |
 | --- | --- |
-| Pipeline §4.1 evaluator row contained an inline design deliberation | Rewritten as a plain list of the seven evaluator calls (`05-generation/01`) |
-| Traceability matrix referenced schemas `evidence-span` and `story-clock` as separate files; they are `$defs` in `common.schema.json` | Matrix updated to `common (evidenceRef, storyClock)`; missing `concept` schema added to `schemas/` |
-| Fixture ch.9 delta evidence offsets did not satisfy `end − start = len(quote)` | Fixed; validator now enforces the invariant on examples |
-| `fact.schema.json` `if/then` on `source` applied to payloads lacking `source` | Conditionals now require the discriminator to be present |
-| Scope doc says candidate comparison for chapters is Premium-only in MVP, while FR-4.5 says "M/P0 (config)" | Consistent reading: the *mechanism* ships in MVP (configurable), the *default-on* policy for Standard arrives in Beta; FR-4.5 wording clarified |
-| Glossary "Volume" described as planning hierarchy; planning doc treats volumes as export groupings | Glossary aligned: Volume = export unit |
+| "output always Korean", "natively Korean prose", Korean prose model benchmark | Replaced by OUTPUT-EN-001; P-class benchmark = natural English under Korean-webnovel constraints |
+| `text_ko`, `summary_ko`, `statement_ko`, `canonical_name_ko`, … in schemas/docs/examples | Renamed to language-neutral fields; `language`/`text_en` metadata where language varies; `display_name`/`native_script_name`/`romanization` for entities |
+| English treated as leakage (`KL-LANG-01`, `english_leakage`) | Removed; `EP-LANG-01` now blocks **non-English**; `EP-TERM-03` blocks Korean script outside preserve contexts |
+| Korean lint (sentence-ending repetition, pronoun omission, honorific morphology, Korean punctuation) applied to manuscripts | Replaced by English Prose Lint (EP-*), Structure Lint (ST-*) and an English register check (RG-*) |
+| Korean speech-level enforcement (`speechLevel`, `speech_profiles`) | Replaced by abstract Dialogue-Register Policy rendered in English (`dialogueRegister`, `register-profile`) |
+| Korean character counts (5,500 chars, 공백 포함), cost per 1,000 Korean characters | Language-neutral length model; words as author-facing unit (2,500 default); cost per 1,000 words; no mechanical conversion (ADR-0034) |
+| Korean NLP sidecar (Kiwi/MeCab) | Removed; `packages/prose` + optional English grammar service (ADR-0028) |
+| Korean-only fixture prose, Korean UI-first, Korean editor panel | English fixture (*Second Awakening*) with English names via the naming policy; English UI first; bilingual reviewer panel on two scales |
+| Single global `truth_value` | `truth[]` per timeline (ADR-0031) |
+| Ambiguous evidence offsets | Unicode code-point addressing across runtimes (ADR-0030) |
+| Undifferentiated dependency edges | material vs contextual (ADR-0032) |
+| Raw hard-requirement list in T0 | Active Constraint Set with cap (ADR-0033) |
+| Fixed `vector(1024)` column | per-model embedding sets (ADR-0035) |
+| Broad MVP | vertical slice (ADR-0036) |
+| Thresholds stated as truths | starting values with calibration status (ADR-0029) |
+| Glossary "Style Block/Style Guard" naming | Narrative Identity Block / Guard throughout; superseded ADRs annotated |
 
-## 3. Gap review
+The repository validator (`tools/validate-planning-package.py`) now fails on any reintroduction of these
+patterns outside the ADRs and audit documents that describe the change.
+
+## Part 4 — Gap review
 
 | Potential gap | Status |
 | --- | --- |
-| Multi-POV chapters and reader-knowledge union | Covered: contract `pov.segments`; reader knower union (`03` §2.2) |
-| Off-page knowledge transfer discovered later | Covered: `retroactive_channel` events flagged for review |
-| Ensemble casts exceeding pack budgets | Covered: T1 degradation ladder (`05` §7) |
-| Unknown genre overlay combinations | Covered: compile warning + bible-gate approval |
-| Non-Korean intake producing Latin names | Covered: glossary requires Korean canonical spelling; `KL-LANG-01` |
-| User writes chapters manually / imports existing series | Deferred (Q5 in open questions); design path noted |
-| Model version drift | Covered: pinned routing + regression suite on model change (R19) |
-| Character counting ambiguity | Covered: ADR-0024 |
-| Timeline reset semantics for multiple regressions | Covered at model level (ADR-0023); UI in Beta |
-| Legal review of overlays' "abstract conventions" | Policy in ADR-0025; a human legal pass is recommended before Beta (open item) |
+| Genre with Western-style names (romance fantasy) still needing Korean-webnovel structure | Covered: Naming Profile `western` + tradition contract unchanged; genre judge notes warn against Regency pastiche |
+| Korean cultural behaviors (seniority deference) in English | Covered: Setting profile `preserve_behaviors_localize_language`; register policy renders deference via titles/tone, not grammar |
+| Korean craft terms in prompts confusing the model into Korean output | Covered: terms appear glossed and only in the identity block/registry; output-language check is the backstop |
+| Users asking for Korean output via directions | Covered: contracts are configuration; such directions are rejected at intake (`05-generation/03` §7) |
+| Word-count calibration for "episode feel" | Covered as an implementation requirement (ADR-0034), not a fixed conversion |
+| Grammar checking precision without a service | Covered: heuristics + Prose Judge in MVP; optional service in Beta (ADR-0028) |
+| Multi-POV and reader-knowledge union | Covered (unchanged) |
+| Ensemble casts exceeding pack budgets | Covered (degradation ladder) |
+| Legal review of genre profiles' abstract conventions | Recommended before Beta (open item) |
 
-## 4. Invariant cross-check
-
-Every invariant in the handoff guide §2 has: a design section, a schema field or DB rule, and a test.
+## Part 5 — Invariant cross-check
 
 | Invariant | Design | Schema/DB | Test |
 | --- | --- | --- | --- |
-| Canon from accepted only | `02` §4, §7 | `assert_extractable`, partial unique accepted | T16, workflow tests |
-| Atomic commit | `02` §5.4 | `canon.commit_delta`, optimistic version | fault injection |
-| Evidence-backed | `02` §1.1, §5.3 | evidence trigger; `fact.evidence` minItems | verifier tests |
-| Planned ≠ happened | `02` §3 | `hypothesis_results`; no plan frame in facts | extractor goldens |
-| Reality frames | `02` §1.6 | `realityFrame` enum; verifier | T7, T8, T15 |
-| Quarantine | `02` §7 | `quarantine_versions`; FKs | T16 |
-| Style Guard | `02-korean-style/01` §4 | `llm-call-record.style_block_hash` | guard unit tests |
+| English output, composed directly | `02-narrative-identity/01` §3.1, §5 | `manuscriptLanguage`; DB CHECK; language check record | §2, §4, §5, §7 |
+| Both contracts on every style-sensitive call | `02-narrative-identity/01` §5 | manifest + llm_calls hashes | Guard tests |
+| Separate prose/structure evaluation | `05-generation/02` | `qualityDimension`; scorecard sections | §5, §6 |
+| No translation step | `05-generation/01` §1 | `manuscript_producing` flag; language check | §4; validator scan |
+| Canon from accepted only | `04-memory-canon/02` §4, §7 | `assert_extractable`; partial unique accepted | T16 |
+| Atomic commit | `02` §5.4 | `canon.commit_delta` | fault injection |
+| Evidence-backed, code-point offsets | `02` §1.1 | evidence trigger | conformance vector |
+| Planned ≠ happened; frames; truth per timeline | `02` §3, §1.6; `03` §2.1 | `realityFrame`; `proposition.truth[]` | T7, T8, T15; P5 tests |
+| Quarantine | `02` §7 | quarantine tables; FKs | T16 |
 | Prompt versioning | `05-generation/03` | `prompt_version_id` | registry tests |
-| Pack snapshots | `04` §1, §2.7 | `context-pack-manifest.validation` | determinism tests |
+| Pack snapshots + Active Constraint Set | `04` §1, §2.5, §2.7 | manifest validation fields | determinism tests |
 | Durable checkpoints | `06-system/04` | idempotency keys | chaos suite |
+| Material dependency edges | `02` §8 | `materiality`, `basis` | R1 |
+| Calibrated thresholds | `02-narrative-identity/02` §11 | `calibration` | Phase 4 calibration round |
 | Tenancy | `06-system/06` §3 | RLS | RLS matrix |
-| Korean text as data | AGENTS.md | `_ko` fields | formatter no-op test |
+| Korean as terminology only | AGENTS.md; `02-narrative-identity/02` §7 | terminology registry; `EP-TERM-03` | T26, T27 |
+
+## Part 6 — Confirmation
+
+Implementing the revised plan produces **English-language novels**, composed directly in English, whose
+structure, pacing, hooks, payoff cadence, dialogue-forwardness, exposition control and genre conventions
+follow the **Korean serialized-webnovel tradition** — with no Korean prose generated at any stage and no
+translation step. This is enforced at generation (both contracts on every style-sensitive call), at the
+gateway (fail-closed Guard + output-language check), at evaluation (separate prose and structure gates), at
+repair (dimension-targeted patches), in the schemas (English manuscript language, language-neutral fields),
+in the fixture (English prose in Korean-webnovel form), and in the repository validator (contradiction
+scan).

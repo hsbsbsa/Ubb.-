@@ -2,28 +2,97 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://yeonjae.studio/schemas/entity.schema.json",
   "title": "Entity",
-  "description": "Story bible entity identity plus versioned descriptive fields. Canonical *state* is held by facts, not here.",
+  "description": "Story bible entity identity plus versioned descriptive fields. Canonical *state* is held by facts, not here. Names follow the Naming Profile: display_name is the English manuscript form; native_script_name and romanization are optional (ADR-0026).",
   "type": "object",
-  "required": ["id", "project_id", "type", "canonical_name_ko", "status"],
+  "required": [
+    "id",
+    "project_id",
+    "type",
+    "display_name",
+    "status"
+  ],
   "additionalProperties": false,
   "properties": {
-    "id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "type": { "type": "string", "enum": ["character", "location", "organization", "item", "ability", "term", "event_anchor", "timeline"] },
-    "canonical_name_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
-    "aliases": { "type": "array", "items": { "type": "string" } },
-    "latin_name": { "type": "string", "description": "Allowed Latin/system spelling if any" },
-    "hanja": { "type": "string" },
-    "status": { "type": "string", "enum": ["active", "retired", "merged_into"] },
-    "merged_into_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "created_from": { "type": "string", "enum": ["bible", "extraction", "user"] },
-    "version": { "type": "integer", "minimum": 1 },
+    "id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "character",
+        "location",
+        "organization",
+        "item",
+        "ability",
+        "term",
+        "event_anchor",
+        "timeline"
+      ]
+    },
+    "display_name": {
+      "$ref": "common.schema.json#/$defs/text",
+      "description": "Name used in the English manuscript, e.g. 'Kang Do-yoon'"
+    },
+    "native_script_name": {
+      "type": "string",
+      "description": "Optional name in the source script, e.g. 강도윤; never appears in manuscript prose"
+    },
+    "romanization": {
+      "type": "string",
+      "description": "Romanized form when display_name differs (e.g., Western display name with Korean origin)"
+    },
+    "short_forms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Allowed shortened forms in prose, e.g. 'Do-yoon'"
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "retired",
+        "merged_into"
+      ]
+    },
+    "merged_into_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "created_from": {
+      "type": "string",
+      "enum": [
+        "bible",
+        "extraction",
+        "user"
+      ]
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
     "fields": {
       "type": "object",
-      "description": "Type-specific descriptive fields (character: age_at_start, gender, appearance_ko, background_ko, goals_ko, flaws_ko, arc_ko, secrets[] (proposition ids); location: region, description_ko; organization: kind, hierarchy_ko; item: kind, properties_ko; ability: rules_ko, cost_ko, limits_ko)",
+      "description": "Type-specific descriptive fields (character: age_at_start, gender, appearance, background, goals, flaws, arc, secrets[] (proposition ids); location: region, description; organization: kind, hierarchy; item: kind, properties; ability: rules, cost, limits). English working text.",
       "additionalProperties": true
     },
-    "speech_profile_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "locked_fact_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } }
+    "register_profile_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "locked_fact_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/uuid"
+      }
+    }
   }
 }

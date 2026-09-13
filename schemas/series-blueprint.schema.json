@@ -4,31 +4,31 @@
   "title": "Series Blueprint",
   "description": "Top-level plan with committed ending and endgame requirements (FR-3.2).",
   "type": "object",
-  "required": ["project_id", "version", "story_promise_ko", "reader_fantasy_ko", "main_conflict_ko", "protagonist_arc", "ending", "endgame_requirements", "seasons"],
+  "required": ["project_id", "version", "story_promise", "reader_fantasy", "main_conflict", "protagonist_arc", "ending", "endgame_requirements", "seasons"],
   "additionalProperties": false,
   "properties": {
     "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
     "version": { "type": "integer", "minimum": 1 },
     "pinned": { "$ref": "common.schema.json#/$defs/versionRef" },
-    "story_promise_ko": { "type": "string" },
-    "reader_fantasy_ko": { "type": "string" },
-    "main_conflict_ko": { "type": "string" },
-    "themes_ko": { "type": "array", "items": { "type": "string" } },
+    "story_promise": { "type": "string" },
+    "reader_fantasy": { "type": "string" },
+    "main_conflict": { "type": "string" },
+    "themes": { "type": "array", "items": { "type": "string" } },
     "protagonist_arc": { "$ref": "#/$defs/characterArc" },
     "character_arcs": { "type": "array", "items": { "$ref": "#/$defs/characterArc" } },
     "relationship_arcs": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["from_entity_id", "to_entity_id", "start_ko", "end_ko", "milestones"],
+        "required": ["from_entity_id", "to_entity_id", "start", "end", "milestones"],
         "additionalProperties": false,
         "properties": {
           "from_entity_id": { "$ref": "common.schema.json#/$defs/uuid" },
           "to_entity_id": { "$ref": "common.schema.json#/$defs/uuid" },
-          "start_ko": { "type": "string" },
-          "end_ko": { "type": "string" },
+          "start": { "type": "string" },
+          "end": { "type": "string" },
           "milestones": { "type": "array", "items": { "$ref": "#/$defs/milestone" } },
-          "constraints_ko": { "type": "array", "items": { "type": "string" } }
+          "constraints": { "type": "array", "items": { "type": "string" } }
         }
       }
     },
@@ -36,7 +36,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "system_summary_ko": { "type": "string" },
+        "system_summary": { "type": "string" },
         "milestones": { "type": "array", "items": { "$ref": "#/$defs/milestone" } },
         "cadence_chapters": { "type": "integer", "minimum": 1 }
       }
@@ -45,13 +45,13 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["question_ko", "answer_proposition_id", "reveal_window"],
+        "required": ["question", "answer_proposition_id", "reveal_window"],
         "additionalProperties": false,
         "properties": {
-          "question_ko": { "type": "string" },
+          "question": { "type": "string" },
           "answer_proposition_id": { "$ref": "common.schema.json#/$defs/uuid" },
           "reveal_window": { "$ref": "#/$defs/chapterWindow" },
-          "clue_plan_ko": { "type": "array", "items": { "type": "string" } }
+          "clue_plan": { "type": "array", "items": { "type": "string" } }
         }
       }
     },
@@ -59,23 +59,23 @@
     "red_herrings": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
     "ending": {
       "type": "object",
-      "required": ["type", "final_state_assertions_ko"],
+      "required": ["type", "final_state_assertions"],
       "additionalProperties": false,
       "properties": {
         "type": { "type": "string", "enum": ["happy", "bittersweet", "open", "tragic"] },
-        "summary_ko": { "type": "string" },
-        "final_state_assertions_ko": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+        "summary": { "type": "string" },
+        "final_state_assertions": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
       }
     },
     "endgame_requirements": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "statement_ko", "kind"],
+        "required": ["id", "statement", "kind"],
         "additionalProperties": false,
         "properties": {
           "id": { "type": "string" },
-          "statement_ko": { "type": "string" },
+          "statement": { "type": "string" },
           "kind": { "type": "string", "enum": ["fact", "knowledge", "relationship", "promise_paid", "progression"] },
           "target_ref": { "type": "string", "description": "proposition/entity/promise id when applicable" },
           "planned_in_arc_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
@@ -88,16 +88,16 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["ordinal", "title_ko", "objective_ko", "chapter_range_est"],
+        "required": ["ordinal", "title", "objective", "chapter_range_est"],
         "additionalProperties": false,
         "properties": {
           "id": { "$ref": "common.schema.json#/$defs/uuid" },
           "ordinal": { "type": "integer", "minimum": 1 },
-          "title_ko": { "type": "string" },
-          "objective_ko": { "type": "string" },
-          "thesis_ko": { "type": "string" },
-          "entry_state_ko": { "type": "string" },
-          "exit_state_ko": { "type": "string" },
+          "title": { "type": "string" },
+          "objective": { "type": "string" },
+          "thesis": { "type": "string" },
+          "entry_state": { "type": "string" },
+          "exit_state": { "type": "string" },
           "chapter_range_est": { "$ref": "#/$defs/chapterWindow" },
           "promise_ids_opened": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
           "promise_ids_paid": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } }
@@ -120,22 +120,22 @@
   "$defs": {
     "characterArc": {
       "type": "object",
-      "required": ["entity_id", "start_state_ko", "end_state_ko", "turning_points"],
+      "required": ["entity_id", "start_state", "end_state", "turning_points"],
       "additionalProperties": false,
       "properties": {
         "entity_id": { "$ref": "common.schema.json#/$defs/uuid" },
-        "start_state_ko": { "type": "string" },
-        "end_state_ko": { "type": "string" },
+        "start_state": { "type": "string" },
+        "end_state": { "type": "string" },
         "turning_points": { "type": "array", "items": { "$ref": "#/$defs/milestone" }, "minItems": 1 }
       }
     },
     "milestone": {
       "type": "object",
-      "required": ["description_ko", "window"],
+      "required": ["description", "window"],
       "additionalProperties": false,
       "properties": {
         "id": { "type": "string" },
-        "description_ko": { "type": "string" },
+        "description": { "type": "string" },
         "window": { "$ref": "#/$defs/chapterWindow" },
         "status": { "type": "string", "enum": ["planned", "realized", "unrealized"] }
       }

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://yeonjae.studio/schemas/common.schema.json",
   "title": "Common definitions",
-  "description": "Shared primitive types referenced by all Yeonjae Studio schemas.",
+  "description": "Shared primitive types referenced by all Yeonjae Studio schemas. Text fields are language-neutral; where the language may vary, an explicit language code accompanies the text. Manuscript text is English (OUTPUT-EN-001).",
   "$defs": {
     "uuid": {
       "type": "string",
@@ -14,10 +14,62 @@
       "format": "date-time",
       "description": "UTC ISO-8601"
     },
-    "koreanText": {
+    "languageCode": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
+      "description": "BCP 47 language tag, e.g. en, en-US, en-GB, ko"
+    },
+    "manuscriptLanguage": {
+      "type": "string",
+      "const": "en",
+      "description": "The required manuscript language. Extensible only by a future ADR; never weakened in MVP/Beta/Production."
+    },
+    "spellingLocale": {
+      "type": "string",
+      "enum": ["en-US", "en-GB"],
+      "description": "Spelling and punctuation locale for English manuscripts"
+    },
+    "text": {
       "type": "string",
       "minLength": 1,
-      "description": "UTF-8, NFC-normalized Korean text. Never machine-translated."
+      "description": "UTF-8, NFC-normalized text. Working text (plans, canon statements, issues) is English; the language of user-authored text is recorded alongside it where it may vary."
+    },
+    "localizedText": {
+      "type": "object",
+      "description": "User-authored text with its language code and an optional English working paraphrase used in prompts.",
+      "required": ["text", "language"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "$ref": "#/$defs/text" },
+        "language": { "$ref": "#/$defs/languageCode" },
+        "text_en": { "type": "string", "description": "English working paraphrase when language != en (never manuscript text)" }
+      }
+    },
+    "lengthModel": {
+      "type": "object",
+      "description": "Language-neutral length measurement (ADR-0034). For English manuscripts, words is the author-facing primary unit.",
+      "required": ["words", "code_points"],
+      "additionalProperties": false,
+      "properties": {
+        "words": { "type": "integer", "minimum": 0 },
+        "code_points": { "type": "integer", "minimum": 0, "description": "Unicode code points after NFC, including spaces, excluding markup" },
+        "paragraphs": { "type": "integer", "minimum": 0 },
+        "sentences": { "type": "integer", "minimum": 0 },
+        "est_tokens": { "type": "integer", "minimum": 0 },
+        "est_tokens_model": { "type": "string" },
+        "est_reading_seconds": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "lengthTarget": {
+      "type": "object",
+      "description": "Author-facing length target. Unit is words for English; tolerance is a ratio.",
+      "required": ["unit", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "unit": { "type": "string", "enum": ["words"] },
+        "value": { "type": "integer", "minimum": 50 },
+        "tolerance_ratio": { "type": "number", "minimum": 0, "maximum": 0.5, "default": 0.12 }
+      }
     },
     "storyClock": {
       "type": "object",
@@ -47,7 +99,7 @@
         "source_story",
         "non_canonical_draft"
       ],
-      "description": "See ADR-0007. Only canonical/flashback/prior_loop/alternate_timeline may produce facts."
+      "description": "See ADR-0007. Only canonical/flashback/prior_loop/alternate_timeline/source_story (on their timelines) may produce facts."
     },
     "severity": {
       "type": "string",
@@ -58,9 +110,14 @@
       "minimum": 0,
       "maximum": 1
     },
+    "qualityDimension": {
+      "type": "string",
+      "enum": ["prose", "structure", "genre", "voice", "continuity", "knowledge", "promise", "contract", "repetition", "length", "output_language"],
+      "description": "Separate evaluation dimensions (EVAL-SEPARATION-001). prose = English prose quality; structure = Korean-webnovel structural adherence."
+    },
     "evidenceRef": {
       "type": "object",
-      "description": "Exact span into an immutable manuscript version. quote must equal text[start:end] after NFC.",
+      "description": "Exact span into an immutable manuscript version. start/end are Unicode code-point offsets into the NFC text (ADR-0030); quote must equal the code-point slice text[start:end].",
       "required": ["manuscript_version_id", "start", "end", "quote"],
       "additionalProperties": false,
       "properties": {
@@ -69,7 +126,7 @@
         "paragraph_id": { "type": "string", "description": "Stable paragraph id within the version, e.g. p14" },
         "start": { "type": "integer", "minimum": 0, "description": "Code-point offset (inclusive)" },
         "end": { "type": "integer", "minimum": 0, "description": "Code-point offset (exclusive)" },
-        "quote": { "$ref": "#/$defs/koreanText" },
+        "quote": { "$ref": "#/$defs/text" },
         "quote_hash": { "type": "string", "description": "SHA-256 of quote" }
       }
     },
@@ -79,7 +136,7 @@
       "additionalProperties": false,
       "properties": {
         "entity_id": { "$ref": "#/$defs/uuid" },
-        "name_ko": { "$ref": "#/$defs/koreanText" }
+        "display_name": { "$ref": "#/$defs/text" }
       }
     },
     "knowerRef": {
@@ -98,10 +155,42 @@
       "type": "string",
       "enum": ["knows", "suspects", "believes_false", "pretends", "unaware", "forgot", "doubts"]
     },
-    "speechLevel": {
+    "registerLevel": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4,
+      "description": "Abstract register axis value (0 = lowest/most casual, 4 = highest/most formal or deferential)"
+    },
+    "dialogueRegister": {
+      "type": "object",
+      "description": "Abstract canonical description of how a speaker addresses a counterpart, rendered in natural English by the writer (replaces Korean speech-level enforcement).",
+      "additionalProperties": false,
+      "properties": {
+        "formality": { "$ref": "#/$defs/registerLevel" },
+        "deference": { "$ref": "#/$defs/registerLevel" },
+        "familiarity": { "$ref": "#/$defs/registerLevel" },
+        "intimacy": { "$ref": "#/$defs/registerLevel" },
+        "directness": { "$ref": "#/$defs/registerLevel" },
+        "contractions": { "type": "string", "enum": ["avoid", "neutral", "free"] },
+        "hedging": { "type": "string", "enum": ["high", "medium", "low"] },
+        "address_terms": { "type": "array", "items": { "type": "string" }, "description": "English vocatives/references the speaker uses for the counterpart, e.g. 'Senior Park', 'sir', 'Do-yoon'" },
+        "titles": { "type": "array", "items": { "type": "string" } },
+        "public_variant": {
+          "type": "object",
+          "description": "Overrides applied in public settings",
+          "additionalProperties": false,
+          "properties": {
+            "formality": { "$ref": "#/$defs/registerLevel" },
+            "address_terms": { "type": "array", "items": { "type": "string" } },
+            "titles": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "note": { "type": "string" }
+      }
+    },
+    "registerShiftReason": {
       "type": "string",
-      "enum": ["하십시오체", "해요체", "해체", "하게체", "하오체", "해라체"],
-      "description": "Korean sentence-final speech levels (상대 높임법). 해체 = 반말."
+      "enum": ["anger", "intimacy_step", "disguise", "mockery", "public_formality", "age_reveal", "emotional_outburst"]
     },
     "requirementKind": {
       "type": "string",
@@ -111,6 +200,11 @@
       "type": "string",
       "enum": ["user", "system_default", "model_inferred", "bible", "extraction", "user_correction", "retcon", "rollback"]
     },
+    "materiality": {
+      "type": "string",
+      "enum": ["material", "contextual"],
+      "description": "Dependency edge class (ADR-0032). Only material edges mark dependents stale by default."
+    },
     "versionRef": {
       "type": "object",
       "description": "Pinned input versions for reproducibility.",
@@ -118,7 +212,7 @@
       "properties": {
         "spec_version": { "type": "integer", "minimum": 1 },
         "bible_version": { "type": "integer", "minimum": 1 },
-        "style_profile_version_id": { "$ref": "#/$defs/uuid" },
+        "narrative_identity_version_id": { "$ref": "#/$defs/uuid" },
         "canon_version": { "type": "integer", "minimum": 0 },
         "prompt_set_id": { "$ref": "#/$defs/uuid" },
         "template_version": { "type": "string" }

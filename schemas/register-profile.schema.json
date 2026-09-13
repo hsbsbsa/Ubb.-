@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/register-profile.schema.json",
+  "title": "Dialogue-Register & Voice Profile",
+  "description": "Per-character baseline for how the character speaks to counterparts, as abstract register data rendered in natural English (FR-2.6). Dynamic changes over story time are relationship_states / register.* facts with validity. Replaces Korean speech-level profiles.",
+  "type": "object",
+  "required": ["character_id", "version", "default_register", "by_counterpart"],
+  "additionalProperties": false,
+  "properties": {
+    "character_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "version": { "type": "integer", "minimum": 1 },
+    "default_register": { "$ref": "common.schema.json#/$defs/dialogueRegister" },
+    "by_counterpart": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["counterpart", "register"],
+        "additionalProperties": false,
+        "properties": {
+          "counterpart": {
+            "type": "object",
+            "description": "A specific character or a class of counterparts.",
+            "additionalProperties": false,
+            "properties": {
+              "entity_id": { "$ref": "common.schema.json#/$defs/uuid" },
+              "class": { "type": "string", "enum": ["elder", "younger", "peer", "superior", "subordinate", "stranger", "royalty", "master", "disciple", "family", "lover"] }
+            }
+          },
+          "register": { "$ref": "common.schema.json#/$defs/dialogueRegister" },
+          "valid_from_chapter": { "type": "integer", "minimum": 1 },
+          "valid_to_chapter": { "type": "integer", "minimum": 1 },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "voice": {
+      "type": "object",
+      "description": "What makes this character's English dialogue recognizable",
+      "additionalProperties": false,
+      "properties": {
+        "verbal_habits": { "type": "array", "items": { "type": "string" }, "description": "e.g. clipped sentences; clinical vocabulary; proverbs" },
+        "sentence_length": { "type": "string", "enum": ["short", "medium", "long"] },
+        "vocabulary": { "type": "string" },
+        "humor": { "type": "string", "enum": ["none", "dry", "playful", "sarcastic"] },
+        "forbidden_expressions": { "type": "array", "items": { "type": "string" } },
+        "signature_lines_allowed": { "type": "boolean" }
+      }
+    },
+    "register_shift_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["trigger", "shift"],
+        "additionalProperties": false,
+        "properties": {
+          "trigger": { "$ref": "common.schema.json#/$defs/registerShiftReason" },
+          "shift": { "$ref": "common.schema.json#/$defs/dialogueRegister" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "voice_exemplar_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" }, "maxItems": 5 }
+  }
+}

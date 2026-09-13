@@ -1,46 +1,51 @@
 {
-  "title_working": "두 번째 각성",
-  "premise": "F급 포터 강도윤은 10년 뒤 「서울 대붕괴」에서 죽던 순간, 각성 측정을 받던 27세의 아침으로 회귀한다. 그는 대붕괴의 배후 「감시자」가 헌터협회장 윤재경임을 알지만 증명할 수 없다. 조용히 힘을 키우며 붕괴를 막으려 하지만, 미래는 그가 개입할 때마다 조금씩 어긋나기 시작한다.",
+  "title_working": "Second Awakening",
+  "premise": "F-rank porter Kang Do-yoon dies in the Seoul Collapse ten years from now and wakes on the morning of his awakening measurement at twenty-seven. He knows the Collapse's mastermind, \"the Watcher\", is Hunter Association Chairman Yoon Jae-kyung—and he cannot prove it. He builds power quietly to stop the Collapse, but the future starts to slip every time he intervenes.",
+  "premise_language": "en",
   "genre": {
     "primary": "hunter-gate",
     "secondary": ["regression"],
-    "notes": "회귀 장치는 강하게, 로맨스는 서브플롯으로 슬로번."
+    "notes": "Regression devices strong; romance as a slow-burn subplot."
   },
   "main_character": {
-    "name_ko": "강도윤",
-    "role": "주인공, 회귀자",
-    "description": "27세. 전생에서 10년간 F급 포터로 바닥을 기다 대붕괴에서 죽었다. 냉정하고 말이 짧다. 미래 지식을 무기로 쓰지만 증명할 수 없어 늘 조용히 움직인다.",
-    "speech_notes": "기본 해요체. 어린 상대에게 반말. 회장급에게 하십시오체."
+    "name": "Kang Do-yoon",
+    "role": "protagonist, regressor",
+    "description": "27. Spent ten years at the bottom as an F-rank porter before dying in the Collapse. Cold, terse. Uses future knowledge as a weapon but cannot prove any of it, so he always moves quietly.",
+    "speech_notes": "Polite-neutral by default. Blunt with juniors. Fully formal with chairmen and Association executives."
   },
   "supporting_characters": [
-    { "name_ko": "이서하", "role": "여주인공, 힐러", "description": "24세 B급 힐러. 재벌 회장의 사생아라는 비밀을 숨기고 산다.", "speech_notes": "누구에게나 해요체. 87화 이후 도윤에게만 반말." },
-    { "name_ko": "박무진", "role": "멘토", "description": "45세 C급 베테랑 헌터. 전생에서 도윤을 지키다 죽었다.", "speech_notes": "반말, 진지할 때 하게체('자네')." },
-    { "name_ko": "최현석", "role": "안타고니스트", "description": "31세 A급, 백야 길드 부길드장. 세련되고 목소리를 높이지 않는다." },
-    { "name_ko": "한유리", "role": "코믹 릴리프", "description": "19세 D급 신입. 오해를 잘 한다.", "speech_notes": "해요체, 흥분하면 반말이 튀어나옴." }
+    { "name": "Lee Seo-ha", "role": "female lead, healer", "description": "24, B-rank healer. Hides that she is a conglomerate chairman's illegitimate daughter.", "speech_notes": "Polite and precise with everyone; first names with Do-yoon only from ch.87." },
+    { "name": "Park Mu-jin", "role": "mentor", "description": "45, C-rank veteran hunter. Died shielding Do-yoon in the previous life.", "speech_notes": "Gruff and informal downward; proverbs; calls Do-yoon 'son' when serious." },
+    { "name": "Choi Hyun-seok", "role": "antagonist", "description": "31, A-rank, Vice-Guildmaster of White Night. Polished; never raises his voice." },
+    { "name": "Han Yu-ri", "role": "comic relief", "description": "19, D-rank rookie. Misunderstands easily.", "speech_notes": "Eager and polite to seniors; slips into casual speech when excited." }
   ],
-  "world_concept": "수십 년 전 게이트가 열린 현대 서울. 각성자는 협회에서 F~S 등급으로 측정된다. 상태창은 없고 측정기 수치만 존재한다. 마석 경제.",
-  "desired_tropes": ["회귀", "먼치킨 성장", "숨겨진 실력", "사이다", "멘토와의 유대", "커뮤니티 반응 인터루드(가끔)"],
+  "world_concept": "Modern Seoul decades after the gates opened. The Association measures awakened people on an F–S scale. No status windows—only measurement-device readings. Mana-stone economy.",
+  "desired_tropes": ["regression", "overpowered growth", "hidden strength", "satisfaction beats", "mentor bond", "occasional forum interludes"],
   "forbidden_developments": [
-    "도윤이 58화 이전에 회귀 사실을 누구에게든 말하는 것",
-    "박무진이 1부에서 죽는 것",
-    "감시자의 정체가 120화 이전에 공개되는 것",
-    "87화 이전의 고백 또는 스킨십",
-    "하렘 전개"
+    "Do-yoon telling anyone about the regression before ch.58",
+    "Park Mu-jin dying in Season 1",
+    "The Watcher's identity being revealed before ch.120",
+    "Any confession or physical intimacy before ch.87",
+    "Harem developments"
   ],
-  "target_audience": { "rating": "15", "description": "20~30대 남성 독자 중심, 여성 독자도 고려" },
-  "tone": { "keywords": ["냉정", "긴장", "간헐적 유머"], "humor_level": 2, "darkness_level": 3, "pace": "fast" },
-  "romance": { "presence": "subplot", "pace": "slow_burn", "constraints": ["87화 이전 고백 금지"] },
-  "progression_system": "협회 등급(F~S). 등급은 측정기 수치로 결정되며, 각성 능력의 성장은 던전 클리어와 마석 흡수로 이루어진다. 도윤의 능력은 '예지'가 아닌 회귀 지식 + 후천적 각성.",
+  "target_audience": { "rating": "15", "description": "Adult readers of English-language serialized fiction in the Korean webnovel tradition" },
+  "tone": { "keywords": ["cold", "tense", "intermittent humor"], "humor_level": 2, "darkness_level": 3, "pace": "fast" },
+  "romance": { "presence": "subplot", "pace": "slow_burn", "constraints": ["No confession before ch.87"] },
+  "progression_system": "Association ranks F–S determined by measurement-device readings; growth through dungeon clears and mana-stone absorption. Do-yoon's edge is regression knowledge plus a late awakening, not precognition.",
   "ending_preference": "happy",
   "target_chapters": 180,
-  "target_chars_per_chapter": 5500,
+  "target_words_per_chapter": 2500,
+  "spelling_locale": "en-US",
   "mandatory_scenes": [
-    { "description": "1화에서 측정기가 F를 표시하는 장면으로 시작", "placement_hint": "1화" },
-    { "description": "강남 게이트 브레이크가 원래 역사와 다르게 일어나는 장면", "placement_hint": "20화 전후" },
-    { "description": "서하가 도윤의 회귀를 알게 되는 장면", "placement_hint": "58화" }
+    { "description": "Chapter 1 opens on the measurement device showing F.", "placement_hint": "ch.1" },
+    { "description": "The Gangnam gate break happens differently from the original history.", "placement_hint": "around ch.20" },
+    { "description": "Seo-ha learns about the regression.", "placement_hint": "ch.58" }
   ],
-  "content_restrictions": ["잔혹 묘사 제한(15세)", "성적 묘사 없음"],
-  "style_preferences": ["문장은 짧게", "설명은 행동과 대화로", "회상 독백은 챕터의 20% 이하"],
+  "content_restrictions": ["Violence within a 15+ rating", "No sexual content"],
+  "prose_preferences": ["Short sentences", "Exposition through action and dialogue", "Hindsight monologue at most 20% of a chapter"],
+  "setting_preferences": { "setting_type": "modern_korea", "notes": "Real Seoul districts, romanized." },
+  "naming_preferences": { "style": "korean_romanized", "romanization_system": "revised_romanization", "notes": "Family name first, hyphenated given names (Kang Do-yoon)." },
+  "terminology_preferences": { "default_decision": "translate", "notes": "hunter, gate, awakened, mana stone; 'Senior' + surname instead of sunbae." },
   "operating_mode": "assisted",
   "quality_tier": "standard"
 }

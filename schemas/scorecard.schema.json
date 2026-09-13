@@ -2,94 +2,340 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://yeonjae.studio/schemas/scorecard.schema.json",
   "title": "Scorecard",
-  "description": "Merged evaluation result for one manuscript version.",
+  "description": "Merged evaluation result for one manuscript version. English prose quality (prose) and Korean-webnovel structural adherence (structure) are separate sections and separate gates (EVAL-SEPARATION-001); there is no combined style score.",
   "type": "object",
-  "required": ["id", "manuscript_version_id", "canon_version", "overall", "sections", "issues", "acceptance"],
+  "required": [
+    "id",
+    "manuscript_version_id",
+    "canon_version",
+    "overall",
+    "sections",
+    "issues",
+    "acceptance"
+  ],
   "additionalProperties": false,
   "properties": {
-    "id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "manuscript_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "canon_version": { "type": "integer", "minimum": 0 },
-    "quality_tier": { "type": "string", "enum": ["economy", "standard", "premium"] },
+    "id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "manuscript_version_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "canon_version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "quality_tier": {
+      "type": "string",
+      "enum": [
+        "economy",
+        "standard",
+        "premium"
+      ]
+    },
     "overall": {
       "type": "object",
-      "required": ["score", "blocking_count", "major_count", "minor_count"],
+      "required": [
+        "score",
+        "blocking_count",
+        "major_count",
+        "minor_count"
+      ],
       "additionalProperties": false,
       "properties": {
-        "score": { "type": "number", "minimum": 0, "maximum": 100 },
-        "blocking_count": { "type": "integer", "minimum": 0 },
-        "major_count": { "type": "integer", "minimum": 0 },
-        "minor_count": { "type": "integer", "minimum": 0 },
-        "note_count": { "type": "integer", "minimum": 0 }
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Informational aggregate only; gating uses per-dimension thresholds"
+        },
+        "blocking_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "major_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minor_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "note_count": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
     "sections": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "contract_compliance": { "$ref": "#/$defs/section" },
-        "continuity": { "$ref": "#/$defs/section" },
-        "knowledge": { "$ref": "#/$defs/section" },
-        "promises": { "$ref": "#/$defs/section" },
-        "pacing_hook": { "$ref": "#/$defs/section" },
-        "style": {
+        "prose": {
           "allOf": [
-            { "$ref": "#/$defs/section" },
+            {
+              "$ref": "#/$defs/section"
+            },
             {
               "type": "object",
               "properties": {
-                "nativeness": { "type": "number", "minimum": 0, "maximum": 100 },
-                "lint_composite": { "type": "number", "minimum": 0, "maximum": 1 },
-                "register_violation_rate": { "type": "number", "minimum": 0 },
-                "voice_score": { "type": "number", "minimum": 0, "maximum": 100 },
-                "drift_flags": { "type": "array", "items": { "type": "string", "enum": ["translation", "western_exposition", "literary_register", "format", "register", "voice", "genre", "serial", "light_novel"] } },
-                "dimension_scores": { "type": "object", "additionalProperties": { "type": "number", "minimum": 1, "maximum": 5 } }
+                "judge_score": {
+                  "type": "number"
+                },
+                "lint_composite": {
+                  "type": "number"
+                },
+                "translation_marker_rate": {
+                  "type": "number"
+                },
+                "drift_flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "translation_like",
+                      "literary",
+                      "light_novel",
+                      "format"
+                    ]
+                  }
+                },
+                "dimension_scores": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 5
+                  }
+                }
               }
             }
-          ]
+          ],
+          "description": "Dimension A — English prose quality"
         },
-        "repetition": { "$ref": "#/$defs/section" },
-        "length": { "$ref": "#/$defs/section" }
+        "structure": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/section"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "judge_score": {
+                  "type": "number"
+                },
+                "lint_composite": {
+                  "type": "number"
+                },
+                "hook_sentence_index": {
+                  "type": "number"
+                },
+                "local_payoff_present": {
+                  "type": "boolean"
+                },
+                "ending_type_detected": {
+                  "type": "string"
+                },
+                "drift_flags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "western_novel",
+                      "serial",
+                      "exposition",
+                      "cadence"
+                    ]
+                  }
+                },
+                "dimension_scores": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 5
+                  }
+                }
+              }
+            }
+          ],
+          "description": "Dimension B — Korean-webnovel structural adherence"
+        },
+        "genre": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/section"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "judge_score": {
+                  "type": "number"
+                },
+                "terminology_compliance": {
+                  "type": "number"
+                }
+              }
+            }
+          ],
+          "description": "Dimension C — genre-profile adherence"
+        },
+        "voice": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/section"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "judge_score": {
+                  "type": "number"
+                },
+                "register_violation_rate": {
+                  "type": "number"
+                }
+              }
+            }
+          ],
+          "description": "Dimension D — character voice and dialogue register"
+        },
+        "contract_compliance": {
+          "$ref": "#/$defs/section"
+        },
+        "continuity": {
+          "$ref": "#/$defs/section"
+        },
+        "knowledge": {
+          "$ref": "#/$defs/section"
+        },
+        "promises": {
+          "$ref": "#/$defs/section"
+        },
+        "repetition": {
+          "$ref": "#/$defs/section"
+        },
+        "length": {
+          "$ref": "#/$defs/section"
+        },
+        "output_language": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/section"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "english_confidence": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "non_english_segments": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          ],
+          "description": "Deterministic output-language check (blocking)"
+        }
+      },
+      "required": [
+        "prose",
+        "structure",
+        "output_language"
+      ]
+    },
+    "lint_report_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "$ref": "issue.schema.json"
       }
     },
-    "lint_report_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "issues": { "type": "array", "items": { "$ref": "issue.schema.json" } },
     "acceptance": {
       "type": "object",
-      "required": ["criteria_results", "auto_acceptable"],
+      "required": [
+        "criteria_results",
+        "auto_acceptable"
+      ],
       "additionalProperties": false,
       "properties": {
         "criteria_results": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["criterion_id", "passed"],
+            "required": [
+              "criterion_id",
+              "passed"
+            ],
             "additionalProperties": false,
             "properties": {
-              "criterion_id": { "type": "string" },
-              "passed": { "type": "boolean" },
-              "evidence_paragraph_ids": { "type": "array", "items": { "type": "string" } },
-              "note_ko": { "type": "string" }
+              "criterion_id": {
+                "type": "string"
+              },
+              "passed": {
+                "type": "boolean"
+              },
+              "evidence_paragraph_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "note": {
+                "type": "string"
+              }
             }
           }
         },
-        "auto_acceptable": { "type": "boolean" },
-        "threshold_used": { "type": "number" }
+        "auto_acceptable": {
+          "type": "boolean"
+        },
+        "threshold_used": {
+          "type": "number"
+        }
       }
     },
-    "evaluator_calls": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" }, "description": "llm_call ids" },
-    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+    "evaluator_calls": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/uuid"
+      },
+      "description": "llm_call ids"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    }
   },
   "$defs": {
     "section": {
       "type": "object",
-      "required": ["score", "passed"],
+      "required": [
+        "score",
+        "passed"
+      ],
       "additionalProperties": true,
       "properties": {
-        "score": { "type": "number", "minimum": 0, "maximum": 100 },
-        "passed": { "type": "boolean" },
-        "issue_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-        "evaluator_call_id": { "$ref": "common.schema.json#/$defs/uuid" }
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "issue_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          }
+        },
+        "evaluator_call_id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        }
       }
     }
   }

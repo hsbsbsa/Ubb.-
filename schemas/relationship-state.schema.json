@@ -2,38 +2,133 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://yeonjae.studio/schemas/relationship-state.schema.json",
   "title": "Relationship State",
-  "description": "Directed pair state with history (FR-7.9). from → to. Address terms and speech level are what `from` uses toward `to`.",
+  "description": "Directed pair state with history (FR-7.9). from → to. register describes how `from` speaks to `to` as abstract data rendered in English.",
   "type": "object",
-  "required": ["id", "project_id", "timeline_id", "from_entity_id", "to_entity_id", "type", "valid_from", "asserted_at_version"],
+  "required": [
+    "id",
+    "project_id",
+    "timeline_id",
+    "from_entity_id",
+    "to_entity_id",
+    "type",
+    "valid_from",
+    "asserted_at_version"
+  ],
   "additionalProperties": false,
   "properties": {
-    "id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "timeline_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "from_entity_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "to_entity_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "type": { "type": "string", "enum": ["stranger", "acquaintance", "colleague", "friend", "mentor", "disciple", "rival", "enemy", "ally", "family", "romantic_interest", "lover", "spouse", "superior", "subordinate", "other"] },
+    "id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "timeline_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "from_entity_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "to_entity_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "stranger",
+        "acquaintance",
+        "colleague",
+        "friend",
+        "mentor",
+        "disciple",
+        "rival",
+        "enemy",
+        "ally",
+        "family",
+        "romantic_interest",
+        "lover",
+        "spouse",
+        "superior",
+        "subordinate",
+        "other"
+      ]
+    },
     "axes": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "trust": { "type": "integer", "minimum": -5, "maximum": 5 },
-        "affection": { "type": "integer", "minimum": -5, "maximum": 5 },
-        "respect": { "type": "integer", "minimum": -5, "maximum": 5 },
-        "hostility": { "type": "integer", "minimum": 0, "maximum": 5 },
-        "dependency": { "type": "integer", "minimum": 0, "maximum": 5 }
+        "trust": {
+          "type": "integer",
+          "minimum": -5,
+          "maximum": 5
+        },
+        "affection": {
+          "type": "integer",
+          "minimum": -5,
+          "maximum": 5
+        },
+        "respect": {
+          "type": "integer",
+          "minimum": -5,
+          "maximum": 5
+        },
+        "hostility": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "dependency": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        }
       }
     },
-    "power_dynamic": { "type": "string", "enum": ["equal", "from_dominant", "to_dominant", "shifting"] },
-    "address_terms": { "type": "array", "items": { "type": "string" } },
-    "speech_level": { "$ref": "common.schema.json#/$defs/speechLevel" },
-    "public_speech_level": { "$ref": "common.schema.json#/$defs/speechLevel", "description": "If different in public (e.g., forced formality)" },
-    "note_ko": { "type": "string" },
-    "valid_from": { "$ref": "common.schema.json#/$defs/storyClock" },
-    "valid_to": { "oneOf": [ { "$ref": "common.schema.json#/$defs/storyClock" }, { "type": "null" } ] },
-    "asserted_at_version": { "type": "integer", "minimum": 0 },
-    "retracted_at_version": { "type": ["integer", "null"] },
-    "evidence": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/evidenceRef" } },
-    "commit_id": { "$ref": "common.schema.json#/$defs/uuid" }
+    "power_dynamic": {
+      "type": "string",
+      "enum": [
+        "equal",
+        "from_dominant",
+        "to_dominant",
+        "shifting"
+      ]
+    },
+    "register": {
+      "$ref": "common.schema.json#/$defs/dialogueRegister"
+    },
+    "note": {
+      "type": "string"
+    },
+    "valid_from": {
+      "$ref": "common.schema.json#/$defs/storyClock"
+    },
+    "valid_to": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/storyClock"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "asserted_at_version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "retracted_at_version": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/evidenceRef"
+      }
+    },
+    "commit_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    }
   }
 }

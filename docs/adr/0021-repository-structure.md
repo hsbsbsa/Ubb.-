@@ -11,9 +11,9 @@ The implementation agent needs a fixed layout to avoid redesign.
 ```
 apps/web, apps/api, apps/worker
 packages/domain (types from schemas, invariants), packages/db (migrations, queries, RLS),
-packages/gateway, packages/prompts (families/<role>/vX.Y.Z), packages/style, packages/korean,
+packages/gateway, packages/prompts (families/<role>/vX.Y.Z), packages/narrative, packages/prose,
 packages/context, packages/canon, packages/eval, packages/workflows
-services/nlp-sidecar (Python)
+services/grammar-service (optional, English grammar/spelling; ADR-0028)
 schemas/ (contracts), examples/ (fixtures), docs/ (this plan)
 ```
 Package boundaries are enforced by lint rules; cross-package calls go through interfaces in `packages/domain`.

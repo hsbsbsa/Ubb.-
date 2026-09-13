@@ -5,7 +5,8 @@
 - **Deciders:** principal architects (product, software, AI systems, data, Korean webnovel production)
 
 ## Context
-Style must be learned without copying commercial works or living authors.
+Narrative style must be learned without copying commercial works (Korean originals or their English
+translations) or living authors.
 
 ## Decision
 Exemplars may come only from: the project's own accepted chapters, user-owned text with rights

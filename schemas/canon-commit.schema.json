@@ -4,34 +4,93 @@
   "title": "Canon Commit",
   "description": "Record of one atomic canon version bump with forward delta and inverse.",
   "type": "object",
-  "required": ["id", "project_id", "version", "parent_version", "source", "delta", "inverse", "actor", "created_at", "item_counts"],
+  "required": [
+    "id",
+    "project_id",
+    "version",
+    "parent_version",
+    "source",
+    "delta",
+    "inverse",
+    "actor",
+    "created_at",
+    "item_counts"
+  ],
   "additionalProperties": false,
   "properties": {
-    "id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "version": { "type": "integer", "minimum": 1 },
-    "parent_version": { "type": "integer", "minimum": 0 },
-    "source": { "type": "string", "enum": ["bible", "chapter_acceptance", "user_correction", "retcon", "rollback", "merge_entities", "regeneration"] },
-    "chapter_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "manuscript_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "superseded_manuscript_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "delta": { "$ref": "canon-delta.schema.json" },
+    "id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "parent_version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "bible",
+        "chapter_acceptance",
+        "user_correction",
+        "retcon",
+        "rollback",
+        "merge_entities",
+        "regeneration"
+      ]
+    },
+    "chapter_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "manuscript_version_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "superseded_manuscript_version_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "delta": {
+      "$ref": "canon-delta.schema.json"
+    },
     "inverse": {
       "type": "object",
       "description": "Operations that undo this commit (retract inserted ids, re-open closed validity, restore retracted).",
-      "required": ["ops"],
+      "required": [
+        "ops"
+      ],
       "additionalProperties": false,
       "properties": {
         "ops": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["kind", "target_kind", "target_id"],
+            "required": [
+              "kind",
+              "target_kind",
+              "target_id"
+            ],
             "additionalProperties": false,
             "properties": {
-              "kind": { "type": "string", "enum": ["retract", "restore", "reopen_validity", "close_validity", "delete_provisional"] },
-              "target_kind": { "type": "string" },
-              "target_id": { "$ref": "common.schema.json#/$defs/uuid" },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "retract",
+                  "restore",
+                  "reopen_validity",
+                  "close_validity",
+                  "delete_provisional"
+                ]
+              },
+              "target_kind": {
+                "type": "string"
+              },
+              "target_id": {
+                "$ref": "common.schema.json#/$defs/uuid"
+              },
               "value": {}
             }
           }
@@ -42,17 +101,36 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "user_id": { "$ref": "common.schema.json#/$defs/uuid" },
-        "job_id": { "$ref": "common.schema.json#/$defs/uuid" },
-        "workflow_id": { "type": "string" }
+        "user_id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "job_id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "workflow_id": {
+          "type": "string"
+        }
       }
     },
-    "justification_ko": { "type": "string" },
-    "touched_item_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" }, "description": "For dependency propagation" },
+    "justification": {
+      "type": "string"
+    },
+    "touched_item_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/uuid"
+      },
+      "description": "For dependency propagation (material edges mark stale; contextual edges mark review-suggested)"
+    },
     "item_counts": {
       "type": "object",
-      "additionalProperties": { "type": "integer", "minimum": 0 }
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
     },
-    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    }
   }
 }

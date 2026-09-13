@@ -119,7 +119,7 @@ flowchart TB
   end
   REQ --> PACK[Context Pack Assembler]
   BIB --> PACK
-  PLAN -->|labelled 예정| PACK
+  PLAN -->|labelled PLANNED| PACK
   FACT --> PACK
   EVT --> PACK
   KNOW --> PACK

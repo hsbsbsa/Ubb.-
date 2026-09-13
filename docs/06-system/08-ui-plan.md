@@ -26,7 +26,7 @@ Workspace settings (members, providers/privacy, budgets, audit log)
 ## 2. Key screens
 
 ### Requirements & Assumption Review
-Two-column: left = grouped requirement cards with kind badge (필수/선호/가정) and provenance; right = detail
+Two-column: left = grouped requirement cards with kind badge (hard / soft / assumption) and provenance; right = detail
 with edit, confirm/reject for assumptions, conflict banners. Bulk actions. Direction composer with scope
 picker and re-plan preview (which contracts become stale).
 

@@ -1,0 +1,95 @@
+{
+  "_comment": "Seed contrast sets for narrative-identity calibration (docs/02-narrative-identity/05 §7). Each set renders the same story content in five English variants. Judges must rank kwn_english highest on BOTH prose (A) and structure (B); western_english must fail B while passing A; translation_like must fail A; literary must fail B and score low-mid on A; weak_serial must fail B. All text is original. Expected lint hits are illustrative starting expectations.",
+  "sets": [
+    {
+      "id": "cs-001",
+      "genre": "hunter-gate",
+      "function": "hook",
+      "variants": {
+        "kwn_english": "The measurement device screamed.\n\n[F]\n\nRed letters. The same red letters as ten years ago.\n\n“F-rank. Porter registration is the window on your left.”\n\nThe officer was already calling the next name. Do-yoon looked down at his palm. It wasn’t shaking. There was no reason for it to shake. In this whole room, he was the only one who knew how far this hand could go.\n\n*March twelfth.*\n\nGangnam. Three things to finish before then.",
+        "western_english": "The Hunter Association’s measurement hall occupied the third floor of a glass tower in Mapo, and on weekday mornings the light came through the east windows in long pale bars that lay across the linoleum like the rungs of a ladder no one had climbed. Kang Do-yoon had arrived early. He had always been the sort of man who arrived early, a habit inherited from a father who distrusted buses, and he stood now near the back of the line with his hands in the pockets of a jacket that had seen better winters, watching the other candidates shift their weight and check their phones. He thought about the city outside, about how little any of them understood of what was coming, and he found, to his mild surprise, that he was not afraid. When at last his turn came and the device pronounced its verdict, he accepted the small red letter with something like tenderness, the way one accepts an old friend’s familiar flaw.",
+        "translation_like": "Measurement device cried.\n\n[F]\n\nRed letter appeared. It was exactly same letter with ten years ago.\n\n“You are F-rank. Porter registration window is located at left side.” The officer said quietly.\n\nDo-yoon looked down his palm. It was not shaking. There was no reason to shake. Because he was the only person in this room who knows how far this hand can go.\n\n*March 12.*\n\nGangnam. Before that, there were three things that must be finished by him.",
+        "literary": "The device, when it finally spoke, spoke in the voice of every small humiliation he had ever swallowed—a thin electronic keening that seemed to rise from somewhere beneath the floor, beneath the building, beneath the city itself, as though the earth were clearing its throat before delivering a sentence it had rehearsed for a decade. F. A letter like a hook, like a gallows, like the first stroke of a word no one would finish. He regarded his palm as one regards a photograph of a stranger who happens to share one’s face, and he thought, with the peculiar serenity of the already-drowned, of March, and of Gangnam, and of the arithmetic of the three small tasks that stood between him and the end of the world.",
+        "weak_serial": "Do-yoon woke up, brushed his teeth, and took the bus to the Association building. The line for measurement was long. He waited for about forty minutes and thought about what he would have for lunch. When his turn came, the device showed an F, which was what he had expected. The officer told him where to register as a porter, and he went to the window on the left and filled out the forms. Afterward he walked outside. It was a nice day. He thought about the things he needed to do over the next few weeks and decided he would probably start tomorrow."
+      },
+      "expected": {
+        "prose_rank": ["kwn_english", "western_english", "weak_serial", "literary", "translation_like"],
+        "structure_rank": ["kwn_english", "translation_like", "literary", "western_english", "weak_serial"],
+        "lint_translation_like": ["TRN-01", "TRN-02", "TRN-14", "EP-DLG-02", "EP-OPEN-02"],
+        "lint_western_english": ["ST-HOOK-01", "ST-OPEN-01", "EP-LEN-01", "EP-LEN-02"],
+        "lint_weak_serial": ["ST-OPEN-01", "ST-HOOK-01", "ST-END-01", "ST-PAY-01"],
+        "lint_literary": ["EP-LEN-01", "EP-LEN-03", "ST-HOOK-01"],
+        "min_gap_prose_vs_translation_like": 40,
+        "min_gap_structure_vs_western_english": 35
+      }
+    },
+    {
+      "id": "cs-002",
+      "genre": "regression",
+      "function": "emotional_beat",
+      "variants": {
+        "kwn_english": "*Last time, I died right here.*\n\nSame corridor. Same fluorescent tube, flickering on the same beat.\n\nDo-yoon didn’t stop walking. If he stopped, it would turn into that day.",
+        "western_english": "The corridor was exactly as he remembered it, which was to say that it was exactly as it had been on the last day of his first life: the same institutional green paint, the same fluorescent tube that stuttered every few seconds as though it were trying to say something, the same faint smell of floor cleaner and old coffee. He walked slowly, letting the memory settle over the present like a sheet over furniture in a closed house, and he allowed himself, for the length of the hallway, to feel the full weight of what had happened here and what might happen again.",
+        "translation_like": "*Previous time, I died at exactly this place.*\n\nIt was same corridor. Same fluorescent lamp, it was flickering with same rhythm.\n\nDo-yoon did not stop his walking. Because if he stops, it will become like that day.",
+        "literary": "Here, then, was the corridor—the same corridor, or a corridor so faithful to the original that the distinction dissolved—and here the fluorescent tube, stammering its Morse of doubt; he walked it as one walks the nave of a church one has stopped believing in, each step a small apostasy, each flicker a bell tolling for a man who had already been buried once and did not intend to be buried twice.",
+        "weak_serial": "Do-yoon walked down the corridor. It reminded him of the past. The light flickered. He kept going because he had things to do. Eventually he reached the end of the hallway and went through the door."
+      },
+      "expected": {
+        "prose_rank": ["kwn_english", "western_english", "weak_serial", "literary", "translation_like"],
+        "structure_rank": ["kwn_english", "translation_like", "literary", "western_english", "weak_serial"],
+        "lint_translation_like": ["TRN-01", "TRN-02", "EP-OPEN-02"],
+        "lint_literary": ["EP-LEN-01", "EP-ADV-01"],
+        "min_gap_prose_vs_translation_like": 40,
+        "min_gap_structure_vs_western_english": 30
+      }
+    },
+    {
+      "id": "cs-003",
+      "genre": "romance-fantasy",
+      "function": "banter",
+      "variants": {
+        "kwn_english": "“I didn’t expect to find you in the garden at this hour, Lady Elise.”\n\n“And I didn’t expect to find you climbing over someone else’s wall at this hour, Your Grace.”\n\nThe duke did not smile. He snapped a rose from the nearest bush and held it out.\n\n“Destroying the evidence.”",
+        "western_english": "The garden at night was a different country. Moonlight silvered the boxwood and turned the gravel paths to ribbons of ash, and somewhere beyond the wall a fountain kept its patient count. Elise had come out for air and for silence, and she had found both until the moment a shadow detached itself from the top of the wall and resolved, with an athlete’s economy, into the Duke of Averne. They regarded each other for a long moment, two people who had each expected to be alone, and then he spoke, and the evening rearranged itself around his voice.",
+        "translation_like": "“Lady-nim, I did not expect you are in garden this time.”\n\n“Your Grace also, I did not expect you are climbing other person’s wall this time.”\n\nDuke did not smile. Instead, he cut one rose and gave it to her.\n\n“This is destroying of evidence.” He said softly.",
+        "literary": "That she should be in the garden at such an hour was, he supposed, no stranger than that he should be atop its wall; and yet the strangeness of it—the doubled improbability, the way the night seemed to have conspired to arrange them thus, like chess pieces set out by a player who had wandered off—struck him with a force he disguised, as he disguised most things, by reaching for the nearest rose and offering it, stem first, with the gravity of a man surrendering a sword.",
+        "weak_serial": "Elise was in the garden. The duke came over the wall. They talked for a while about why each of them was there. He gave her a rose from one of the bushes. Then they said goodnight and she went back inside to bed."
+      },
+      "expected": {
+        "prose_rank": ["kwn_english", "western_english", "weak_serial", "literary", "translation_like"],
+        "structure_rank": ["kwn_english", "translation_like", "literary", "western_english", "weak_serial"],
+        "lint_translation_like": ["TRN-01", "TRN-03", "EP-DLG-02", "EP-HON-01"],
+        "min_gap_prose_vs_translation_like": 40,
+        "min_gap_structure_vs_western_english": 30
+      },
+      "note": "Romance-fantasy uses Western-style names and titles; the tradition still demands sharp dialogue openings and a punchline beat, not scene-setting."
+    },
+    {
+      "id": "cs-004",
+      "genre": "system-progression",
+      "function": "status_window",
+      "variants": {
+        "kwn_english": "[Level up.]\n\n[Status Window]\nName: Han Seo-jun   Level: 13   Class: Swordsman\nSTR 15   AGI 11   VIT 13\nSkills: Sword Strike Lv. 3, Evasion Lv. 2\n\nOne point of strength. That was all. Seo-jun closed the window.\n\n*One more.*",
+        "western_english": "A message appeared to inform him that his level had risen, and he took a moment, as he always did, to open the status window and read it through with the care of a man reviewing a bank statement. His name was there, and his level, now thirteen, and his class, and beneath them the small constellation of numbers that described what his body could do: fifteen for strength, eleven for agility, thirteen for vitality. His skills were listed too. He noted that his strength had increased by a single point, and he reflected, closing the window, on how little a single point could mean and how much.",
+        "translation_like": "[Level is up.]\n\n[Status Window]\nName: Han Seo-jun   Level: 13   Job: Swordsman\nStrength 15   Agility 11   Stamina 13\nSkill: Sword Strike Lv.3, Avoidance Lv.2\n\nStrength went up 1. That was everything. Seo-jun closed window.\n\n*One guy more.*",
+        "literary": "The window unfurled before him like a page torn from a ledger kept by some indifferent celestial accountant: his name, his level—thirteen now, an unlucky number rendered lucky by the mere fact of increase—his class, and the small, stubborn integers of his flesh. Fifteen. Eleven. Thirteen. One more point of strength, one more grain on a scale that would never, he suspected, tip.",
+        "weak_serial": "Seo-jun leveled up. He looked at his status window and saw that his strength had gone up by one. He closed it and kept walking through the dungeon, looking for more monsters to fight."
+      },
+      "expected": {
+        "prose_rank": ["kwn_english", "western_english", "weak_serial", "literary", "translation_like"],
+        "structure_rank": ["kwn_english", "translation_like", "weak_serial", "literary", "western_english"],
+        "lint_translation_like": ["TRN-01", "ST-SYS-01"],
+        "lint_western_english": ["ST-SYS-01", "EP-LEN-01"],
+        "min_gap_prose_vs_translation_like": 35,
+        "min_gap_structure_vs_western_english": 35
+      },
+      "note": "The status-window device dissolving into narration is a structure failure even when the English is fluent."
+    }
+  ],
+  "register_cases": [
+    { "id": "rc-001", "pair": "Yu-ri → Mu-jin", "expected_register": { "formality": 3, "deference": 3, "address_terms": ["Mister Park", "sir"] }, "correct": "“Mister Park, can I carry this one? Whoa—it’s heavy!”", "wrong": "“Old man, gimme that. Whoa, heavy.”", "expected_rule": "RG-01+RG-02", "shift_allowed": "emotional_outburst (one excited exclamation may drop formality; the request itself stays deferential)" },
+    { "id": "rc-002", "pair": "Do-yoon → Seo-ha @ch.86", "expected_register": { "formality": 3, "address_terms": ["Miss Lee"], "contractions": "avoid" }, "correct": "“Miss Lee, please don’t push yourself.”", "wrong": "“Seo-ha. Don’t push it.”", "expected_rule": "RG-03 (intimacy milestone not yet reached) + hard requirement slow-burn" },
+    { "id": "rc-003", "pair": "Do-yoon → Seo-ha @ch.88 private", "expected_register": { "formality": 1, "address_terms": ["Seo-ha"], "contractions": "free" }, "correct": "“Seo-ha. Don’t push it.”", "wrong": "“Miss Lee, please don’t push yourself.”", "expected_rule": "RG-01 (unless intentional_shift=public_formality in a public scene)" },
+    { "id": "rc-004", "pair": "Hyun-seok → Do-yoon @ch.61 public", "expected_register": { "formality": 4, "address_terms": ["Hunter Kang"], "contractions": "avoid" }, "correct": "“Hunter Kang, if you would come this way.”", "wrong": "“Kang. Over here.”", "expected_rule": "RG-01+RG-02" },
+    { "id": "rc-005", "pair": "Mu-jin → Do-yoon serious", "expected_register": { "formality": 1, "address_terms": ["son", "Do-yoon"] }, "correct": "“If it weren’t for you, son, I’d have died first.”", "wrong": "“If it were not for you, Kang Do-yoon-ssi, I would have died first.”", "expected_rule": "RG-01+EP-HON-01" }
+  ]
+}

@@ -4,74 +4,257 @@
   "title": "Context Pack Manifest",
   "description": "Everything included in (and dropped from) one LLM call's context (ADR-0010).",
   "type": "object",
-  "required": ["pack_id", "pack_hash", "template", "template_version", "role", "pinned", "budget_tokens", "token_counts", "items", "validation"],
+  "required": [
+    "pack_id",
+    "pack_hash",
+    "template",
+    "template_version",
+    "role",
+    "pinned",
+    "budget_tokens",
+    "token_counts",
+    "items",
+    "validation"
+  ],
   "additionalProperties": false,
   "properties": {
-    "pack_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "pack_hash": { "type": "string" },
-    "template": { "type": "string", "description": "e.g. pack.scene_writer" },
-    "template_version": { "type": "string" },
-    "role": { "type": "string" },
-    "job_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "pinned": { "$ref": "common.schema.json#/$defs/versionRef" },
-    "style_block": {
+    "pack_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "pack_hash": {
+      "type": "string"
+    },
+    "template": {
+      "type": "string",
+      "description": "e.g. pack.scene_writer"
+    },
+    "template_version": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "job_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "pinned": {
+      "$ref": "common.schema.json#/$defs/versionRef"
+    },
+    "narrative_identity_block": {
       "type": "object",
+      "required": [
+        "hash",
+        "identity_version_id",
+        "output_language_contract_hash",
+        "tradition_contract_hash"
+      ],
       "additionalProperties": false,
       "properties": {
-        "hash": { "type": "string" },
-        "profile_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
-        "role_variant": { "type": "string" },
-        "exemplar_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-        "dropped_sections": { "type": "array", "items": { "type": "string" } }
+        "hash": {
+          "type": "string"
+        },
+        "identity_version_id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "role_variant": {
+          "type": "string"
+        },
+        "output_language": {
+          "$ref": "common.schema.json#/$defs/manuscriptLanguage"
+        },
+        "output_language_contract_hash": {
+          "type": "string"
+        },
+        "tradition_contract_hash": {
+          "type": "string"
+        },
+        "exemplar_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          }
+        },
+        "dropped_sections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
-    "budget_tokens": { "type": "integer", "minimum": 1 },
+    "budget_tokens": {
+      "type": "integer",
+      "minimum": 1
+    },
     "token_counts": {
       "type": "object",
-      "required": ["total", "by_tier"],
+      "required": [
+        "total",
+        "by_tier"
+      ],
       "additionalProperties": false,
       "properties": {
-        "total": { "type": "integer" },
-        "by_tier": { "type": "object", "additionalProperties": { "type": "integer" } },
-        "estimator": { "type": "string", "description": "tokenizer id or 'korean_estimator_v1'" },
-        "cache_prefix_hash": { "type": "string" }
+        "total": {
+          "type": "integer"
+        },
+        "by_tier": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        },
+        "estimator": {
+          "type": "string",
+          "description": "tokenizer id or 'english_estimator_v1'"
+        },
+        "cache_prefix_hash": {
+          "type": "string"
+        }
       }
     },
     "items": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["kind", "id", "tier", "tokens", "included"],
+        "required": [
+          "kind",
+          "id",
+          "tier",
+          "tokens",
+          "included"
+        ],
         "additionalProperties": false,
         "properties": {
-          "kind": { "type": "string", "enum": ["requirement", "style_block", "contract", "scene_plan", "locked_fact", "fact", "event", "knowledge_state", "relationship_state", "promise", "summary", "prev_chapter_tail", "prev_chapter_hook", "evidence", "glossary", "entity", "speech_digest", "exemplar", "voice_exemplar", "plan", "untrusted", "lint_report", "chapter_text", "scene_text"] },
-          "id": { "type": "string" },
-          "version": { "type": "string" },
-          "tier": { "type": "string", "enum": ["T0", "T1", "T2", "T3"] },
-          "tokens": { "type": "integer", "minimum": 0 },
-          "included": { "type": "boolean" },
-          "rank_score": { "type": "number" },
-          "compression": { "type": "string", "enum": ["none", "table", "one_line", "trimmed_quote", "degraded"] },
-          "drop_reason": { "type": "string" },
-          "content_hash": { "type": "string" }
+          "kind": {
+            "type": "string",
+            "enum": [
+              "active_constraint_set",
+              "chapter_text",
+              "contract",
+              "entity",
+              "event",
+              "evidence",
+              "exemplar",
+              "fact",
+              "knowledge_state",
+              "lint_report",
+              "locked_fact",
+              "narrative_identity_block",
+              "plan",
+              "prev_chapter_hook",
+              "prev_chapter_tail",
+              "promise",
+              "register_digest",
+              "registry_slice",
+              "relationship_state",
+              "requirement",
+              "scene_plan",
+              "scene_text",
+              "summary",
+              "untrusted",
+              "voice_exemplar"
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "T0",
+              "T1",
+              "T2",
+              "T3"
+            ]
+          },
+          "tokens": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "included": {
+            "type": "boolean"
+          },
+          "rank_score": {
+            "type": "number"
+          },
+          "compression": {
+            "type": "string",
+            "enum": [
+              "none",
+              "table",
+              "one_line",
+              "trimmed_quote",
+              "degraded"
+            ]
+          },
+          "drop_reason": {
+            "type": "string"
+          },
+          "content_hash": {
+            "type": "string"
+          },
+          "materiality": {
+            "$ref": "common.schema.json#/$defs/materiality",
+            "description": "Dependency edge class this item will create (ADR-0032)"
+          }
         }
       }
     },
-    "degraded": { "type": "boolean", "default": false },
-    "degradation_notes": { "type": "array", "items": { "type": "string" } },
-    "validation": {
-      "type": "object",
-      "required": ["t0_byte_equal", "style_hash_ok", "prev_tail_hash_ok", "sources_allowlisted", "within_budget"],
-      "additionalProperties": false,
-      "properties": {
-        "t0_byte_equal": { "type": "boolean" },
-        "style_hash_ok": { "type": "boolean" },
-        "prev_tail_hash_ok": { "type": "boolean" },
-        "sources_allowlisted": { "type": "boolean" },
-        "within_budget": { "type": "boolean" }
+    "degraded": {
+      "type": "boolean",
+      "default": false
+    },
+    "degradation_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     },
-    "rendered_ref": { "type": "string", "description": "Object storage key of rendered prompt" },
-    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+    "validation": {
+      "type": "object",
+      "required": [
+        "t0_byte_equal",
+        "identity_block_hash_ok",
+        "both_contracts_present",
+        "active_constraints_hash_ok",
+        "prev_tail_hash_ok",
+        "sources_allowlisted",
+        "within_budget"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "t0_byte_equal": {
+          "type": "boolean"
+        },
+        "prev_tail_hash_ok": {
+          "type": "boolean"
+        },
+        "sources_allowlisted": {
+          "type": "boolean"
+        },
+        "within_budget": {
+          "type": "boolean"
+        },
+        "identity_block_hash_ok": {
+          "type": "boolean"
+        },
+        "both_contracts_present": {
+          "type": "boolean"
+        },
+        "active_constraints_hash_ok": {
+          "type": "boolean"
+        }
+      }
+    },
+    "rendered_ref": {
+      "type": "string",
+      "description": "Object storage key of rendered prompt"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    }
   }
 }

@@ -2,99 +2,343 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://yeonjae.studio/schemas/story-intake.schema.json",
   "title": "Story Intake",
-  "description": "User-provided premise and requirements at project creation (FR-1.1). Free text may be Korean or English; generation is always Korean.",
+  "description": "User-provided premise and requirements at project creation (FR-1.1). Free text may be in any language; manuscript output is always English (OUTPUT-EN-001).",
   "type": "object",
-  "required": ["title_working", "premise", "genre", "target_chapters", "target_chars_per_chapter"],
+  "required": [
+    "title_working",
+    "premise",
+    "genre",
+    "target_chapters",
+    "target_words_per_chapter"
+  ],
   "additionalProperties": false,
   "properties": {
-    "title_working": { "type": "string", "minLength": 1 },
-    "premise": { "type": "string", "minLength": 20, "description": "Free-text premise" },
+    "title_working": {
+      "type": "string",
+      "minLength": 1
+    },
+    "premise": {
+      "type": "string",
+      "minLength": 20,
+      "description": "Free-text premise (any language)"
+    },
+    "premise_language": {
+      "$ref": "common.schema.json#/$defs/languageCode",
+      "description": "Language of the premise text; detected if omitted"
+    },
     "genre": {
       "type": "object",
-      "required": ["primary"],
+      "required": [
+        "primary"
+      ],
       "additionalProperties": false,
       "properties": {
-        "primary": { "$ref": "#/$defs/genreId" },
-        "secondary": { "type": "array", "items": { "$ref": "#/$defs/genreId" }, "maxItems": 2 },
-        "notes": { "type": "string" }
+        "primary": {
+          "$ref": "#/$defs/genreId"
+        },
+        "secondary": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/genreId"
+          },
+          "maxItems": 2
+        },
+        "notes": {
+          "type": "string"
+        }
       }
     },
-    "main_character": { "$ref": "#/$defs/characterSketch" },
-    "supporting_characters": { "type": "array", "items": { "$ref": "#/$defs/characterSketch" }, "maxItems": 20 },
-    "world_concept": { "type": "string" },
-    "desired_tropes": { "type": "array", "items": { "type": "string" }, "maxItems": 30 },
+    "main_character": {
+      "$ref": "#/$defs/characterSketch"
+    },
+    "supporting_characters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/characterSketch"
+      },
+      "maxItems": 20
+    },
+    "world_concept": {
+      "type": "string"
+    },
+    "desired_tropes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 30
+    },
     "forbidden_developments": {
       "type": "array",
       "description": "Each becomes a hard must_not inherited by every plan and contract.",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "maxItems": 50
     },
     "target_audience": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "rating": { "type": "string", "enum": ["all", "12", "15", "19"] },
-        "description": { "type": "string" }
+        "rating": {
+          "type": "string",
+          "enum": [
+            "all",
+            "12",
+            "15",
+            "19"
+          ]
+        },
+        "description": {
+          "type": "string"
+        }
       }
     },
     "tone": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "keywords": { "type": "array", "items": { "type": "string" } },
-        "humor_level": { "type": "integer", "minimum": 0, "maximum": 5 },
-        "darkness_level": { "type": "integer", "minimum": 0, "maximum": 5 },
-        "pace": { "type": "string", "enum": ["fast", "medium", "slow"] }
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "humor_level": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "darkness_level": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "pace": {
+          "type": "string",
+          "enum": [
+            "fast",
+            "medium",
+            "slow"
+          ]
+        }
       }
     },
     "romance": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "presence": { "type": "string", "enum": ["none", "subplot", "main"] },
-        "pace": { "type": "string", "enum": ["slow_burn", "medium", "fast"] },
-        "constraints": { "type": "array", "items": { "type": "string" } }
+        "presence": {
+          "type": "string",
+          "enum": [
+            "none",
+            "subplot",
+            "main"
+          ]
+        },
+        "pace": {
+          "type": "string",
+          "enum": [
+            "slow_burn",
+            "medium",
+            "fast"
+          ]
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
-    "progression_system": { "type": "string", "description": "Power/progression system concept" },
-    "ending_preference": { "type": "string", "enum": ["happy", "bittersweet", "open", "tragic", "unspecified"] },
-    "target_chapters": { "type": "integer", "minimum": 1, "maximum": 5000 },
-    "target_chars_per_chapter": { "type": "integer", "minimum": 1500, "maximum": 20000, "description": "Korean characters incl. spaces (ADR-0024)" },
+    "progression_system": {
+      "type": "string",
+      "description": "Power/progression system concept"
+    },
+    "ending_preference": {
+      "type": "string",
+      "enum": [
+        "happy",
+        "bittersweet",
+        "open",
+        "tragic",
+        "unspecified"
+      ]
+    },
+    "target_chapters": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5000
+    },
+    "target_words_per_chapter": {
+      "type": "integer",
+      "minimum": 500,
+      "maximum": 8000,
+      "description": "English words per chapter (ADR-0034); default 2,500"
+    },
+    "spelling_locale": {
+      "$ref": "common.schema.json#/$defs/spellingLocale",
+      "default": "en-US"
+    },
     "mandatory_scenes": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["description"],
+        "required": [
+          "description"
+        ],
         "additionalProperties": false,
         "properties": {
-          "description": { "type": "string" },
-          "placement_hint": { "type": "string", "description": "e.g. '1부 후반', 'ch.50 이전'" }
+          "description": {
+            "type": "string"
+          },
+          "placement_hint": {
+            "type": "string",
+            "description": "e.g. 'late Season 1', 'before ch.50'"
+          }
         }
       }
     },
-    "content_restrictions": { "type": "array", "items": { "type": "string" } },
-    "style_preferences": { "type": "array", "items": { "type": "string" } },
-    "operating_mode": { "type": "string", "enum": ["assisted", "semi_auto", "autopilot"], "default": "assisted" },
-    "quality_tier": { "type": "string", "enum": ["economy", "standard", "premium"], "default": "standard" }
+    "content_restrictions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "prose_preferences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Free-text prose preferences (any language), e.g. shorter sentences, less inner monologue"
+    },
+    "setting_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "setting_type": {
+          "type": "string",
+          "enum": [
+            "modern_korea",
+            "secondary_world",
+            "murim_historical",
+            "other"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "naming_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "style": {
+          "type": "string",
+          "enum": [
+            "korean_romanized",
+            "western",
+            "invented",
+            "mixed_by_faction"
+          ]
+        },
+        "romanization_system": {
+          "type": "string",
+          "enum": [
+            "revised_romanization",
+            "mccune_reischauer",
+            "custom"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "terminology_preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default_decision": {
+          "type": "string",
+          "enum": [
+            "translate",
+            "romanize",
+            "gloss_first_use"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "operating_mode": {
+      "type": "string",
+      "enum": [
+        "assisted",
+        "semi_auto",
+        "autopilot"
+      ],
+      "default": "assisted"
+    },
+    "quality_tier": {
+      "type": "string",
+      "enum": [
+        "economy",
+        "standard",
+        "premium"
+      ],
+      "default": "standard"
+    }
   },
   "$defs": {
     "genreId": {
       "type": "string",
       "enum": [
-        "hunter-gate", "system-progression", "regression", "modern-fantasy", "murim", "romance-fantasy",
-        "villainess", "academy", "possession", "reincarnation", "dungeon", "apocalypse-survival",
-        "management", "idol-entertainment", "game-world", "comedy", "character-drama", "slow-burn-romance"
+        "hunter-gate",
+        "system-progression",
+        "regression",
+        "modern-fantasy",
+        "murim",
+        "romance-fantasy",
+        "villainess",
+        "academy",
+        "possession",
+        "reincarnation",
+        "dungeon",
+        "apocalypse-survival",
+        "management",
+        "idol-entertainment",
+        "game-world",
+        "comedy",
+        "character-drama",
+        "slow-burn-romance"
       ]
     },
     "characterSketch": {
       "type": "object",
-      "required": ["name_ko"],
+      "required": [
+        "name"
+      ],
       "additionalProperties": false,
       "properties": {
-        "name_ko": { "type": "string", "minLength": 1 },
-        "role": { "type": "string" },
-        "description": { "type": "string" },
-        "speech_notes": { "type": "string", "description": "e.g. '항상 존댓말', '사투리'" }
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name as the user wrote it (any script); the naming registry decides display/romanized forms"
+        },
+        "role": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "speech_notes": {
+          "type": "string",
+          "description": "Register hints in any language, e.g. 'always formal', 'blunt with juniors'"
+        }
       }
     }
   }

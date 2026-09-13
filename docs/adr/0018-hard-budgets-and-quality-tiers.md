@@ -10,7 +10,7 @@ Trial resources are limited; runaway loops must be impossible; users need predic
 ## Decision
 Enforce **hard limits** pre-call via gateway reservations at workspace/project/chapter/workflow scopes;
 pause cleanly at activity boundaries on exhaustion; quality tiers (Economy/Standard/Premium) set candidate
-counts, judge depth and routing; predictions shown before batches; cost per accepted chapter/1k chars
+counts, judge depth and routing; predictions shown before batches; cost per accepted chapter / 1,000 accepted words
 tracked.
 
 ## Alternatives considered

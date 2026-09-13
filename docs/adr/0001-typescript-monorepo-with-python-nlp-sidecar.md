@@ -1,4 +1,4 @@
-# ADR-0001: TypeScript monorepo with a Python Korean-NLP sidecar
+# ADR-0001: TypeScript monorepo (optional English grammar service)
 
 - **Status:** Accepted
 - **Date:** 2026-09-13
@@ -6,18 +6,20 @@
 
 ## Context
 The system spans a web UI, an API, durable workflow workers, and many domain packages (canon, context,
-style, gateway). Korean morphological analysis has mature tooling in Python (Kiwi, MeCab-ko) but the rest
-of the system benefits from one language for shared domain types generated from JSON Schema.
+narrative identity, prose analysis, gateway). The system benefits from one language for shared domain
+types generated from JSON Schema. English grammar checking, if enabled, is best served by an existing
+self-hosted service rather than in-process code.
 
 ## Decision
 Build a **pnpm TypeScript monorepo** (Node 22 LTS, strict TS): `apps/web` (Next.js), `apps/api` (Fastify),
-`apps/worker` (Temporal TS SDK), `packages/*`. Run Korean morphology as a **stateless Python sidecar**
-(FastAPI) with a thin TS client and a Postgres-backed result cache.
+`apps/worker` (Temporal TS SDK), `packages/*` including `packages/prose` (English text analysis in TS).
+An **optional** self-hosted English grammar/spelling service (`services/grammar-service`, LanguageTool-class)
+sits behind a thin TS client with a Postgres-backed result cache (ADR-0028).
 
 ## Alternatives considered
 - All-Python (FastAPI + Temporal Python) — weaker typing story for the large domain model; UI still TS.
-- JS-only Korean analyzers — insufficient accuracy for speech-level/honorific analysis.
+- In-process grammar checking only — acceptable for MVP; the optional service adds precision later.
 
 ## Consequences
-One type system for domain objects; a small polyglot boundary confined to the sidecar; sidecar versioning
-and caching must be part of the lint determinism story.
+One type system for domain objects; the only polyglot boundary is the optional grammar service, whose
+version and caching are part of the lint determinism story. (Amended under ADR-0026/0028.)

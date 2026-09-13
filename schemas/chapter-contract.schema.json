@@ -5,46 +5,164 @@
   "description": "Structured specification a chapter must satisfy to be accepted (docs/03-story-planning/02, ADR-0013).",
   "type": "object",
   "required": [
-    "id", "project_id", "chapter_number", "version", "arc_id", "status", "pinned",
-    "purpose_ko", "must_happen", "must_not_happen", "pov", "participants", "locations", "story_time", "timeline_id",
-    "knowledge_deltas", "state_deltas", "relationship_deltas", "setups", "payoffs",
-    "emotional_movement", "conflict", "local_satisfaction", "ending_state_ko", "hook", "opening",
-    "scene_count", "dialogue_density_target", "length_target_chars", "style_profile_version_id",
-    "continuity_risks", "continuity_anchors", "knowledge_guards", "acceptance_criteria"
+    "id",
+    "project_id",
+    "chapter_number",
+    "version",
+    "arc_id",
+    "status",
+    "pinned",
+    "purpose",
+    "must_happen",
+    "must_not_happen",
+    "pov",
+    "participants",
+    "locations",
+    "story_time",
+    "timeline_id",
+    "knowledge_deltas",
+    "state_deltas",
+    "relationship_deltas",
+    "setups",
+    "payoffs",
+    "emotional_movement",
+    "conflict",
+    "local_satisfaction",
+    "ending_state",
+    "hook",
+    "opening",
+    "scene_count",
+    "dialogue_density_target",
+    "continuity_risks",
+    "continuity_anchors",
+    "knowledge_guards",
+    "acceptance_criteria",
+    "length_target",
+    "narrative_identity_version_id",
+    "active_constraints_ref"
   ],
   "additionalProperties": false,
   "properties": {
-    "id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "chapter_number": { "type": "integer", "minimum": 1 },
-    "version": { "type": "integer", "minimum": 1 },
-    "arc_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "minor_arc_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "season_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "beat_refs": { "type": "array", "items": { "type": "string" } },
-    "pinned": { "$ref": "common.schema.json#/$defs/versionRef" },
-    "status": { "type": "string", "enum": ["draft", "validated", "approved", "stale", "superseded", "realized"] },
-    "stale_reasons": { "type": "array", "items": { "type": "string" } },
-
-    "purpose_ko": { "type": "string", "minLength": 1 },
-    "reader_experience_ko": { "type": "string" },
-    "arc_objective_contribution_ko": { "type": "string" },
-
+    "id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "chapter_number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "arc_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "minor_arc_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "season_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "beat_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "pinned": {
+      "$ref": "common.schema.json#/$defs/versionRef"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "validated",
+        "approved",
+        "stale",
+        "superseded",
+        "realized"
+      ]
+    },
+    "stale_reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reader_experience": {
+      "type": "string"
+    },
+    "arc_objective_contribution": {
+      "type": "string"
+    },
     "must_happen": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "kind", "description_ko", "verifiable_by"],
+        "required": [
+          "id",
+          "kind",
+          "description",
+          "verifiable_by"
+        ],
         "additionalProperties": false,
         "properties": {
-          "id": { "type": "string" },
-          "kind": { "type": "string", "enum": ["event", "revelation", "decision", "progression", "relationship", "comedic_beat", "required_scene"] },
-          "description_ko": { "type": "string" },
-          "proposition_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-          "entity_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-          "requirement_id": { "type": "string", "description": "Spec requirement if user-mandated" },
-          "verifiable_by": { "type": "string", "enum": ["extraction", "judge", "lexical_marker", "human"] },
-          "marker_patterns": { "type": "array", "items": { "type": "string" } }
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "event",
+              "revelation",
+              "decision",
+              "progression",
+              "relationship",
+              "comedic_beat",
+              "required_scene"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "proposition_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/uuid"
+            }
+          },
+          "entity_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/uuid"
+            }
+          },
+          "requirement_id": {
+            "type": "string",
+            "description": "Spec requirement if user-mandated"
+          },
+          "verifiable_by": {
+            "type": "string",
+            "enum": [
+              "extraction",
+              "judge",
+              "lexical_marker",
+              "human"
+            ]
+          },
+          "marker_patterns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
         }
       }
     },
@@ -52,33 +170,102 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "description_ko", "source"],
+        "required": [
+          "id",
+          "description",
+          "source"
+        ],
         "additionalProperties": false,
         "properties": {
-          "id": { "type": "string" },
-          "description_ko": { "type": "string" },
-          "source": { "type": "string", "enum": ["spec", "arc", "local", "content_restriction"] },
-          "requirement_id": { "type": "string" },
-          "lexical_patterns": { "type": "array", "items": { "type": "string" } }
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "spec",
+              "arc",
+              "local",
+              "content_restriction"
+            ]
+          },
+          "requirement_id": {
+            "type": "string"
+          },
+          "lexical_patterns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
         }
       }
     },
-    "hard_requirement_refs": { "type": "array", "items": { "type": "string" } },
-
-    "pov": {
+    "hard_requirement_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "active_constraints_ref": {
       "type": "object",
-      "required": ["character_id", "person"],
+      "required": [
+        "id",
+        "content_hash"
+      ],
       "additionalProperties": false,
       "properties": {
-        "character_id": { "$ref": "common.schema.json#/$defs/uuid" },
-        "person": { "type": "string", "enum": ["first", "third_limited", "third_omniscient"] },
+        "id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "content_hash": {
+          "type": "string"
+        },
+        "token_count": {
+          "type": "integer"
+        }
+      },
+      "description": "Compiled, scope-filtered Active Constraint Set for this chapter (ADR-0033)"
+    },
+    "pov": {
+      "type": "object",
+      "required": [
+        "character_id",
+        "person"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "character_id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "person": {
+          "type": "string",
+          "enum": [
+            "first",
+            "third_limited",
+            "third_omniscient"
+          ]
+        },
         "segments": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["scene_no", "character_id"],
+            "required": [
+              "scene_no",
+              "character_id"
+            ],
             "additionalProperties": false,
-            "properties": { "scene_no": { "type": "integer" }, "character_id": { "$ref": "common.schema.json#/$defs/uuid" } }
+            "properties": {
+              "scene_no": {
+                "type": "integer"
+              },
+              "character_id": {
+                "$ref": "common.schema.json#/$defs/uuid"
+              }
+            }
           }
         }
       }
@@ -88,65 +275,196 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["character_id", "role_in_chapter", "on_page"],
+        "required": [
+          "character_id",
+          "role_in_chapter",
+          "on_page"
+        ],
         "additionalProperties": false,
         "properties": {
-          "character_id": { "$ref": "common.schema.json#/$defs/uuid" },
-          "role_in_chapter": { "type": "string", "enum": ["protagonist", "antagonist", "ally", "foil", "cameo", "love_interest", "mentor", "comic_relief"] },
-          "on_page": { "type": "boolean" }
+          "character_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          },
+          "role_in_chapter": {
+            "type": "string",
+            "enum": [
+              "protagonist",
+              "antagonist",
+              "ally",
+              "foil",
+              "cameo",
+              "love_interest",
+              "mentor",
+              "comic_relief"
+            ]
+          },
+          "on_page": {
+            "type": "boolean"
+          }
         }
       }
     },
-    "mentioned_only": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-    "locations": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-    "story_time": {
-      "type": "object",
-      "required": ["start", "end"],
-      "additionalProperties": false,
-      "properties": {
-        "start": { "$ref": "common.schema.json#/$defs/storyClock" },
-        "end": { "$ref": "common.schema.json#/$defs/storyClock" },
-        "elapsed_since_previous_ko": { "type": "string" }
+    "mentioned_only": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/uuid"
       }
     },
-    "timeline_id": { "$ref": "common.schema.json#/$defs/uuid" },
-
+    "locations": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/uuid"
+      }
+    },
+    "story_time": {
+      "type": "object",
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "$ref": "common.schema.json#/$defs/storyClock"
+        },
+        "end": {
+          "$ref": "common.schema.json#/$defs/storyClock"
+        },
+        "elapsed_since_previous": {
+          "type": "string"
+        }
+      }
+    },
+    "timeline_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
     "knowledge_deltas": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["knower", "from_stance", "to_stance", "how_ko"],
+        "required": [
+          "knower",
+          "from_stance",
+          "to_stance",
+          "how"
+        ],
         "additionalProperties": false,
         "properties": {
-          "knower": { "$ref": "common.schema.json#/$defs/knowerRef" },
-          "proposition_id": { "$ref": "common.schema.json#/$defs/uuid" },
-          "new_proposition_ko": { "type": "string" },
-          "from_stance": { "$ref": "common.schema.json#/$defs/stance" },
-          "to_stance": { "$ref": "common.schema.json#/$defs/stance" },
-          "how_ko": { "type": "string", "description": "Channel: witnessed/told by X/inferred…" },
-          "channel_kind": { "type": "string", "enum": ["witnessed", "told", "inferred", "read", "overheard", "deduced", "remembered", "prior_loop_memory", "source_story"] },
-          "informer_id": { "$ref": "common.schema.json#/$defs/uuid" }
+          "knower": {
+            "$ref": "common.schema.json#/$defs/knowerRef"
+          },
+          "proposition_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          },
+          "new_proposition": {
+            "type": "string"
+          },
+          "from_stance": {
+            "$ref": "common.schema.json#/$defs/stance"
+          },
+          "to_stance": {
+            "$ref": "common.schema.json#/$defs/stance"
+          },
+          "how": {
+            "type": "string",
+            "description": "Channel: witnessed/told by X/inferred…"
+          },
+          "channel_kind": {
+            "type": "string",
+            "enum": [
+              "witnessed",
+              "told",
+              "inferred",
+              "read",
+              "overheard",
+              "deduced",
+              "remembered",
+              "prior_loop_memory",
+              "source_story"
+            ]
+          },
+          "informer_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          }
         },
-        "anyOf": [ { "required": ["proposition_id"] }, { "required": ["new_proposition_ko"] } ]
+        "anyOf": [
+          {
+            "required": [
+              "proposition_id"
+            ]
+          },
+          {
+            "required": [
+              "new_proposition"
+            ]
+          }
+        ]
       }
     },
-    "state_deltas": { "type": "array", "items": { "$ref": "#/$defs/stateDelta" } },
+    "state_deltas": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/stateDelta"
+      }
+    },
     "relationship_deltas": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["from_id", "to_id", "axis", "direction"],
+        "required": [
+          "from_id",
+          "to_id",
+          "axis",
+          "direction"
+        ],
         "additionalProperties": false,
         "properties": {
-          "from_id": { "$ref": "common.schema.json#/$defs/uuid" },
-          "to_id": { "$ref": "common.schema.json#/$defs/uuid" },
-          "axis": { "type": "string", "enum": ["trust", "affection", "respect", "hostility", "dependency", "type"] },
-          "direction": { "type": "string", "enum": ["up", "down", "change"] },
-          "magnitude": { "type": "integer", "minimum": 1, "maximum": 5 },
-          "new_type": { "type": "string" },
-          "address_term_change": { "type": "array", "items": { "type": "string" } },
-          "speech_level_change": { "$ref": "common.schema.json#/$defs/speechLevel" },
-          "description_ko": { "type": "string" }
+          "from_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          },
+          "to_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          },
+          "axis": {
+            "type": "string",
+            "enum": [
+              "trust",
+              "affection",
+              "respect",
+              "hostility",
+              "dependency",
+              "type"
+            ]
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down",
+              "change"
+            ]
+          },
+          "magnitude": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "new_type": {
+            "type": "string"
+          },
+          "address_term_change": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "register_change": {
+            "$ref": "common.schema.json#/$defs/dialogueRegister",
+            "description": "Abstract register after the change; rendered in English by the writer"
+          }
         }
       }
     },
@@ -154,42 +472,112 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["kind", "name_ko"],
+        "required": [
+          "kind",
+          "name"
+        ],
         "additionalProperties": false,
         "properties": {
-          "kind": { "type": "string", "enum": ["character", "location", "organization", "item", "ability", "term", "proposition"] },
-          "name_ko": { "type": "string" },
-          "aliases": { "type": "array", "items": { "type": "string" } },
-          "note_ko": { "type": "string" }
+          "kind": {
+            "type": "string",
+            "enum": [
+              "character",
+              "location",
+              "organization",
+              "item",
+              "ability",
+              "term",
+              "proposition"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "note": {
+            "type": "string"
+          }
         }
       }
     },
-    "setups": { "type": "array", "items": { "$ref": "#/$defs/promiseTouch" } },
-    "payoffs": { "type": "array", "items": { "$ref": "#/$defs/promiseTouch" } },
+    "setups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/promiseTouch"
+      }
+    },
+    "payoffs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/promiseTouch"
+      }
+    },
     "progression": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "milestone_id": { "type": "string" },
-        "magnitude": { "type": "string", "enum": ["minor", "major"] },
-        "mechanism_ko": { "type": "string" }
+        "milestone_id": {
+          "type": "string"
+        },
+        "magnitude": {
+          "type": "string",
+          "enum": [
+            "minor",
+            "major"
+          ]
+        },
+        "mechanism": {
+          "type": "string"
+        }
       }
     },
-
     "emotional_movement": {
       "type": "object",
-      "required": ["start_ko", "end_ko"],
+      "required": [
+        "start",
+        "end"
+      ],
       "additionalProperties": false,
-      "properties": { "start_ko": { "type": "string" }, "peak_ko": { "type": "string" }, "end_ko": { "type": "string" } }
+      "properties": {
+        "start": {
+          "type": "string"
+        },
+        "peak": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        }
+      }
     },
     "conflict": {
       "type": "object",
-      "required": ["type", "description_ko"],
+      "required": [
+        "type",
+        "description"
+      ],
       "additionalProperties": false,
       "properties": {
-        "type": { "type": "string", "enum": ["external", "internal", "interpersonal", "social"] },
-        "description_ko": { "type": "string" },
-        "reversal_ko": { "type": "string" }
+        "type": {
+          "type": "string",
+          "enum": [
+            "external",
+            "internal",
+            "interpersonal",
+            "social"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "reversal": {
+          "type": "string"
+        }
       }
     },
     "local_satisfaction": {
@@ -197,52 +585,107 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["type", "description_ko"],
+        "required": [
+          "type",
+          "description"
+        ],
         "additionalProperties": false,
         "properties": {
-          "type": { "$ref": "style-profile.schema.json#/$defs/payoffType" },
-          "description_ko": { "type": "string" }
+          "type": {
+            "$ref": "narrative-identity.schema.json#/$defs/payoffType"
+          },
+          "description": {
+            "type": "string"
+          }
         }
       }
     },
-    "ending_state_ko": { "type": "string" },
+    "ending_state": {
+      "type": "string"
+    },
     "hook": {
       "type": "object",
-      "required": ["type", "description_ko"],
+      "required": [
+        "type",
+        "description"
+      ],
       "additionalProperties": false,
       "properties": {
-        "type": { "$ref": "style-profile.schema.json#/$defs/endingType" },
-        "description_ko": { "type": "string" },
-        "question_raised_ko": { "type": "string" }
+        "type": {
+          "$ref": "narrative-identity.schema.json#/$defs/endingType"
+        },
+        "description": {
+          "type": "string"
+        },
+        "question_raised": {
+          "type": "string"
+        }
       }
     },
     "opening": {
       "type": "object",
-      "required": ["type", "description_ko"],
+      "required": [
+        "type",
+        "description"
+      ],
       "additionalProperties": false,
       "properties": {
-        "type": { "$ref": "style-profile.schema.json#/$defs/openingType" },
-        "description_ko": { "type": "string" }
+        "type": {
+          "$ref": "narrative-identity.schema.json#/$defs/openingType"
+        },
+        "description": {
+          "type": "string"
+        }
       }
     },
-    "scene_count": { "type": "integer", "minimum": 1, "maximum": 8 },
-    "dialogue_density_target": { "type": "number", "minimum": 0, "maximum": 1 },
-    "monologue_density_target": { "type": "number", "minimum": 0, "maximum": 1 },
-    "length_target_chars": { "type": "integer", "minimum": 1000 },
-    "length_tolerance_ratio": { "type": "number", "minimum": 0, "maximum": 0.5, "default": 0.12 },
-    "style_profile_version_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "tone_notes_ko": { "type": "array", "items": { "type": "string" } },
-
+    "scene_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8
+    },
+    "dialogue_density_target": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "monologue_density_target": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "length_target": {
+      "$ref": "common.schema.json#/$defs/lengthTarget"
+    },
+    "narrative_identity_version_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "tone_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "continuity_risks": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["description_ko"],
+        "required": [
+          "description"
+        ],
         "additionalProperties": false,
         "properties": {
-          "description_ko": { "type": "string" },
-          "related_fact_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-          "mitigation_ko": { "type": "string" }
+          "description": {
+            "type": "string"
+          },
+          "related_fact_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/uuid"
+            }
+          },
+          "mitigation": {
+            "type": "string"
+          }
         }
       }
     },
@@ -250,12 +693,24 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["fact_id", "statement_ko"],
+        "required": [
+          "fact_id",
+          "statement"
+        ],
         "additionalProperties": false,
         "properties": {
-          "fact_id": { "$ref": "common.schema.json#/$defs/uuid" },
-          "statement_ko": { "type": "string" },
-          "evidence": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/evidenceRef" } }
+          "fact_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          },
+          "statement": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/evidenceRef"
+            }
+          }
         }
       }
     },
@@ -263,12 +718,25 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["character_id", "must_not_know_proposition_ids"],
+        "required": [
+          "character_id",
+          "must_not_know_proposition_ids"
+        ],
         "additionalProperties": false,
         "properties": {
-          "character_id": { "$ref": "common.schema.json#/$defs/uuid" },
-          "must_not_know_proposition_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" }, "minItems": 1 },
-          "note_ko": { "type": "string" }
+          "character_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          },
+          "must_not_know_proposition_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/uuid"
+            },
+            "minItems": 1
+          },
+          "note": {
+            "type": "string"
+          }
         }
       }
     },
@@ -276,11 +744,24 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "canon_ok": { "type": "boolean" },
-        "plan_ok": { "type": "boolean" },
-        "style_ok": { "type": "boolean" },
-        "issues": { "type": "array", "items": { "$ref": "issue.schema.json" } },
-        "validated_at_canon_version": { "type": "integer" }
+        "canon_ok": {
+          "type": "boolean"
+        },
+        "plan_ok": {
+          "type": "boolean"
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "$ref": "issue.schema.json"
+          }
+        },
+        "validated_at_canon_version": {
+          "type": "integer"
+        },
+        "narrative_ok": {
+          "type": "boolean"
+        }
       }
     },
     "acceptance_criteria": {
@@ -288,42 +769,100 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "kind", "description_ko"],
+        "required": [
+          "id",
+          "kind",
+          "description"
+        ],
         "additionalProperties": false,
         "properties": {
-          "id": { "type": "string" },
-          "kind": { "type": "string", "enum": ["deterministic", "judge", "human"] },
-          "description_ko": { "type": "string" },
-          "check_ref": { "type": "string", "description": "rule id / evaluator role / criterion id" },
-          "threshold": { "type": "number" }
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "deterministic",
+              "judge",
+              "human"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "check_ref": {
+            "type": "string",
+            "description": "rule id / evaluator role / criterion id"
+          },
+          "threshold": {
+            "type": "number"
+          }
         }
       }
     },
-    "scenes": { "type": "array", "items": { "$ref": "scene-plan.schema.json" } }
+    "scenes": {
+      "type": "array",
+      "items": {
+        "$ref": "scene-plan.schema.json"
+      }
+    }
   },
   "$defs": {
     "stateDelta": {
       "type": "object",
-      "required": ["entity_id", "attribute", "to"],
+      "required": [
+        "entity_id",
+        "attribute",
+        "to"
+      ],
       "additionalProperties": false,
       "properties": {
-        "entity_id": { "$ref": "common.schema.json#/$defs/uuid" },
-        "attribute": { "type": "string" },
-        "key": { "type": "string" },
+        "entity_id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "attribute": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
         "from": {},
         "to": {},
-        "when_in_chapter": { "type": "string", "enum": ["early", "middle", "late"] },
-        "description_ko": { "type": "string" }
+        "when_in_chapter": {
+          "type": "string",
+          "enum": [
+            "early",
+            "middle",
+            "late"
+          ]
+        },
+        "description": {
+          "type": "string"
+        }
       }
     },
     "promiseTouch": {
       "type": "object",
-      "required": ["promise_id", "how_ko"],
+      "required": [
+        "promise_id",
+        "how"
+      ],
       "additionalProperties": false,
       "properties": {
-        "promise_id": { "$ref": "common.schema.json#/$defs/uuid" },
-        "how_ko": { "type": "string" },
-        "kind": { "type": "string", "enum": ["open", "advance", "pay"] }
+        "promise_id": {
+          "$ref": "common.schema.json#/$defs/uuid"
+        },
+        "how": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "open",
+            "advance",
+            "pay"
+          ]
+        }
       }
     }
   }

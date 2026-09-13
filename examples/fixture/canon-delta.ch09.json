@@ -18,7 +18,7 @@
       },
       "payload": {
         "type": "injury",
-        "summary_ko": "독안개 던전 2층에서 도윤을 밀어내던 무진이 독안개 마수의 촉수에 왼쪽 종아리를 찔려 독에 감염된다.",
+        "summary": "On the second floor of the Poison Fog Dungeon, Mu-jin shoves Do-yoon clear and takes a fog-beast tendril in the left calf; the venom spreads.",
         "location_id": "0191b2a0-0000-7000-8000-000000010002",
         "participants": [
           {
@@ -38,8 +38,8 @@
           "chapter_no": 9,
           "paragraph_id": "p41",
           "start": 4120,
-          "end": 4150,
-          "quote": "검은 독이 무진의 왼쪽 종아리를 타고 올라오고 있었다."
+          "end": 4164,
+          "quote": "Black venom was climbing Mu-jin’s left calf."
         }
       ],
       "confidence": 0.97,
@@ -68,14 +68,14 @@
       "payload": {
         "entity_id": "0191b2a0-0000-7000-8000-0000000c0003",
         "attribute": "status.injury",
-        "key": "left_leg_poison",
+        "key": "left_leg_venom",
         "value": {
-          "part": "왼쪽 종아리",
-          "kind": "마수 독",
+          "part": "left calf",
+          "kind": "beast venom",
           "severity": "serious",
-          "expected_recovery_ko": "미정"
+          "expected_recovery": "unknown"
         },
-        "value_text_ko": "왼쪽 종아리 마수 독 감염(중상)",
+        "value_text": "Beast venom in the left calf (serious)",
         "valid_from": {
           "chapter_no": 9,
           "ordinal": 40,
@@ -90,8 +90,8 @@
           "chapter_no": 9,
           "paragraph_id": "p41",
           "start": 4120,
-          "end": 4150,
-          "quote": "검은 독이 무진의 왼쪽 종아리를 타고 올라오고 있었다."
+          "end": 4164,
+          "quote": "Black venom was climbing Mu-jin’s left calf."
         }
       ],
       "confidence": 0.97,
@@ -122,7 +122,7 @@
         "entity_id": "0191b2a0-0000-7000-8000-0000000c0003",
         "attribute": "status.location",
         "value": "0191b2a0-0000-7000-8000-000000010002",
-        "value_text_ko": "독안개 던전 2층",
+        "value_text": "Poison Fog Dungeon, second floor",
         "valid_from": {
           "chapter_no": 9,
           "ordinal": 5,
@@ -137,8 +137,8 @@
           "chapter_no": 9,
           "paragraph_id": "p6",
           "start": 512,
-          "end": 538,
-          "quote": "2층 계단을 내려서자 안개가 무릎까지 차올랐다."
+          "end": 569,
+          "quote": "Past the second-floor stairs the fog rose to their knees."
         }
       ],
       "confidence": 0.9,
@@ -188,8 +188,8 @@
           "chapter_no": 9,
           "paragraph_id": "p45",
           "start": 4510,
-          "end": 4548,
-          "quote": "무진은 도윤의 주머니에서 흘러나온 낡은 나침반을 흘끗 보고는 잊었다."
+          "end": 4599,
+          "quote": "Mu-jin glanced at the old compass that had slipped from Do-yoon’s pocket, then forgot it."
         }
       ],
       "confidence": 0.82,
@@ -227,11 +227,20 @@
           "dependency": 1
         },
         "power_dynamic": "from_dominant",
-        "address_terms": [
-          "도윤아",
-          "자네"
-        ],
-        "speech_level": "해체",
+        "register": {
+          "formality": 1,
+          "deference": 0,
+          "familiarity": 3,
+          "intimacy": 1,
+          "directness": 4,
+          "contractions": "free",
+          "address_terms": [
+            "kid",
+            "Do-yoon",
+            "son"
+          ],
+          "titles": []
+        },
         "valid_from": {
           "chapter_no": 9,
           "ordinal": 60,
@@ -245,8 +254,8 @@
           "chapter_no": 9,
           "paragraph_id": "p58",
           "start": 5620,
-          "end": 5658,
-          "quote": "“자네가 아니었으면 내가 먼저 죽었어. 빚은 갚는 사람이다, 나는.”"
+          "end": 5686,
+          "quote": "“If it weren’t for you, son, I’d have died first. I pay my debts.”"
         }
       ],
       "confidence": 0.88,
@@ -260,7 +269,7 @@
         "validity_ok": true,
         "contradiction": "supersedes",
         "leak_check_ok": true,
-        "notes_ko": "A는 trust 4, B는 trust 3으로 상이 → 판정자가 인용 근거로 3 채택"
+        "notes": "A read trust 4, B read trust 3 → adjudicator chose 3 based on the quote"
       }
     },
     {
@@ -276,7 +285,7 @@
       "payload": {
         "promise_id": "0191b2a0-0000-7000-8000-0000000d0001",
         "kind": "advanced",
-        "note_ko": "나침반이 독안개 속에서 미세하게 떨렸다(숨겨진 게이트 복선 진전)"
+        "note": "The compass needle trembled in the fog (hidden-gate setup advanced)"
       },
       "evidence": [
         {
@@ -284,8 +293,8 @@
           "chapter_no": 9,
           "paragraph_id": "p46",
           "start": 4570,
-          "end": 4594,
-          "quote": "나침반 바늘이 안개 속에서 미세하게 떨렸다."
+          "end": 4609,
+          "quote": "The compass needle trembled in the fog."
         }
       ],
       "confidence": 0.8,
@@ -301,28 +310,28 @@
       }
     }
   ],
-  "unresolved_questions_ko": [
-    "독의 종류가 무엇인지(회복 기간 결정에 필요) — 13화 서하 진단에서 확정 예정(계획)"
+  "unresolved_questions": [
+    "Which venom (determines the recovery window)—to be established by Seo-ha's diagnosis in ch.13 (planned)"
   ],
   "hypothesis_results": [
     {
       "hypothesis_ref": "contract:ch09:MH-1",
       "result": "realized",
-      "note_ko": "무진 부상 발생"
+      "note": "Mu-jin injured"
     },
     {
       "hypothesis_ref": "contract:ch09:MH-2",
       "result": "realized",
-      "note_ko": "2층 진입"
+      "note": "Second floor reached"
     },
     {
       "hypothesis_ref": "contract:ch09:MH-3",
       "result": "unrealized",
-      "note_ko": "계획된 마석 3개 획득은 본문에 2개만 등장 → 계약 부분 미실현으로 기록, 다음 계약에서 보정"
+      "note": "Planned three mana stones; the text shows two → recorded as partially unrealized; next contract adjusts"
     }
   ],
-  "summary_l1_ko": "독안개 던전 2층. 안개 속 마수의 기습에서 무진이 도윤을 밀어내고 왼쪽 종아리에 독을 입는다. 도윤은 전생 기억으로 마수의 약점(발광 기관)을 노려 격퇴하지만, 무진은 그것을 운으로 여긴다. 철수 중 나침반 바늘이 떨린다. 무진은 도윤에게 빚을 갚겠다고 말한다. 마석 2개 획득.",
-  "ending_hook_ko": "던전 밖으로 나온 순간, 무진의 다리에서 검은 독이 무릎까지 올라와 있었다.",
+  "summary_l1": "Poison Fog Dungeon, second floor. When a fog beast ambushes them, Mu-jin shoves Do-yoon clear and takes venom in his left calf. Do-yoon, using prior-life memory, targets the beast's glowing organ and drives it off, but Mu-jin takes it for luck. On the way out the compass needle trembles. Mu-jin tells Do-yoon he pays his debts. Two mana stones recovered.",
+  "ending_hook": "Outside the gate, the black venom had climbed to Mu-jin's knee.",
   "reconciliation": {
     "agreed": 4,
     "single_source": 1,

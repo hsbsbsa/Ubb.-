@@ -1,0 +1,54 @@
+{
+  "id": "lang/en",
+  "kind": "output_language",
+  "version": 1,
+  "name": "English output-language profile",
+  "output_language": {
+    "language": "en",
+    "locale": "en-US",
+    "contract_text": "Write the reader-facing manuscript in natural, idiomatic English (spelling: en-US). Compose directly in English — do not write in another language and translate, and do not imitate another language's grammar or idioms. Use standard English article usage, word order, and dialogue punctuation (curly quotes, em dashes, the ellipsis character). Render address terms, titles, and formality the way natural English speakers of this setting would speak them (see the dialogue register notes) — never as transliterated honorific suffixes attached to names. Use only the approved romanized or preserved terms listed in the terminology notes; everything else is plain English. Do not produce translation-like English.",
+    "punctuation": { "dialogue_quotes": "“ ”", "nested_quotes": "‘ ’", "thought_style": "italics", "dash": "em_unspaced", "ellipsis": "…" },
+    "numbers_style": "words to nine, numerals from 10; ranks and levels as written (F-rank, Lv. 3)",
+    "narration_tense": "past",
+    "translation_markers": [
+      { "id": "TRN-01", "pattern": "\\b(entered|saw|is|was|became)\\s+(gate|dungeon|hunter|healer|porter|guild)\\b", "weight": 1.0, "severity": "minor", "note": "Article omission before singular count nouns (heuristic; grammar service refines)" },
+      { "id": "TRN-02", "pattern": "^\\s*(The|A)\\s+\\w+(\\s+\\w+)?,\\s+(it|he|she|they)\\s", "weight": 1.0, "severity": "minor", "note": "Topic-fronting with resumptive pronoun" },
+      { "id": "TRN-03", "pattern": "\\b[A-Z][a-z]+(-[a-z]+)?-(ssi|nim|ah|ya|kun|san|chan)\\b", "weight": 1.0, "severity": "major", "note": "Honorific suffix attached to a name" },
+      { "id": "TRN-05", "pattern": "\\b(As expected of|It can'?t be helped|This guy|That person)\\b", "weight": 0.8, "severity": "minor", "note": "Stock translated phrases" },
+      { "id": "TRN-11", "pattern": "\\b(Older|Big|Elder) (brother|sister),", "weight": 0.8, "severity": "minor", "note": "Kinship vocative for non-kin" },
+      { "id": "TRN-13", "pattern": "\\b\\w+ (people|persons) of (hunters|soldiers|guards)\\b", "weight": 0.8, "severity": "minor", "note": "Counter calque" },
+      { "id": "TRN-14", "pattern": "\\bthe (Chairman|Director|Hunter) [A-Z][a-z]+ (said|asked)\\b", "weight": 0.5, "severity": "minor", "note": "Definite article before title + name" }
+    ],
+    "calque_phrases": ["Have you eaten?", "Did you eat rice?", "I will go first", "Work hard!", "Fighting!", "My heart rose to my throat"],
+    "forbidden_patterns": [
+      { "id": "LN-01", "category": "light_novel", "pattern": "[「」『』]", "severity": "major", "weight": 1.0 },
+      { "id": "SP-01", "category": "screenplay", "pattern": "(^|\\n)\\s*(INT\\.|EXT\\.|SCENE\\s?\\d|CUT TO|\\(V\\.O\\.\\)|\\[Dialogue\\])", "severity": "blocking", "weight": 2.0 },
+      { "id": "SP-02", "category": "outline", "pattern": "(^|\\n)\\s*(#{1,6}\\s|[-*]\\s|\\d+\\)\\s)", "severity": "major", "weight": 1.0 }
+    ],
+    "lint_thresholds": {
+      "EP-GRM-01": { "warn": 3, "fail": 6 },
+      "EP-OPEN-01": { "warn": 3, "fail": 4 },
+      "EP-OPEN-02": { "warn": 0.6, "fail": 0.75 },
+      "EP-LEN-01": { "warn": 35, "fail": 50 },
+      "EP-LEN-02": { "warn": 60, "fail": 90 },
+      "EP-LEN-03": { "warn": 4, "fail": 3 },
+      "EP-DLG-01": { "warn": 0.2, "fail": 0.35 },
+      "EP-DLG-02": { "warn": 0.15, "fail": 0.3 },
+      "EP-DLG-03": { "warn": 0.5, "fail": 0.7 },
+      "EP-FLT-01": { "warn": 6, "fail": 10 },
+      "EP-ADV-01": { "warn": 12, "fail": 20 },
+      "EP-TRN-RATE": { "warn": 1.5, "fail": 3.0 },
+      "EP-LOC-01": { "warn": 1, "fail": 3 },
+      "EP-REP-01": { "warn": 2, "fail": 4 },
+      "EP-LENGTH-01": { "warn": 0.12, "fail": 0.2 }
+    },
+    "rubric": [
+      { "dimension": "Fluency and idiom", "weight": 0.3, "anchors": { "5": "Reads as written by a fluent English author; idioms and collocations are natural.", "3": "Occasional stiff phrasing or unidiomatic collocation.", "1": "Frequent unnatural phrasing; reads as translated." } },
+      { "dimension": "Translation-like syntax absence", "weight": 0.25, "anchors": { "5": "No article omission, calques, honorific morphemes, or source-language word order.", "3": "A few calques or odd article choices.", "1": "Pervasive calques, dropped articles, transliterated honorifics." } },
+      { "dimension": "Register naturalness", "weight": 0.2, "anchors": { "5": "Formality and address terms are rendered as natural English speakers would use them.", "3": "Register is right but rendered stiffly.", "1": "Formality expressed through literal translations of foreign politeness forms." } },
+      { "dimension": "Clarity and readability on mobile", "weight": 0.15, "anchors": { "5": "Short, varied sentences; clear who does what.", "3": "Some long or tangled sentences.", "1": "Dense sentences; unclear agents." } },
+      { "dimension": "Literary/Western diction restraint", "weight": 0.1, "anchors": { "5": "Plain, punchy diction suited to serialized reading.", "3": "Occasional ornate passages.", "1": "Metaphor chains and elevated diction dominate." } }
+    ]
+  },
+  "calibration": { "status": "uncalibrated", "notes": "Starting values; calibrate on the contrast set and reviewer overrides (ADR-0029)." }
+}

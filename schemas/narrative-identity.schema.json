@@ -1,0 +1,431 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yeonjae.studio/schemas/narrative-identity.schema.json",
+  "title": "Narrative Identity Profile",
+  "description": "Versioned profile layer or composed identity (docs/02-narrative-identity/02). kind selects which sections are meaningful: output_language (1), tradition (2), genre (3), setting (4), naming (5), register_policy (6), terminology (7), preferences (8), composed (all). English is the manuscript language (OUTPUT-EN-001); Korean serialized webnovel is the narrative tradition (STYLE-KWN-001). All numeric thresholds are calibration-dependent starting values (ADR-0029).",
+  "type": "object",
+  "required": ["id", "kind", "version", "name"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "description": "e.g. lang/en, tradition/kr-webnovel, genre/hunter-gate, project/<uuid>" },
+    "kind": { "type": "string", "enum": ["output_language", "tradition", "genre", "setting", "naming", "register_policy", "terminology", "preferences", "composed"] },
+    "version": { "type": "integer", "minimum": 1 },
+    "name": { "type": "string" },
+    "content_hash": { "type": "string" },
+    "lineage": {
+      "type": "object",
+      "description": "For composed identities: the layer versions",
+      "additionalProperties": false,
+      "properties": {
+        "output_language": { "type": "string" },
+        "tradition": { "type": "string" },
+        "genres": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+        "primary_genre": { "type": "string" },
+        "setting": { "type": "string" },
+        "naming": { "type": "string" },
+        "register_policy": { "type": "string" },
+        "terminology": { "type": "string" },
+        "preferences": { "type": "string" }
+      }
+    },
+
+    "output_language": {
+      "type": "object",
+      "description": "Layer 1 — Output language & locale",
+      "additionalProperties": false,
+      "properties": {
+        "language": { "$ref": "common.schema.json#/$defs/manuscriptLanguage" },
+        "locale": { "$ref": "common.schema.json#/$defs/spellingLocale" },
+        "contract_text": { "type": "string", "minLength": 40, "description": "The Output-Language Contract rendered into every style-sensitive call" },
+        "contract_hash": { "type": "string" },
+        "punctuation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "dialogue_quotes": { "type": "string" },
+            "nested_quotes": { "type": "string" },
+            "thought_style": { "type": "string", "enum": ["italics", "quotes", "plain"] },
+            "dash": { "type": "string", "enum": ["em_unspaced", "en_spaced"] },
+            "ellipsis": { "type": "string" }
+          }
+        },
+        "numbers_style": { "type": "string" },
+        "narration_tense": { "type": "string", "enum": ["past", "present", "mixed"] },
+        "translation_markers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "pattern", "weight"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "pattern": { "type": "string", "description": "Regex (JS syntax) or literal" },
+              "is_regex": { "type": "boolean", "default": true },
+              "weight": { "type": "number", "minimum": 0, "maximum": 2 },
+              "severity": { "$ref": "common.schema.json#/$defs/severity" },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "calque_phrases": { "type": "array", "items": { "type": "string" } },
+        "forbidden_patterns": { "type": "array", "items": { "$ref": "#/$defs/forbiddenPattern" } },
+        "lint_thresholds": { "$ref": "#/$defs/thresholds" },
+        "rubric": { "type": "array", "items": { "$ref": "#/$defs/rubricDimension" }, "description": "Prose Judge rubric (dimension A)" }
+      }
+    },
+
+    "tradition": {
+      "type": "object",
+      "description": "Layer 2 — Narrative tradition (Korean serialized webnovel), language-neutral structure",
+      "additionalProperties": false,
+      "properties": {
+        "tradition_id": { "type": "string", "const": "kr-webnovel" },
+        "contract_text": { "type": "string", "minLength": 40, "description": "The Narrative-Tradition Contract rendered into every style-sensitive call" },
+        "contract_hash": { "type": "string" },
+        "structure": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hook_within_sentences": { "type": "integer", "minimum": 1, "maximum": 15 },
+            "opening_types_allowed": { "type": "array", "items": { "$ref": "#/$defs/openingType" } },
+            "opening_types_forbidden": { "type": "array", "items": { "$ref": "#/$defs/openingType" } },
+            "scene_count_band": { "$ref": "#/$defs/intBand" },
+            "local_payoff_required_any_of": { "type": "array", "items": { "$ref": "#/$defs/payoffType" } },
+            "ending_types_allowed": { "type": "array", "items": { "$ref": "#/$defs/endingType" } },
+            "ending_types_forbidden": { "type": "array", "items": { "$ref": "#/$defs/endingType" } },
+            "cadence": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "progression_event_every_chapters": { "type": "integer", "minimum": 1 },
+                "satisfaction_every_chapters": { "type": "integer", "minimum": 1, "description": "사이다 beat interval" },
+                "max_frustration_streak": { "type": "integer", "minimum": 1, "description": "고구마 streak cap" },
+                "relationship_milestone_every_chapters": { "type": "integer", "minimum": 1 }
+              }
+            },
+            "exposition": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "max_consecutive_sentences": { "type": "integer", "minimum": 1 },
+                "lore_via": { "type": "array", "items": { "type": "string", "enum": ["action", "dialogue", "status_text", "narration_slot"] } },
+                "new_terms_per_chapter_max": { "type": "integer", "minimum": 0 }
+              }
+            }
+          }
+        },
+        "rhythm": {
+          "type": "object",
+          "description": "Language-neutral rhythm targets rendered per output language",
+          "additionalProperties": false,
+          "properties": {
+            "paragraph_max_sentences": { "type": "integer", "minimum": 1, "maximum": 8 },
+            "paragraph_max_words_narration": { "type": "integer", "minimum": 20 },
+            "paragraph_max_words_dialogue": { "type": "integer", "minimum": 10 },
+            "single_line_ok": { "type": "boolean" },
+            "sentence_variance": { "type": "string", "enum": ["low", "medium", "high"] },
+            "dialogue_ratio_band": { "$ref": "#/$defs/band" },
+            "reaction_beats": { "type": "string", "enum": ["interleave", "sparse", "free"] },
+            "monologue_ratio_band": { "$ref": "#/$defs/band" },
+            "hindsight_monologue_max_ratio": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "devices": { "type": "array", "items": { "$ref": "#/$defs/device" } },
+        "lint_thresholds": { "$ref": "#/$defs/thresholds" },
+        "rubric": { "type": "array", "items": { "$ref": "#/$defs/rubricDimension" }, "description": "Structure Judge rubric (dimension B)" }
+      }
+    },
+
+    "genre": {
+      "type": "object",
+      "description": "Layer 3 — Genre profile (overlay; JSON Merge Patch semantics over the composed identity)",
+      "additionalProperties": false,
+      "properties": {
+        "genre_id": { "type": "string" },
+        "reader_fantasy": { "type": "string" },
+        "vocabulary": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "preferred_terms": { "type": "array", "items": { "type": "string" }, "description": "English terms" },
+            "discouraged_terms": { "type": "array", "items": { "type": "string" } },
+            "terminology_defaults": { "type": "array", "items": { "$ref": "#/$defs/terminologyEntry" } }
+          }
+        },
+        "devices": { "type": "array", "items": { "$ref": "#/$defs/device" } },
+        "cadence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "progression_event_every_chapters": { "type": "integer", "minimum": 1 },
+            "satisfaction_every_chapters": { "type": "integer", "minimum": 1 },
+            "max_frustration_streak": { "type": "integer", "minimum": 1 },
+            "relationship_milestone_every_chapters": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "structure_overrides": { "type": "object", "additionalProperties": true },
+        "register_notes": { "type": "array", "items": { "type": "string" } },
+        "default_relationship_registers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["relationship_class", "register"],
+            "additionalProperties": false,
+            "properties": {
+              "relationship_class": { "type": "string", "enum": ["elder", "younger", "peer", "superior", "subordinate", "stranger", "royalty", "master", "disciple", "family", "lover"] },
+              "register": { "$ref": "common.schema.json#/$defs/dialogueRegister" }
+            }
+          }
+        },
+        "taboos": { "type": "array", "items": { "type": "string" } },
+        "judge_notes": { "type": "array", "items": { "type": "string" } },
+        "lint_thresholds": { "$ref": "#/$defs/thresholds" },
+        "rubric": { "type": "array", "items": { "$ref": "#/$defs/rubricDimension" }, "description": "Genre Judge rubric (dimension C)" }
+      }
+    },
+
+    "setting": {
+      "type": "object",
+      "description": "Layer 4 — Setting & cultural profile",
+      "additionalProperties": false,
+      "properties": {
+        "setting_type": { "type": "string", "enum": ["modern_korea", "secondary_world", "murim_historical", "other"] },
+        "place_names_policy": { "type": "string" },
+        "institutions": { "type": "array", "items": { "type": "string" } },
+        "currency": { "type": "string" },
+        "measurement": { "type": "string", "enum": ["metric", "imperial", "in_world"] },
+        "cultural_texture": { "type": "string", "enum": ["preserve_behaviors_localize_language", "localize_fully", "preserve_heavily"] },
+        "cultural_reference_policy": { "type": "string" },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "naming": {
+      "type": "object",
+      "description": "Layer 5 — Character naming profile",
+      "additionalProperties": false,
+      "properties": {
+        "style": { "type": "string", "enum": ["korean_romanized", "western", "invented", "mixed_by_faction"] },
+        "romanization_system": { "type": "string", "enum": ["revised_romanization", "mccune_reischauer", "custom"] },
+        "name_order": { "type": "string", "enum": ["family_given", "given_family"] },
+        "given_name_hyphenation": { "type": "string", "enum": ["hyphenated", "joined", "spaced"] },
+        "faction_styles": { "type": "object", "additionalProperties": { "type": "string" } },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "register_policy": {
+      "type": "object",
+      "description": "Layer 6 — Social hierarchy & dialogue-register policy (abstract, rendered in English)",
+      "additionalProperties": false,
+      "properties": {
+        "rendering_rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["condition", "guidance"],
+            "additionalProperties": false,
+            "properties": {
+              "condition": { "type": "string", "description": "e.g. formality>=3 && deference>=3" },
+              "guidance": { "type": "string", "description": "English rendering guidance" }
+            }
+          }
+        },
+        "default_registers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["relationship_class", "register"],
+            "additionalProperties": false,
+            "properties": {
+              "relationship_class": { "type": "string" },
+              "register": { "$ref": "common.schema.json#/$defs/dialogueRegister" }
+            }
+          }
+        },
+        "anti_patterns": { "type": "array", "items": { "type": "string" }, "description": "e.g. honorific suffixes as English morphemes; literal kinship vocatives for non-kin; 'Have you eaten?' calques" },
+        "allowed_shift_reasons": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/registerShiftReason" } },
+        "strictness": { "type": "string", "enum": ["lenient", "standard", "strict"] }
+      }
+    },
+
+    "terminology": {
+      "type": "object",
+      "description": "Layer 7 — Terminology & romanization policy",
+      "additionalProperties": false,
+      "properties": {
+        "romanization_system": { "type": "string", "enum": ["revised_romanization", "mccune_reischauer", "custom"] },
+        "default_decision": { "type": "string", "enum": ["translate", "romanize", "gloss_first_use"] },
+        "terms": { "type": "array", "items": { "$ref": "#/$defs/terminologyEntry" } },
+        "preserve_script_contexts": { "type": "array", "items": { "type": "string", "enum": ["in_world_signage", "epigraph", "song_lyric", "none"] } },
+        "export_glossary": { "type": "boolean" }
+      }
+    },
+
+    "preferences": {
+      "type": "object",
+      "description": "Layer 8 — User-specific prose preferences (cannot override contracts 1–2)",
+      "additionalProperties": false,
+      "properties": {
+        "numeric_overrides": { "type": "object", "additionalProperties": { "type": "number" } },
+        "textual": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text", "priority"],
+            "additionalProperties": false,
+            "properties": {
+              "text": { "type": "string" },
+              "priority": { "type": "string", "enum": ["must", "prefer"] },
+              "scope": { "type": "string", "enum": ["all", "dialogue", "narration", "structure"] }
+            }
+          }
+        },
+        "forbidden_expressions": { "type": "array", "items": { "type": "string" } },
+        "exemplar_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "functions": { "type": "array", "items": { "$ref": "#/$defs/exemplarFunction" } },
+            "max_count": { "type": "integer", "minimum": 0, "maximum": 8 },
+            "min_score": { "type": "number", "minimum": 0, "maximum": 100 },
+            "allow_user_exemplars": { "type": "boolean" }
+          }
+        }
+      }
+    },
+
+    "calibration": {
+      "type": "object",
+      "description": "Calibration status for the numeric thresholds in this version (ADR-0029)",
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "string", "enum": ["uncalibrated", "contrast_calibrated", "project_calibrated"] },
+        "last_calibrated_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "evidence_ref": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "output_language" } } },
+      "then": { "required": ["output_language"], "properties": { "output_language": { "required": ["language", "locale", "contract_text"] } } }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "tradition" } } },
+      "then": { "required": ["tradition"], "properties": { "tradition": { "required": ["tradition_id", "contract_text"] } } }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "composed" } } },
+      "then": {
+        "required": ["output_language", "tradition", "lineage"],
+        "properties": {
+          "output_language": { "required": ["language", "locale", "contract_text", "contract_hash"] },
+          "tradition": { "required": ["tradition_id", "contract_text", "contract_hash"] }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "band": {
+      "type": "object",
+      "required": ["min", "max"],
+      "additionalProperties": false,
+      "properties": { "min": { "type": "number", "minimum": 0, "maximum": 1 }, "max": { "type": "number", "minimum": 0, "maximum": 1 }, "target": { "type": "number" } }
+    },
+    "intBand": {
+      "type": "object",
+      "required": ["min", "max"],
+      "additionalProperties": false,
+      "properties": { "min": { "type": "integer", "minimum": 1 }, "max": { "type": "integer", "minimum": 1 } }
+    },
+    "thresholds": {
+      "type": "object",
+      "description": "rule_id → {warn, fail}; starting values, calibration-dependent",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["warn", "fail"],
+        "additionalProperties": false,
+        "properties": { "warn": { "type": "number" }, "fail": { "type": "number" } }
+      }
+    },
+    "openingType": {
+      "type": "string",
+      "enum": ["continue_cliffhanger", "in_medias_res", "sharp_dialogue", "status_update", "time_skip_with_tension", "weather_landscape", "lore_dump", "waking_up_routine"]
+    },
+    "endingType": {
+      "type": "string",
+      "enum": ["cliffhanger", "reveal", "decision", "arrival_of_threat", "emotional_peak", "quiet_ominous", "mid_scene_fade", "summary_reflection"]
+    },
+    "payoffType": {
+      "type": "string",
+      "enum": ["satisfaction", "revelation", "emotional_step", "growth_confirmed", "humor_beat"],
+      "description": "satisfaction = 사이다 beat"
+    },
+    "exemplarFunction": {
+      "type": "string",
+      "enum": ["hook", "action", "banter", "status_window", "emotional_beat", "cliffhanger", "exposition_in_action", "comedy_beat"]
+    },
+    "device": {
+      "type": "object",
+      "required": ["id", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "format_grammar": { "type": "string", "description": "English format grammar/example for the device block" },
+        "max_per_chapter": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "forbiddenPattern": {
+      "type": "object",
+      "required": ["id", "category", "pattern", "severity"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "category": { "type": "string", "enum": ["translation_like", "light_novel", "screenplay", "outline", "honorific_morpheme", "calque", "stale_cliche", "project_specific"] },
+        "pattern": { "type": "string" },
+        "is_regex": { "type": "boolean", "default": true },
+        "severity": { "$ref": "common.schema.json#/$defs/severity" },
+        "weight": { "type": "number", "minimum": 0, "maximum": 2 },
+        "note": { "type": "string" }
+      }
+    },
+    "rubricDimension": {
+      "type": "object",
+      "required": ["dimension", "anchors"],
+      "additionalProperties": false,
+      "properties": {
+        "dimension": { "type": "string" },
+        "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+        "anchors": {
+          "type": "object",
+          "description": "Keys '1'..'5' → anchor text (English)",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "terminologyEntry": {
+      "type": "object",
+      "required": ["source_term", "decision"],
+      "additionalProperties": false,
+      "properties": {
+        "source_term": { "type": "string", "description": "Korean-origin concept (may be in Korean script)" },
+        "source_language": { "$ref": "common.schema.json#/$defs/languageCode" },
+        "decision": { "type": "string", "enum": ["translate", "romanize", "gloss_first_use", "preserve_script"] },
+        "english": { "type": "string", "description": "Fixed English rendering (for translate) or gloss target" },
+        "romanized": { "type": "string" },
+        "gloss": { "type": "string", "description": "One-line English gloss for first use" },
+        "preserve_contexts": { "type": "array", "items": { "type": "string" } },
+        "aliases": { "type": "array", "items": { "type": "string" } },
+        "entity_id": { "$ref": "common.schema.json#/$defs/uuid" }
+      },
+      "allOf": [
+        { "if": { "properties": { "decision": { "const": "translate" } } }, "then": { "required": ["english"] } },
+        { "if": { "properties": { "decision": { "enum": ["romanize", "gloss_first_use"] } } }, "then": { "required": ["romanized"] } },
+        { "if": { "properties": { "decision": { "const": "gloss_first_use" } } }, "then": { "required": ["gloss"] } }
+      ]
+    }
+  }
+}

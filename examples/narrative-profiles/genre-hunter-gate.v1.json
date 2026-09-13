@@ -1,0 +1,50 @@
+{
+  "id": "genre/hunter-gate",
+  "kind": "genre",
+  "version": 1,
+  "name": "Hunter / Gate fiction overlay",
+  "genre": {
+    "genre_id": "hunter-gate",
+    "reader_fantasy": "Rising from the bottom of a ranked society; hidden power revealed; being needed.",
+    "vocabulary": {
+      "preferred_terms": ["gate", "dungeon", "awakening", "awakened", "hunter", "rank", "beast", "mana stone", "guild", "the Association", "raid", "gate break", "porter", "measurement device"],
+      "discouraged_terms": ["mana", "adventurer", "hero", "quest"],
+      "terminology_defaults": [
+        { "source_term": "헌터", "source_language": "ko", "decision": "translate", "english": "hunter" },
+        { "source_term": "게이트", "source_language": "ko", "decision": "translate", "english": "gate" },
+        { "source_term": "각성자", "source_language": "ko", "decision": "translate", "english": "awakened" },
+        { "source_term": "마석", "source_language": "ko", "decision": "translate", "english": "mana stone" },
+        { "source_term": "협회", "source_language": "ko", "decision": "translate", "english": "the Association" },
+        { "source_term": "던전 브레이크", "source_language": "ko", "decision": "translate", "english": "gate break" },
+        { "source_term": "선배", "source_language": "ko", "decision": "translate", "english": "Senior + surname (as address term)" }
+      ]
+    },
+    "devices": [
+      { "id": "rank_reveal", "description": "Device reading → bystander reactions → protagonist's indifference or shock; reactions differ by character.", "max_per_chapter": 1 },
+      { "id": "community_interlude", "description": "Forum thread interlude in casual register; no real platform names.", "format_grammar": "(└ <comment>\\n){2,8}", "max_per_chapter": 1 },
+      { "id": "measurement_scene", "description": "Measurement readings are facts; a lower reading than before needs an in-story reason." }
+    ],
+    "cadence": { "progression_event_every_chapters": 3, "satisfaction_every_chapters": 3, "max_frustration_streak": 3 },
+    "register_notes": [
+      "Guild hierarchy: Guildmaster, Vice-Guildmaster, team leader.",
+      "Junior hunters address veterans as 'Senior' + surname or 'sir'.",
+      "Hostile speakers address porters curtly by rank ('F-rank')."
+    ],
+    "default_relationship_registers": [
+      { "relationship_class": "superior", "register": { "formality": 3, "deference": 3, "familiarity": 1, "directness": 2, "contractions": "neutral", "address_terms": ["Senior", "sir", "ma'am"], "titles": ["Guildmaster", "Vice-Guildmaster", "Team Leader"] } },
+      { "relationship_class": "peer", "register": { "formality": 1, "deference": 1, "familiarity": 2, "directness": 3, "contractions": "free", "address_terms": [], "titles": [] } }
+    ],
+    "taboos": ["'The device must be broken' more than once", "Identical rank-shock reactions", "Awakening straight to S-rank"],
+    "judge_notes": [
+      "Action clarity: who strikes what, where, in one sentence.",
+      "Forum interludes read like real casual threads; profanity within the rating."
+    ],
+    "lint_thresholds": { "ST-EXP-02": { "warn": 8, "fail": 12 } },
+    "rubric": [
+      { "dimension": "Reader fantasy delivered", "weight": 0.4, "anchors": { "5": "The episode makes the rise, the hidden power, or the need for the protagonist felt.", "3": "Present but faint.", "1": "Absent." } },
+      { "dimension": "Devices and vocabulary", "weight": 0.4, "anchors": { "5": "Rank/gate/measurement devices used correctly with the approved English terms.", "3": "Minor term drift or device misuse.", "1": "Generic fantasy vocabulary; devices missing." } },
+      { "dimension": "Taboo restraint", "weight": 0.2, "anchors": { "5": "Clichés varied.", "3": "One overused beat.", "1": "Same reactions and clichés repeated." } }
+    ]
+  },
+  "calibration": { "status": "uncalibrated" }
+}

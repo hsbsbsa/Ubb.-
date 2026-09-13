@@ -4,52 +4,183 @@
   "title": "Job",
   "description": "User-visible record of a workflow run.",
   "type": "object",
-  "required": ["id", "project_id", "kind", "workflow_id", "status", "spend_cents", "created_at"],
+  "required": [
+    "id",
+    "project_id",
+    "kind",
+    "workflow_id",
+    "status",
+    "spend_cents",
+    "created_at"
+  ],
   "additionalProperties": false,
   "properties": {
-    "id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "parent_job_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "kind": { "type": "string", "enum": ["requirement_interpretation", "concept", "story_bible", "series_planning", "planning_horizon", "chapter_production", "batch_production", "canon_commit", "revision", "regeneration", "retcon", "correction", "rollback", "export", "summary_refresh", "reembed"] },
-    "workflow_id": { "type": "string" },
-    "run_id": { "type": "string" },
+    "id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "parent_job_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "requirement_interpretation",
+        "concept",
+        "story_bible",
+        "series_planning",
+        "planning_horizon",
+        "chapter_production",
+        "batch_production",
+        "canon_commit",
+        "revision",
+        "regeneration",
+        "retcon",
+        "correction",
+        "rollback",
+        "export",
+        "summary_refresh",
+        "reembed"
+      ]
+    },
+    "workflow_id": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string"
+    },
     "target": {
       "type": "object",
       "additionalProperties": false,
-      "properties": { "kind": { "type": "string" }, "id": { "type": "string" }, "chapter_number": { "type": "integer" } }
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "chapter_number": {
+          "type": "integer"
+        }
+      }
     },
-    "status": { "type": "string", "enum": ["queued", "running", "waiting_review", "paused", "paused_budget", "waiting_provider", "needs_attention", "cancelling", "cancelled", "completed", "failed"] },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "waiting_review",
+        "paused",
+        "paused_budget",
+        "waiting_provider",
+        "needs_attention",
+        "cancelling",
+        "cancelled",
+        "completed",
+        "failed"
+      ]
+    },
     "progress": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "step": { "type": "string" },
-        "step_index": { "type": "integer" },
-        "step_count": { "type": "integer" },
-        "detail_ko": { "type": "string" },
-        "eta_seconds": { "type": "integer" }
+        "step": {
+          "type": "string"
+        },
+        "step_index": {
+          "type": "integer"
+        },
+        "step_count": {
+          "type": "integer"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "eta_seconds": {
+          "type": "integer"
+        }
       }
     },
-    "canon_version_read": { "type": "integer" },
-    "prompt_set_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "quality_tier": { "type": "string", "enum": ["economy", "standard", "premium"] },
-    "operating_mode": { "type": "string", "enum": ["assisted", "semi_auto", "autopilot"] },
-    "spend_cents": { "type": "number", "minimum": 0 },
-    "budget_cents": { "type": "number", "minimum": 0 },
-    "predicted_cost_cents": { "type": "number", "minimum": 0 },
-    "stale": { "type": "boolean" },
+    "canon_version_read": {
+      "type": "integer"
+    },
+    "prompt_set_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "quality_tier": {
+      "type": "string",
+      "enum": [
+        "economy",
+        "standard",
+        "premium"
+      ]
+    },
+    "operating_mode": {
+      "type": "string",
+      "enum": [
+        "assisted",
+        "semi_auto",
+        "autopilot"
+      ]
+    },
+    "spend_cents": {
+      "type": "number",
+      "minimum": 0
+    },
+    "budget_cents": {
+      "type": "number",
+      "minimum": 0
+    },
+    "predicted_cost_cents": {
+      "type": "number",
+      "minimum": 0
+    },
+    "stale": {
+      "type": "boolean"
+    },
     "failure": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "class": { "type": "string" },
-        "message_ko": { "type": "string" },
-        "residual_issue_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-        "recommended_actions": { "type": "array", "items": { "type": "string", "enum": ["retry_step", "regenerate", "accept_with_override", "edit_manually", "raise_budget", "revalidate_contract", "review_conflicts"] } }
+        "class": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "residual_issue_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          }
+        },
+        "recommended_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "retry_step",
+              "regenerate",
+              "accept_with_override",
+              "edit_manually",
+              "raise_budget",
+              "revalidate_contract",
+              "review_conflicts"
+            ]
+          }
+        }
       }
     },
-    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
-    "started_at": { "$ref": "common.schema.json#/$defs/timestamp" },
-    "finished_at": { "$ref": "common.schema.json#/$defs/timestamp" }
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "started_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    },
+    "finished_at": {
+      "$ref": "common.schema.json#/$defs/timestamp"
+    }
   }
 }

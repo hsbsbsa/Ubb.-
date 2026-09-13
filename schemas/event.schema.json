@@ -4,42 +4,147 @@
   "title": "Canonical Event",
   "description": "Something that happened (or was narrated) with a story-clock position, participants and a reality frame (ADR-0007).",
   "type": "object",
-  "required": ["id", "project_id", "timeline_id", "clock_start", "frame", "type", "summary_ko", "participants", "asserted_at_version"],
+  "required": [
+    "id",
+    "project_id",
+    "timeline_id",
+    "clock_start",
+    "frame",
+    "type",
+    "summary",
+    "participants",
+    "asserted_at_version"
+  ],
   "additionalProperties": false,
   "properties": {
-    "id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "project_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "timeline_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "clock_start": { "$ref": "common.schema.json#/$defs/storyClock" },
-    "clock_end": { "$ref": "common.schema.json#/$defs/storyClock" },
-    "frame": { "$ref": "common.schema.json#/$defs/realityFrame" },
+    "id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "project_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "timeline_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "clock_start": {
+      "$ref": "common.schema.json#/$defs/storyClock"
+    },
+    "clock_end": {
+      "$ref": "common.schema.json#/$defs/storyClock"
+    },
+    "frame": {
+      "$ref": "common.schema.json#/$defs/realityFrame"
+    },
     "type": {
       "type": "string",
-      "enum": ["action", "dialogue", "revelation", "decision", "travel", "combat", "injury", "healing", "acquisition", "loss", "transaction", "rank_change", "relationship_change", "lie", "promise_setup", "promise_payoff", "death", "meeting", "other"]
+      "enum": [
+        "action",
+        "dialogue",
+        "revelation",
+        "decision",
+        "travel",
+        "combat",
+        "injury",
+        "healing",
+        "acquisition",
+        "loss",
+        "transaction",
+        "rank_change",
+        "relationship_change",
+        "lie",
+        "promise_setup",
+        "promise_payoff",
+        "death",
+        "meeting",
+        "other"
+      ]
     },
-    "summary_ko": { "$ref": "common.schema.json#/$defs/koreanText" },
-    "location_id": { "$ref": "common.schema.json#/$defs/uuid" },
+    "summary": {
+      "$ref": "common.schema.json#/$defs/text",
+      "description": "English working summary"
+    },
+    "location_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
     "participants": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["entity_id", "role"],
+        "required": [
+          "entity_id",
+          "role"
+        ],
         "additionalProperties": false,
         "properties": {
-          "entity_id": { "$ref": "common.schema.json#/$defs/uuid" },
-          "role": { "type": "string", "enum": ["agent", "patient", "witness", "speaker", "hearer", "mentioned"] }
+          "entity_id": {
+            "$ref": "common.schema.json#/$defs/uuid"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "agent",
+              "patient",
+              "witness",
+              "speaker",
+              "hearer",
+              "mentioned"
+            ]
+          }
         }
       }
     },
-    "derived_fact_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-    "derived_knowledge_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-    "importance": { "type": "string", "enum": ["core", "major", "minor"] },
-    "evidence": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/evidenceRef" }, "minItems": 1 },
-    "source_chapter_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "narrated_in_chapter_ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/uuid" } },
-    "asserted_at_version": { "type": "integer", "minimum": 0 },
-    "retracted_at_version": { "type": ["integer", "null"] },
-    "commit_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "retroactive_channel": { "type": "boolean", "description": "Off-page event inferred later; flagged for review" }
+    "derived_fact_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/uuid"
+      }
+    },
+    "derived_knowledge_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/uuid"
+      }
+    },
+    "importance": {
+      "type": "string",
+      "enum": [
+        "core",
+        "major",
+        "minor"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/evidenceRef"
+      },
+      "minItems": 1
+    },
+    "source_chapter_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "narrated_in_chapter_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/uuid"
+      }
+    },
+    "asserted_at_version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "retracted_at_version": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "commit_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "retroactive_channel": {
+      "type": "boolean",
+      "description": "Off-page event inferred later; flagged for review"
+    }
   }
 }

@@ -54,7 +54,7 @@ Failure paths: model outage → job `needs_attention` with retry; unresolvable c
 
 1. `Plan series` → `SeriesPlanningWorkflow`: blueprint (promise, conflict, protagonist arc, ending, endgame
    requirements), seasons, first 2 arcs outlined, first H chapter contracts.
-2. **Plan** screens: Blueprint; Season board; Arc detail (objective, conflict, 사이다 points, promises opened/
+2. **Plan** screens: Blueprint; Season board; Arc detail (objective, conflict, satisfaction beats, promises opened/
    due, chapters listed); Chapter Contract editor.
 3. Author approves blueprint (gate), then arc 1 (gate). Chapter contracts within horizon are approved
    individually in Assisted mode or auto-approved in Semi-auto/Autopilot.

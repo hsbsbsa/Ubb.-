@@ -4,31 +4,98 @@
   "title": "Comparison Verdict",
   "description": "Pairwise candidate judgment; run in both orders (ADR-0015). Evidence fields precede preferences to reduce rationalization.",
   "type": "object",
-  "required": ["candidate_a_id", "candidate_b_id", "presentation_order", "dimensions", "overall_preference", "confidence"],
+  "required": [
+    "candidate_a_id",
+    "candidate_b_id",
+    "presentation_order",
+    "dimensions",
+    "overall_preference",
+    "confidence"
+  ],
   "additionalProperties": false,
   "properties": {
-    "candidate_a_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "candidate_b_id": { "$ref": "common.schema.json#/$defs/uuid" },
-    "presentation_order": { "type": "string", "enum": ["ab", "ba"] },
+    "candidate_a_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "candidate_b_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "presentation_order": {
+      "type": "string",
+      "enum": [
+        "ab",
+        "ba"
+      ]
+    },
     "dimensions": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["dimension", "evidence_a_ko", "evidence_b_ko", "preference"],
+        "required": [
+          "dimension",
+          "evidence_a",
+          "evidence_b",
+          "preference"
+        ],
         "additionalProperties": false,
         "properties": {
-          "dimension": { "type": "string", "enum": ["contract_fit", "continuity_risk", "korean_style", "hook", "emotional_impact", "pacing", "genre_fit", "originality", "reader_fantasy"] },
-          "evidence_a_ko": { "type": "string" },
-          "evidence_b_ko": { "type": "string" },
-          "preference": { "type": "string", "enum": ["a", "b", "tie"] },
-          "margin": { "type": "string", "enum": ["slight", "clear", "strong"] }
+          "dimension": {
+            "type": "string",
+            "enum": [
+              "contract_fit",
+              "continuity_risk",
+              "hook",
+              "emotional_impact",
+              "pacing",
+              "genre_fit",
+              "originality",
+              "reader_fantasy",
+              "english_prose_quality",
+              "serialized_structure"
+            ]
+          },
+          "evidence_a": {
+            "type": "string"
+          },
+          "evidence_b": {
+            "type": "string"
+          },
+          "preference": {
+            "type": "string",
+            "enum": [
+              "a",
+              "b",
+              "tie"
+            ]
+          },
+          "margin": {
+            "type": "string",
+            "enum": [
+              "slight",
+              "clear",
+              "strong"
+            ]
+          }
         }
       }
     },
-    "overall_preference": { "type": "string", "enum": ["a", "b", "tie"] },
-    "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
-    "rationale_ko": { "type": "string" },
-    "judge_call_id": { "$ref": "common.schema.json#/$defs/uuid" }
+    "overall_preference": {
+      "type": "string",
+      "enum": [
+        "a",
+        "b",
+        "tie"
+      ]
+    },
+    "confidence": {
+      "$ref": "common.schema.json#/$defs/confidence"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "judge_call_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    }
   }
 }
