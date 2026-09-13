@@ -17,19 +17,20 @@ boundary with `paused_budget`. Reservations are released on completion with the 
 
 | Function | Class | Rationale |
 | --- | --- | --- |
-| Korean prose (scene_writer, revisers, rewriter) | P | quality-critical; benchmark-selected |
+| English prose under Korean-webnovel constraints (scene_writer, revisers, rewriter, line editor) | P | quality-critical; benchmark-selected (natural English + serialized structure) |
 | Series/arc planning, continuity checking, adjudication, comparisons | R | reasoning-heavy, low volume |
-| Contracts, scene plans, assembler, extractors, style judge, knowledge checker | M | structured output, moderate reasoning |
+| Contracts, scene plans, assembler, extractors, prose judge, structure judge, knowledge checker | M | structured output, moderate reasoning |
 | Classification, summaries, promise/repetition/voice/pacing checks, JSON repair | C | high volume, low complexity |
 | Embeddings | E | |
 
 Quality tiers change **counts**, not correctness: Economy (single extractor + deterministic cross-check;
-merged style/voice judge; no candidates; 2 revision rounds), Standard (as pipeline §4.1), Premium (N=2
+genre judge folded into structure judge and voice judge into prose judge — prose and structure stay separate;
+no candidates; 2 revision rounds), Standard (as pipeline §4.1), Premium (N=2
 candidates; two judge families; 4 rounds; line editor pass).
 
-## 3. Reference cost model (Standard, 5,500-char chapter)
+## 3. Reference cost model (Standard, ~2,500-word chapter)
 
-Token estimates (Korean ≈ 0.7–1.0 tokens/char depending on tokenizer; plan uses 0.85):
+Token estimates (English ≈ 1.3 tokens/word for common tokenizers; calibrated per model):
 
 | Step | Calls | Input tok (approx) | Output tok | Notes |
 | --- | --- | --- | --- | --- |
@@ -39,22 +40,23 @@ Token estimates (Korean ≈ 0.7–1.0 tokens/char depending on tokenizer; plan u
 | continuity_checker | 1 | 18k | 2.5k | R model |
 | knowledge_leak_checker | 1 | 12k | 1.5k | |
 | contract_compliance | 1 | 10k | 1.5k | |
-| style_judge | 1 | 11k | 2k | |
-| voice/pacing/promise/repetition | 4 | 6–9k each | 1k each | cheap |
+| prose_judge | 1 | 10k | 2k | other family |
+| structure_judge | 1 | 10k | 2k | other family |
+| genre/voice/promise/repetition | 4 | 6–9k each | 1k each | cheap |
 | revision (1 round, 3 patches) | 3 + 2 rechecks | 5k / 10k | 0.8k / 1k | |
 | extractors ×2 | 2 | 15k each | 4k each | |
 | adjudicator (30% of chapters) | 0.3 | 5k | 1k | |
 | summarizer_l1 | 1 | 9k | 0.4k | |
-| **Totals** | ≈ 20 | ≈ 230k input (≈ 40% cache-eligible) | ≈ 30k output | |
+| **Totals** | ≈ 21 | ≈ 240k input (≈ 40% cache-eligible) | ≈ 30k output | |
 
 Cost is computed at runtime from the routing table's per-model prices; the plan does not hardcode prices.
-The dashboard reports **cost per accepted chapter** and **per 1,000 accepted Korean characters**; the
+The dashboard reports **cost per accepted chapter** and **per 1,000 accepted words**; the
 prediction model uses the project's own rolling averages per step after 5 chapters (before that, tier
 defaults).
 
 ## 4. Cost controls
 
-- **Context caching**: stable sections first (style block, spec, bible slice, L4) → provider prefix caching;
+- **Context caching**: stable sections first (narrative identity block, active constraint set, bible slice, L4) → provider prefix caching;
   section cache by hash avoids re-rendering.
 - **Deduplication**: identical packs (hash) within a job reuse rendered text; identical evaluator inputs
   across candidates share cached sections.
@@ -79,7 +81,9 @@ attempt. Trace IDs stored on `llm_calls` and `jobs`.
 - `llm_calls_total{role,model,provider,status}`, `llm_tokens_total{role,model,kind}`, `llm_cost_cents_total{...}`
 - `llm_latency_seconds{role,model}` histogram; `provider_error_rate`, `fallback_total`, `schema_invalid_total`
 - `chapter_revision_rounds` histogram; `issues_total{kind,severity}`; `override_total{kind}`
-- `style_nativeness_score` histogram per project; `lint_translation_marker_rate`; `register_violation_rate`
+- `prose_score` and `structure_score` histograms per project (separate); `genre_score`; `voice_score`;
+  `prose_translation_marker_rate`; `structure_hook_sentence_index`; `register_violation_rate`;
+  `output_language_failures_total`
 - `extraction_disagreement_rate`; `evidence_verification_failures`; `canon_commit_duration`
 - `pack_assembly_duration`, `pack_t2_items`, `pack_degraded_total`
 - `jobs_by_status`, `needs_attention_total`, `stale_artifacts_total`
@@ -90,9 +94,10 @@ Structured JSON; no manuscript/prompt text (IDs + hashes only); correlation by t
 
 ### 5.4 Dashboards
 Pipeline health · Provider health · Cost (per project/model/role; per accepted chapter) · Quality trends
-(style scores, issue kinds, override rates) · Canon health (disagreement rate, stale counts, commit
+(prose/structure/genre/voice scores, drift-class rates, issue kinds, override rates) · Canon health (disagreement rate, stale counts, commit
 latency).
 
 ### 5.5 Alerts (Beta+)
 Provider error rate > 10% (5 min); schema invalid rate > 5%; needs_attention > threshold; budget 95%;
-extraction disagreement > 25%; style nativeness median < 70 for a project (quality regression).
+extraction disagreement > 25%; prose or structure median < 70 for a project (quality regression); any
+output-language failure.

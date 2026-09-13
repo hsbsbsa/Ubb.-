@@ -1,7 +1,9 @@
 # Data Architecture
 
 Postgres 16 + pgvector is the single system of record (ADR-0002). Every tenant table has `workspace_id`
-(RLS), `id uuid` (UUIDv7), `created_at timestamptz`, and where mutable `updated_at`. Text columns are NFC.
+(RLS), `id uuid` (UUIDv7), `created_at timestamptz`, and where mutable `updated_at`. Text columns are NFC;
+all offsets are Unicode code points (ADR-0030). Text fields are language-neutral; fields whose language
+may vary carry a `language` code. Manuscript text is English.
 Schemas below are logical; column types abbreviated. JSON Schemas in `schemas/` define the shape of JSONB
 payloads and API objects.
 
@@ -17,27 +19,35 @@ payloads and API objects.
 ## 2. Project & requirements
 
 - `projects(id, workspace_id, title, status, operating_mode, quality_tier, settings_json (horizons,
-  tolerances, length target), canon_version int, prompt_set_id, style_profile_version_id, current_spec_version)`
-- `story_spec_versions(id, project_id, version, created_by, summary_ko)`
+  tolerances, length_target_json {unit:'words', value, tolerance_ratio}), canon_version int, prompt_set_id,
+  narrative_identity_version_id, output_language 'en', spelling_locale, current_spec_version)`
+- `story_spec_versions(id, project_id, version, created_by, summary)`
 - `requirements(id, project_id, spec_version_from, spec_version_to|null, kind: hard|soft|assumption,
-  category, text_ko, structured_json, provenance: user|system_default|model_inferred, confirmed_by_user
-  bool, scope_json)`
-- `directions(id, project_id, text_ko, kind, scope_json, effective_from_chapter, spec_version)`
+  category, text, language (code of the original text), text_en (English working paraphrase when the
+  original is not English), structured_json, provenance: user|system_default|model_inferred,
+  confirmed_by_user bool, scope_json)`
+- `active_constraint_sets(id, project_id, chapter_id, spec_version, content_hash, rendered_text, item_ids[],
+  token_count)` — compiled per chapter (ADR-0033)
+- `directions(id, project_id, text, language, text_en, kind, scope_json, effective_from_chapter, spec_version)`
 - `content_restrictions(project_id, rating, forbidden_themes[], lexicon_ref)`
 
 ## 3. Bible & entities
 
-- `entities(id, project_id, type, canonical_name_ko, aliases text[], status, created_from, merged_into_id)`
+- `entities(id, project_id, type, display_name, native_script_name|null, romanization|null, short_forms text[],
+  aliases text[], status, created_from, merged_into_id)`
 - `entity_versions(id, entity_id, version, fields_json, bible_version, created_by)` (descriptive fields;
   canonical *state* lives in `facts`)
-- `speech_profiles(id, character_id, version, profile_json)` (static baseline; dynamic changes are
-  `speech.*` facts)
-- `glossary_terms(id, project_id, term_ko, kind, aliases[], hanja, latin_allowed, definition_ko, entity_id)`
+- `register_profiles(id, character_id, version, profile_json)` (dialogue-register & voice baseline; dynamic
+  changes are `register.*` facts / relationship_states)
+- `terminology_terms(id, project_id, source_term, source_language, decision: translate|romanize|
+  gloss_first_use|preserve_script, english, romanized, gloss, preserve_contexts[], aliases[], entity_id)`
 - `bible_versions(id, project_id, version, approved_by, approved_at, checker_report_json)`
-- `style_profile_versions(id, project_id|null (global for base/overlays), kind: base|overlay|project,
-  profile_json, content_hash, parent_refs[])`
-- `style_block_cache(hash pk, profile_version_id, role, budget, text, manifest_json)`
-- `exemplars(id, project_id, function_tag, text_ko, source: accepted_chapter|user_owned|licensed|synthetic,
+- `narrative_profile_versions(id, project_id|null (global for language/tradition/genre), kind: output_language|
+  tradition|genre|setting|naming|register_policy|terminology|preferences|composed, profile_json,
+  content_hash, parent_refs[], calibration_json)`
+- `narrative_block_cache(hash pk, identity_version_id, role, budget, text, manifest_json,
+  output_language_contract_hash, tradition_contract_hash)`
+- `exemplars(id, project_id, function_tag, text, language 'en', source: accepted_chapter|user_owned|licensed|synthetic,
   manuscript_version_id|null (FK, must be accepted), provenance_json, score, active)`
 
 ## 4. Plans
@@ -49,64 +59,77 @@ payloads and API objects.
 - `chapter_contracts(id, project_id, chapter_id, version, contract_json, status, canon_version_planned_at,
   validation_json, stale bool, stale_reasons_json)`
 - `scene_plans(id, contract_id, version, plan_json)`
-- `promises(id, project_id, type, statement_ko, importance, status, opened_chapter_id|null, opened_plan_ref,
+- `promises(id, project_id, type, statement, importance, status, opened_chapter_id|null, opened_plan_ref,
   due_min_chapter, due_max_chapter, arc_ref, related_entity_ids[], related_proposition_ids[])`
 - `promise_events(id, promise_id, kind: opened|advanced|paid|abandoned|rescheduled, chapter_id,
-  evidence_span_ids[], commit_id, note_ko)`
+  evidence_span_ids[], commit_id, note)`
 
 ## 5. Chapters & manuscripts
 
-- `chapters(id, project_id, number, title_ko, status, accepted_version_id|null, current_contract_id, lease_job_id)`
+- `chapters(id, project_id, number, title, status, accepted_version_id|null, current_contract_id, lease_job_id)`
 - `manuscript_versions(id, chapter_id, version_no, kind: draft|revision|candidate|approved|accepted|retconned,
-  text, char_count, content_hash, parent_version_id, created_by_job_id, scorecard_id, meta_json)`
+  language 'en', text, length_json (words, code_points, paragraphs, sentences, est_tokens,
+  est_reading_seconds), content_hash, parent_version_id, created_by_job_id, scorecard_id, meta_json)`
   — partial unique index `(chapter_id) WHERE kind='accepted'`.
 - `quarantine_versions(...)` same shape; receives rejected candidates/drafts (moved by workflow); no FKs
   from canon tables may point here (enforced by FK targets).
 - `patches(id, from_version_id, to_version_id, span_json, issue_ids[], reviser_call_id, regression_json)`
-- `evidence_spans(id, manuscript_version_id, start int, end int, quote, quote_hash)` — trigger validates
-  quote equality.
+- `evidence_spans(id, manuscript_version_id, start int, end int, quote, quote_hash)` — `start`/`end` are
+  code-point offsets; trigger validates quote equality (ADR-0030).
 
 ## 6. Canon
 
 - `timelines(id, project_id, name, kind, parent_timeline_id, divergence_clock_json)`
 - `canon_commits(id, project_id, version, parent_version, source, chapter_id, manuscript_version_id,
   delta_json, inverse_json, actor_json, item_counts_json)` unique `(project_id, version)`.
-- `facts(id, project_id, timeline_id, entity_id, attribute, key text|null, value_json, value_text_ko,
+- `facts(id, project_id, timeline_id, entity_id, attribute, key text|null, value_json, value_text,
   valid_from_json, valid_to_json|null, valid_from_ord bigint, valid_to_ord bigint|null (derived ordering
   keys), asserted_at_version int, retracted_at_version int|null, source, confidence, locked bool, frame,
   commit_id, superseded_by_fact_id|null)`
   indexes: `(project_id, entity_id, attribute, valid_from_ord)`, partial `WHERE retracted_at_version IS NULL`.
 - `fact_evidence(fact_id, evidence_span_id)`
 - `events(id, project_id, timeline_id, clock_start_json, clock_end_json, clock_ord bigint, frame, type,
-  summary_ko, location_id, asserted_at_version, retracted_at_version, commit_id, source_chapter_id,
+  summary, location_id, asserted_at_version, retracted_at_version, commit_id, source_chapter_id,
   narrated_in_chapter_ids[])`
 - `event_participants(event_id, entity_id, role)`
 - `event_evidence(event_id, evidence_span_id)`
-- `propositions(id, project_id, statement_ko, kind, truth_value, secret_json|null, linked_fact_ids[],
-  linked_event_ids[], created_commit_id, embedding vector)`
+- `propositions(id, project_id, statement, kind, secret_json|null, linked_fact_ids[], linked_event_ids[],
+  created_commit_id)`
+- `proposition_truths(id, proposition_id, timeline_id, value: true|false|unknown, valid_from_json|null,
+  valid_to_json|null, valid_from_ord, valid_to_ord, asserted_at_version, retracted_at_version, commit_id)`
+  — truth is per timeline (ADR-0031); unique `(proposition_id, timeline_id, valid_from_ord)` among
+  non-retracted rows
 - `knowledge_states(id, project_id, timeline_id, knower_id (entity or pseudo), proposition_id, stance,
-  believed_value_ko, pretend_target_ids[], certainty, source_json, valid_from_json, valid_to_json,
+  believed_value, pretend_target_ids[], certainty, source_json, valid_from_json, valid_to_json,
   valid_from_ord, valid_to_ord, asserted_at_version, retracted_at_version, commit_id)`
 - `knowledge_evidence(knowledge_state_id, evidence_span_id)`
 - `relationship_states(id, project_id, timeline_id, from_entity_id, to_entity_id, type, axes_json (trust,
-  affection, respect, hostility, dependency), power_dynamic, address_terms[], speech_level, valid_from…,
+  affection, respect, hostility, dependency), power_dynamic, register_json (formality, deference, familiarity,
+  intimacy, directness, contractions, public_variant), address_terms[], titles[], valid_from…,
   asserted…, commit_id)`
 - `relationship_evidence(...)`
 - `summaries(id, project_id, tier: L1|L2|L3|L4, scope_kind, scope_id, chapter_from, chapter_to,
-  text_ko, canon_version, prompt_version_id)`
+  text, language 'en', canon_version, prompt_version_id)`
 - `dependency_edges(id, project_id, dependent_kind, dependent_id, canon_item_kind, canon_item_id,
-  canon_version_read)` index on `(project_id, canon_item_kind, canon_item_id)`.
+  canon_version_read, materiality: material|contextual, basis: contract_anchor|t0|t1_state|claim_reference|
+  retrieved_t2|promoted_by_user)` index on `(project_id, canon_item_kind, canon_item_id, materiality)`
+  (ADR-0032).
 - `stale_marks(id, project_id, target_kind, target_id, reason_json, created_commit_id, resolved_at)`
 - `target_leases(project_id, target_kind, target_id, job_id, expires_at)` PK `(project_id, target_kind, target_id)`.
 
 ## 7. Search & retrieval
 
 - `search_documents(id, project_id, kind, ref_kind, ref_id, chapter_no, clock_ord, entity_ids[], importance,
-  text_ko, tsv tsvector, embedding vector(1024)|null, embedding_model_version, embedding_pending bool,
-  manuscript_version_id|null (must be accepted), canon_version_added)`
-  indexes: GIN(tsv), HNSW(embedding), GIN(entity_ids), btree(project_id, clock_ord).
+  text, language 'en', tsv tsvector, manuscript_version_id|null (must be accepted), canon_version_added)`
+  indexes: GIN(tsv), GIN(entity_ids), btree(project_id, clock_ord). `tsv` uses the `english` configuration
+  plus a per-project thesaurus dictionary for registry names/terms.
+- `embedding_sets(id, project_id, model_id, provider, dimension int, status: building|active|retired,
+  created_at)` — exactly one `active` per project (partial unique index) (ADR-0035)
+- `search_document_embeddings(embedding_set_id, search_document_id, embedding vector)` — partitioned by
+  `embedding_set_id`; each partition's `vector(n)` typmod equals its set's dimension; HNSW index per
+  partition; `embedding_pending` handled by absence of the row.
 - `edges(project_id, from_kind, from_id, rel, to_kind, to_id)` index both directions.
-- `nlp_cache(text_hash pk, analyzer_version, result_json)`
+- `analysis_cache(text_hash pk, analyzer, analyzer_version, result_json)` — prose lint / grammar-service results
 
 ## 8. Jobs, calls, budgets
 
@@ -116,7 +139,8 @@ payloads and API objects.
 - `context_packs(id, project_id, job_id, template_version, role, canon_version, pack_hash, manifest_json,
   token_counts_json, rendered_ref (object storage key), created_at)`
 - `llm_calls(id, workspace_id, project_id, job_id, activity_id, idempotency_key unique, role,
-  prompt_version_id, prompt_hash, pack_id, style_profile_version_id, style_block_hash, model_id, provider,
+  prompt_version_id, prompt_hash, pack_id, narrative_identity_version_id, narrative_block_hash,
+  output_language_contract_hash, tradition_contract_hash, output_language_check_json, model_id, provider,
   params_json, input_ref, output_ref, input_tokens, output_tokens, cached_tokens, cost_cents numeric,
   latency_ms, attempt, status, error_json, finish_reason, schema_valid bool, created_at)`
 - `budgets(id, workspace_id, project_id|null, scope: project|chapter|workflow|workspace, hard_limit_cents,
@@ -135,7 +159,7 @@ payloads and API objects.
 
 ## 10. Prompts
 
-- `prompt_families(name, description, style_sensitive, style_block_role)`
+- `prompt_families(name, description, style_sensitive, identity_block_role, manuscript_producing)`
 - `prompt_versions(id, family, version, content_hash, templates_json, output_schema_json, params_json,
   routing_policy_json, status, regression_result_json)`
 - `prompt_sets(id, name, mapping_json, status)`
@@ -148,7 +172,8 @@ payloads and API objects.
 
 ## 12. Integrity rules (DB-enforced where possible)
 
-1. `evidence_spans` trigger: `substr(mv.text, start+1, end-start) = quote` and `mv.kind IN ('approved','accepted','retconned')`.
+1. `evidence_spans` trigger: `substring(mv.text from start+1 for end-start) = quote` (code-point semantics on
+   `text`) and `mv.kind IN ('approved','accepted','retconned')`.
 2. Canon tables' `commit_id` NOT NULL; canon inserts only through `canon.commit_delta()` SQL function
    executed inside one transaction that also checks `projects.canon_version = parent_version`.
 3. `manuscript_versions` partial unique accepted per chapter.
@@ -158,6 +183,10 @@ payloads and API objects.
 7. `knowledge_states` with stance `knows` for a secret proposition require `source_json.event_id` or
    `source_json.kind IN ('prior_loop_memory','source_story')` (commit function check).
 8. RLS policies on all tables: `workspace_id = current_setting('app.workspace_id')::uuid`.
+9. `manuscript_versions.language = 'en'` CHECK constraint in MVP/Beta/Production (relaxed only by a future
+   ADR that adds another output language).
+10. `proposition_truths`: no overlapping validity for the same `(proposition, timeline)` among non-retracted
+    rows (exclusion constraint on the ordinal range).
 
 ## 13. Bitemporal query helpers
 
@@ -168,8 +197,9 @@ entity, attribute, key, clock_from, clock_to, value)`.
 
 ## 14. Sizing (3,000-chapter project)
 
-Manuscript text ≈ 18M chars ≈ 54 MB; facts ≈ 300k rows; events ≈ 60k; knowledge ≈ 200k; search docs ≈
-400k (embeddings 1024-d float16 ≈ 0.8 GB); llm_calls ≈ 60k rows (payloads in object storage). Comfortable
+Manuscript text ≈ 7.5M words ≈ 45 MB; facts ≈ 300k rows; events ≈ 60k; knowledge ≈ 200k; search docs ≈
+400k (one active embedding set, e.g., 1024-d float16 ≈ 0.8 GB; a migration temporarily doubles this);
+llm_calls ≈ 60k rows (payloads in object storage). Comfortable
 for a single Postgres instance; partition `llm_calls` and `search_documents` by project hash when
 workspace counts grow (Production).
 

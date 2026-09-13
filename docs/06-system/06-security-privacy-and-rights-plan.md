@@ -8,7 +8,7 @@ content (prompt injection via reader comments/documents), insider misuse, provid
 
 ## 2. Authentication & authorization
 
-- Email magic-link + OAuth (Google/GitHub/Kakao/Naver in Beta for Korean users); sessions in secure,
+- Email magic-link + OAuth (Google/GitHub; Kakao/Naver optional in Beta); sessions in secure,
   httpOnly, SameSite cookies; API keys (hashed) for automation with scoped permissions.
 - RBAC: `owner` (billing, members, deletion, provider settings), `editor` (all story operations),
   `viewer` (read-only inspectors/exports if allowed). Per-project overrides in Beta.
@@ -68,7 +68,8 @@ exportable per workspace.
 
 ## 9. Copyright & rights safeguards
 
-- **No scraping** of commercial webnovels; no "in the style of <author/work>" instructions; forbidden by
+- **No scraping** of commercial webnovels or their English translations; no "in the style of <author/work>"
+  instructions; forbidden by
   policy and by the exemplar provenance requirement (ADR-0025).
 - Exemplar sources: project-generated, user-owned (rights confirmation checkbox + record), licensed
   (license reference stored), studio synthetic (reviewed).
@@ -81,7 +82,7 @@ exportable per workspace.
 
 ## 10. AI-assistance disclosure & platform policy
 
-- Export options: disclosure text templates (Korean), per-platform policy presets configurable by the user
+- Export options: disclosure text templates (English), per-platform policy presets configurable by the user
   (the studio does not assert what any platform requires; it records the user's choice).
 - Provenance record per chapter: models used, human edits count, acceptance actor — available for the
   user's own disclosures.

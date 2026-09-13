@@ -8,10 +8,12 @@
 prompt_versions {
   id, family, version (semver), content_hash,
   system_template, user_template (templating with strict variable allowlist),
-  output_schema_ref (schemas/… or inline JSON Schema), style_sensitive bool, style_block_role,
+  output_schema_ref (schemas/… or inline JSON Schema), style_sensitive bool, identity_block_role,
+  manuscript_producing bool,             -- triggers the post-call output-language check
   model_routing_policy_ref, default_params { temperature, max_tokens, top_p, seed? },
-  guards { max_input_tokens, requires_pack_template, forbids_untrusted_in_system: true },
-  changelog_ko, created_by, created_at, status: draft|candidate|active|deprecated,
+  guards { max_input_tokens, requires_pack_template, forbids_untrusted_in_system: true,
+           requires_output_language_contract: bool, requires_tradition_contract: bool },
+  changelog, created_by, created_at, status: draft|candidate|active|deprecated,
   regression_result_ref
 }
 ```
@@ -21,21 +23,24 @@ prompt_versions {
 - A project pins the `active` version set at job start (`prompt_set_version`) so a long batch does not
   change prompts mid-run unless the user opts in.
 - Every `llm_calls` row records `prompt_version_id` + `content_hash`.
-- Promotion: `draft → candidate` (regression suite green) → `active` (manual) → `deprecated`.
+- Promotion: `draft → candidate` (regression suite green, including the five-class contrast set for
+  style-sensitive roles and the output-language check for manuscript roles) → `active` (manual) →
+  `deprecated`.
 
 ## 2. Prompt anatomy (all roles)
 
 ```
 [SYSTEM]
- 1. Role identity & mission (Korean for prose roles; English/Korean mixed acceptable for analytic roles)
+ 1. Role identity & mission (English)
  2. Non-negotiables: output schema; no content outside JSON; evidence rules; "do not invent canon"
- 3. <<STYLE v=…>> block (style-sensitive roles)   ← Style Guard verifies presence
+ 3. <<NARRATIVE_IDENTITY v=…>> block (style-sensitive roles)  ← Guard verifies presence of the block
+    AND of both contracts (Output-Language Contract: English; Narrative-Tradition Contract: Korean webnovel)
  4. Safety/content restriction summary (from spec; hard)
 [USER]
  5. Context Pack sections in template order (stable → volatile), each with a heading and provenance tags
-    [사실 v128 ch.12] / [예정] / [요약 L2] / [증거 ch.9 ¶14]
+    [FACT v128 ch.12] / [PLANNED] / [SUMMARY L2] / [EVIDENCE ch.9 ¶14]
  6. Task instruction (what to produce now), including explicit constraints from the contract
- 7. Output schema reminder (short) + STYLE_TAIL (writer/editor)
+ 7. Output schema reminder (short) + IDENTITY_TAIL (writer/editor)
 ```
 Rules:
 - **No conversation history.** Each call is single-turn (system + user). Multi-step refinements are
@@ -44,44 +49,57 @@ Rules:
   untrusted.
 - **Untrusted text** only in the user message, wrapped in `<<UNTRUSTED source=…>>` and preceded by an
   instruction to treat it as data; never in system.
-- **Language**: prose-role instructions in Korean (reduces register drift); analytic roles may use English
-  headers but Korean for domain terms and examples.
-- **Few-shot**: analytic roles use 1–2 compact schema examples (synthetic); prose roles rely on the style
-  block exemplars only (avoid double-anchoring).
+- **Language**: all prompt instructions are English. Korean appears only as glossed terminology inside
+  the Narrative Identity Block (e.g., "satisfaction beat (사이다)") and inside the naming/terminology
+  registry (native-script names, preserved terms). Prompts never ask for Korean prose and never contain a
+  translation step (NO-TRANSLATION-001).
+- **Few-shot**: analytic roles use 1–2 compact schema examples (synthetic, English); prose roles rely on the
+  identity block's exemplars only (avoid double-anchoring).
 
 ## 3. Structured output strategy
 
 - Provider-native JSON schema mode where available; else "JSON only" instruction + robust parser.
 - Validation with the registered JSON Schema; on failure: `json_repairer` (cheap model, sees the invalid
   output + schema + error) ×2 → regenerate ×1 → fail step with diagnostics.
-- Prose in `text_ko` fields with escaping handled by the SDK; large prose outputs may use a two-part format
-  (JSON header + delimited text block) if a provider's JSON mode degrades Korean prose quality — the
-  gateway normalizes both into the same envelope (`scene-draft.schema.json`).
-- Truncation: `max_tokens` set from the length target × 1.4 safety factor (Korean tokens/char ratio
+- Prose in `text` fields (`language: "en"`) with escaping handled by the SDK; large prose outputs may use a
+  two-part format (JSON header + delimited text block) if a provider's JSON mode degrades English prose
+  quality — the gateway normalizes both into the same envelope (`scene-draft.schema.json`).
+- **Post-call output-language check** for `manuscript_producing` roles (FR-4.10): language identification
+  on prose segments (excluding registry romanizations and preserved-script contexts) must be English with
+  confidence ≥ 0.99; failure discards the output, records `output_language_failed`, and regenerates once
+  with the violation named; a second failure routes to the alternate P-class model.
+- Truncation: `max_tokens` set from the word target × 1.6 safety factor (English tokens-per-word ratio
   calibrated per model); `finish_reason=length` → continuation protocol (see pipeline §8).
 
 ## 4. Role-specific prompt notes
 
 | Role | Key instructions | Anti-patterns to enforce |
 | --- | --- | --- |
-| `scene_writer` | Write only the current scene; continue seamlessly from the provided previous text; obey speaker pairs' speech levels; use the knowledge lists (알고 있음/모름/오해); emit `speaker_annotations` and `claims` (facts the scene asserts) | no recap of previous chapter; no lore dumps; no English; no headings |
-| `chapter_assembler` | Edit only seams; return seam patches, not full text | rewriting scenes |
-| `line_editor` (Premium/pass on request) | Korean polish within meaning; return paragraph patches | changing facts (must ack) |
+| `scene_writer` | Write only the current scene, in natural English, composed directly; continue seamlessly from the provided previous text; render each speaker pair's register as specified (titles/address terms/contractions/directness); use the knowledge lists (knows / unaware / believes falsely / suspects); emit `speaker_annotations` and `claims` | recap of previous chapter; lore dumps; transliterated honorific suffixes; kinship vocatives for non-kin; Western-novel scene-setting openings; headings; any non-English prose |
+| `chapter_assembler` | Edit only seams; return seam patches, not full text; propose an English title in genre style | rewriting scenes |
+| `line_editor` (Premium/pass on request) | English polish within meaning; return paragraph patches; preserve serialized rhythm (do not "literarize") | changing facts (must ack); lengthening paragraphs |
+| `prose_reviser` | Fix the named prose issues in the span only; keep claims; keep register | drifting into literary diction; altering hooks/endings |
+| `structure_reviser` | Fix hook/ending/exposition/payoff issues in the named span per the contract's hook/ending type; keep facts | rewriting unrelated paragraphs |
+| `dialogue_reviser` | Re-render utterances to the specified register (formality, address terms, contractions) in natural English | Korean speech-level literalism ("Have you eaten?"), honorific morphemes |
 | `continuity_checker` | For each suspected issue, quote chapter span and cite the canonical item + evidence; state confidence; propose minimal repair | vague criticism; unsupported claims |
 | `knowledge_leak_checker` | Enumerate participant utterances/actions that presuppose knowledge; check against the table | flagging narrator knowledge as character knowledge |
-| `extractor_a` | Entity-first sweep: for each entity present, list state/attribute/knowledge changes with quotes | inventing off-page events |
+| `prose_judge` | Score English fluency/idiom, translation-like syntax, literary/Western diction drift, readability with Korean-webnovel mobile norms; evidence paragraph IDs before scores | rewarding ornate prose; penalizing short paragraphs |
+| `structure_judge` | Score hook, episode payoff, pacing, exposition control, dialogue-forwardness, ending pull, cadence fit, serial devices; evidence first; flag `western_novel`/`serial` drift | judging language quality (not its dimension) |
+| `genre_judge` | Reader fantasy delivered? devices correct? vocabulary register? taboo overuse? | plot criticism outside genre fit |
+| `voice_judge` | Distinguishability, verbal habits, register naturalness vs digests; confirm `intentional_shift` reasons | flagging register changes that canon records |
+| `extractor_a` | Entity-first sweep: for each entity present, list state/attribute/knowledge/register changes with quotes | inventing off-page events |
 | `extractor_b` | Event-first sweep: chronological events, participants, frames, then derived facts/knowledge | paraphrased quotes |
 | `extraction_adjudicator` | Decide between conflicting items using only the provided spans; may reject both | picking without quoting |
-| `style_judge` | Score with Korean anchors; evidence paragraph IDs before scores; list drift flags | praising exemplar phrasing (no exemplars given) |
-| `summarizer_l1` | ≤ 350 chars; plot + state changes + hook; canonical names; no evaluation | including plans |
-| `chapter_planner` | Produce a contract satisfying arc beats, cadence, and promise schedule; every knowledge delta needs a channel | scheduling reveals that guards forbid |
-| `change_request_interpreter` | Convert free-text change request into patch tasks with spans or contract edits | rewriting whole chapter |
+| `summarizer_l1` | ≤ 120 words English; plot + state changes + hook; registry names; no evaluation | including plans |
+| `chapter_planner` | Produce a contract satisfying arc beats, cadence, and promise schedule; every knowledge delta needs a channel; length target in words | scheduling reveals that guards forbid |
+| `change_request_interpreter` | Convert free-text change request (any language) into patch tasks with spans or contract edits | rewriting whole chapter |
 
 ## 5. Prompt regression suite
 
 For each family: a set of **golden cases** (inputs: fixture packs; expected: structured assertions such as
-"issue with kind=knowledge_leak on paragraph 14", "no format drift", "score for translated variant <
-native variant", "extractor recovers injury fact with quote"). Running the suite on every new version
+"issue with kind=knowledge_leak on paragraph 14", "no format drift", "`kwn_english` variant scores above
+`western_english` on structure and above `translation_like` on prose", "extractor recovers injury fact with
+quote", "scene_writer output passes EP-LANG-01 on 20/20 samples"). Running the suite on every new version
 produces `regression_result_ref`; promotion requires: no regression on blocking assertions; ≥ parity on
 scores; cost/latency deltas reported. Suite runs against the configured models for the role and records
 model versions (prompts are model-sensitive; a model change also triggers the suite).
@@ -96,7 +114,10 @@ user action with a note in the audit log.
 
 - System prompts are static templates; no user text is interpolated into system positions except the
   content-restriction summary, which is generated from enumerated spec fields (not free text).
-- Free-text requirements appear in the user message under `[요구사항 hard/soft]` with an instruction that
-  they describe the *story*, not the assistant's behavior; a classifier (`instruction_injection_classifier`,
-  cheap) flags requirement/direction texts that look like meta-instructions ("ignore previous rules") for
-  human review before they enter the spec.
+- Free-text requirements appear in the user message under `[REQUIREMENTS hard/soft]` (English working
+  paraphrase, with original text and language code available) with an instruction that they describe the
+  *story*, not the assistant's behavior; a classifier (`instruction_injection_classifier`, cheap) flags
+  requirement/direction texts that look like meta-instructions for human review before they enter the spec.
+- A user direction cannot change the output language or disable the Narrative-Tradition Contract; such
+  directions are rejected at intake with an explanation (the contracts are project configuration under
+  ADR-0026, not free-text preferences).

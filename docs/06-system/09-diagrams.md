@@ -12,11 +12,11 @@ flowchart LR
   API --> TEMP[Temporal]
   TEMP --> WK[apps/worker\nworkflows + activities]
   WK --> PG
-  WK --> GW[packages/gateway\nStyle Guard · Budget · Audit]
+  WK --> GW[packages/gateway\nNarrative Identity Guard · Output-language check · Budget · Audit]
   GW --> P1[LLM Provider A]
   GW --> P2[LLM Provider B]
   GW --> EMB[Embedding provider]
-  WK --> NLP[Korean NLP sidecar]
+  WK -.->|optional| GRM[grammar-service\nEnglish grammar/spelling]
   WK --> S3[(Object storage)]
   API --> S3
   WK --> OTEL[OpenTelemetry]
@@ -44,13 +44,13 @@ sequenceDiagram
   loop each scene
     WF->>CTX: assemble pack.scene_writer (T0..T3, manifest)
     CTX-->>WF: pack (hash, manifest)
-    WF->>GW: scene_writer (StyleGuard ✓, budget ✓)
-    GW-->>WF: scene draft (schema-valid)
-    WF->>DB: save draft version, lint, register
+    WF->>GW: scene_writer (Identity Guard ✓ both contracts, budget ✓)
+    GW-->>WF: scene draft (schema-valid, English ✓ output-language check)
+    WF->>DB: save draft version, prose+structure lint, register check
   end
   WF->>GW: chapter_assembler
-  WF->>EV: deterministic checks + judges (parallel)
-  EV-->>WF: Scorecard (issues w/ evidence)
+  WF->>EV: deterministic checks + judges (parallel: prose · structure · genre · voice · continuity)
+  EV-->>WF: Scorecard (separate dimensions; issues w/ evidence)
   alt blocking/major issues
     WF->>RV: patch-first revision (≤ max rounds)
     RV-->>WF: new version + regression results
@@ -148,29 +148,31 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-  T0[T0 Mandatory\nhard reqs · style block · contract\nlocked facts · guards · glossary · L4] --> FIT[Budget fitting]
+  T0[T0 Mandatory\nactive constraint set · narrative identity block (both contracts) · contract\nlocked facts · guards · naming/terminology slice · L4] --> FIT[Budget fitting]
   T1[T1 Critical\nprev chapter tail+L1 · states · knowledge\nrelationships · arc plan · promises due · timeline] --> FIT
   T2[T2 Relevant\nretrieved events/facts/evidence · L2/L3 · voice exemplars] --> RANK[Rank + dedupe] --> FIT
   T3[T3 Optional\nextra exemplars · minor entities] --> FIT
-  FIT --> VAL[Validate T0 byte-equality\nstyle hash · prev tail hash · sources allowlist]
+  FIT --> VAL[Validate T0 byte-equality\nidentity block hash + both contract hashes · prev tail hash · sources allowlist]
   VAL --> MAN[Manifest + hash → store]
   MAN --> CALL[Gateway call]
 ```
 
-## 6. Knowledge ledger example (regression + hidden identity)
+## 6. Knowledge ledger example (regression + hidden identity; fixture names)
 
 ```mermaid
 flowchart TB
-  P1["명제 P1: 도윤은 회귀자다 (true)"]
-  P2["명제 P2: 서하는 공작가의 사생아다 (true, secret)"]
-  P3["명제 P3: 도윤은 첩자다 (false — 카일이 퍼뜨린 거짓)"]
-  DY[도윤] -->|knows (prior_loop_memory)| P1
-  SH[서하] -->|unaware → suspects ch.31 → knows ch.58| P1
-  KL[카일] -->|knows (told by 백작 ch.17)| P2
+  P1["P1: Kang Do-yoon is a regressor (true on main)"]
+  P2["P2: Lee Seo-ha is Chairman Lee Tae-san's illegitimate daughter (true, secret)"]
+  P3["P3: Do-yoon sells raid intel to brokers (false — a lie spread by Choi Hyun-seok)"]
+  P5["P5: The Gangnam break kills 200 on March 14 (true on prior_loop_1, false on main)"]
+  DY[Do-yoon] -->|knows: prior_loop_memory| P1
+  SH[Seo-ha] -->|unaware → suspects ch.31 → knows ch.58| P1
+  HS[Hyun-seok] -->|knows: told by Chairman Lee ch.17| P2
   SH -->|unaware until ch.72| P2
   RD[reader] -->|knows ch.17| P2
-  SH -->|believes_false ch.23 → doubts ch.40 → knows false ch.58| P3
-  KL -->|knows it is false (liar)| P3
+  SH -->|believes_false ch.23 → doubts ch.40 → knows it is false ch.58| P3
+  HS -->|knows it is false: the liar| P3
+  DY -->|knows prior_loop → doubts on main ch.19: diverged| P5
 ```
 
 ## 7. Retcon propagation

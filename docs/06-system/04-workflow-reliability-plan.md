@@ -21,7 +21,7 @@
 | Timeout | activity timeout | retry with `max_tokens` −20% once; then fallback model; then `needs_attention` |
 | Rate limit (429) | status | token-bucket per provider; backoff honoring `Retry-After`; concurrency reduce; route to alternate |
 | Invalid structured output | schema validation | `json_repairer` ×2 → regenerate ×1 → step failure → `needs_attention` |
-| Truncated output | `finish_reason=length` / `KL-TRUNC-01` | continuation protocol ×1 → regenerate scene with reduced target ×1 → fail |
+| Truncated output | `finish_reason=length` / `EP-TRUNC-01` | continuation protocol ×1 → regenerate scene with reduced target ×1 → fail |
 | Duplicate job | workflow ID policy / lease | reject start with `LEASE_HELD`; UI shows existing job |
 | Worker crash | Temporal task timeout | activity re-dispatched; idempotency prevents duplicate spend |
 | User cancellation | cancel signal | workflow catches `CancelledFailure`, runs cleanup activity (release lease, mark partial artifacts non-canonical, write cost summary) |
@@ -32,7 +32,8 @@
 | Conflicting jobs | leases | second job waits/rejects; batch sequential |
 | Budget exhaustion | pre-call check | stop cleanly at activity boundary; job `paused_budget`; resume after budget raise |
 | Low quality after retries | revision round limit | `needs_attention` with residual issues & options |
-| Korean/style drift | lint/judge | revision workflow; escalate per style docs |
+| Non-English output | output-language check (`EP-LANG-01`) | discard; regenerate once with violation named; then route to alternate P-class model; persistent failure → `needs_attention` |
+| Translation-like / Western-novel / literary / serial drift | prose & structure lint + judges | dimension-targeted revision workflow; escalate per `docs/02-narrative-identity/05` |
 | Poison input (injection) | classifier | quarantine imported text; require human confirmation |
 | Schema/prompt version mismatch | pinned set check | job continues with pinned set; warn if deprecated |
 | DB failure mid-commit | tx error | tx rolls back; activity retries; version optimistic check prevents double-apply |
